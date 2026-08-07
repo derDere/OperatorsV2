@@ -17,15 +17,15 @@ function valueColor(value, m = 1, isLine = false) {
 }
 
 class IOControl extends Control {
-  
+
   constructor(parent) {
     super(0, 0, 5, BOUNDS_TYPE_CIRCLE, parent)
 
     this.name = "?"
     this.isOutput = false
-    
+
     this.doNotCaptureMouse = true
-    
+
     this.borderActiveColor = color(0, 128, 0)
     this.backgroundActiveColor = color(0, 255, 0)
 
@@ -62,7 +62,7 @@ class IOControl extends Control {
     this.backgroundColor = valueColor(this.value)
     this.backgroundHoverColor = valueColor(this.value, 0.8)
   }
-  
+
 }
 
 class OperatorEntry {
@@ -84,7 +84,7 @@ function register(name, description, classFnk) {
 }
 
 class Operator extends Movable {
-  
+
   constructor(x = 0, y = 0) {
     super(x, y, DEFAULT_SIZE, BOUNDS_TYPE_RECT)
 
@@ -129,7 +129,7 @@ class Operator extends Movable {
     let oM = (cH - ((mC - 1) * space)) / 2 // Äußeres Margin über/unter der größeren Liste
 
     this.height = cH
-    
+
     for(let [side, list] of [[-1, this.inputs], [1, this.outputs]]) {
       if (list.length <= 0) {
         continue // Für eine leere Liste muss auch nichts berechnet werden!
@@ -167,38 +167,3 @@ class Operator extends Movable {
     return oup
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// EOF

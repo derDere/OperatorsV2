@@ -22,7 +22,7 @@ class Control {
 
   doUpdate(tick) { /* virtual */ }
   doDraw(tick) { /* virtual */ }
-  
+
   constructor(x = 0, y = 0, size = DEFAULT_SIZE, type = BOUNDS_TYPE_RECT, parent = null) {
     this.pos = createVector(x, y)
     this.width = size * 2
@@ -42,18 +42,18 @@ class Control {
     this._mouseClickEventHandler = []
     this._mouseEnterEventHandler = []
     this._mouseExitEventHandler = []
-    
+
     this.borderWeight = 1
-    
+
     this.borderColor = color(0)
     this.backgroundColor = color(255, 255, 255, 230)
-    
+
     this.borderHoverColor = color(0, 128, 255)
     this.backgroundHoverColor = color(255)
-    
+
     this.borderActiveColor = color(255, 0, 0)
     this.backgroundActiveColor = color(255)
-    
+
     this.cursor = 'pointer'
     this.isMouseOver = false
     this.isMouseDown = false
@@ -64,7 +64,7 @@ class Control {
     if (!!(this?._parent?.children)) {
       this._parent.children.push(this)
     }
-    
+
     let zIndex = 0
     if (AllControls.length > 0) {
       zIndex = AllControls[AllControls.length - 1].zIndex + 1
@@ -237,10 +237,10 @@ class Control {
 
     ap = ap.add(width / 2, height / 2)
     ap = ap.add(dragOffset)
-    
+
     let xOff = 0
     let yOff = 0
-    
+
     if (this.hasRectBounds) {
       xOff = (this.width + this.borderWeight) / 2
       yOff = (this.height + this.borderWeight) / 2
@@ -248,7 +248,7 @@ class Control {
       xOff = (this.radius + this.borderWeight) / 2
       yOff = (this.radius + this.borderWeight) / 2
     }
-    
+
     if (ap.x < -xOff) return false
     if (ap.x > width + xOff) return false
     if (ap.y < -yOff) return false
@@ -271,9 +271,9 @@ class Control {
   draw(tick) {
     if (this.isInFrame()) {
       push()
-  
+
       strokeWeight(this.borderWeight)
-      
+
       // Set Style
       if (this.isMouseDown) {
         stroke(this.borderActiveColor)
@@ -287,7 +287,7 @@ class Control {
         stroke(this.borderColor)
         fill(this.backgroundColor)
       }
-  
+
       // Pove by parent
       let p = this._parent
       while(!!p) {
@@ -295,7 +295,7 @@ class Control {
         p = p._parent
       }
       translate(this.pos.x, this.pos.y)
-  
+
       // draw
       if (this.hasRectBounds) {
         rectMode(CENTER)
@@ -310,7 +310,7 @@ class Control {
 
       // draw overwrite
       this.doDraw(tick)
-      
+
       pop()
     }
 
@@ -327,7 +327,7 @@ function updateControls(tick) {
   if (!lastMousePos) {
     lastMousePos = mousePos.copy()
   }
-  
+
   let mouseGotPressed = (mouseIsPressed != mouseWasDown) && mouseIsPressed
   let mouseGotReleased = (mouseIsPressed != mouseWasDown) && !mouseIsPressed
   mouseWasDown = mouseIsPressed
@@ -338,7 +338,7 @@ function updateControls(tick) {
     mouseGotMoved = true
   }
   lastMousePos = mousePos.copy()
-  
+
   const updateOrder = [...AllControls];
   updateOrder.sort((a, b) => a.zIndex - b.zIndex)
 
@@ -347,7 +347,7 @@ function updateControls(tick) {
     capturedMouseControl = hoverControl
   }
   hoverControl = null
-  
+
   for (let c of updateOrder) {
     if (!c._parent) {
       c.update(tick)
@@ -378,7 +378,7 @@ function updateControls(tick) {
 
   if (!!hoverControl) {
     cursor('pointer')
-    
+
     hoverControl.isMouseOver = true
 
     if (mouseIsPressed) {
@@ -409,33 +409,3 @@ function drawControls(tick) {
     c.draw(tick)
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// EOF

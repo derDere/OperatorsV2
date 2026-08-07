@@ -1,5 +1,5 @@
 class Movable extends Control {
-  
+
   constructor(x = 0, y = 0, size = DEFAULT_SIZE, type = BOUNDS_TYPE_RECT, parent = null) {
     super(x, y, size, type, parent)
 
@@ -40,35 +40,5 @@ class Movable extends Control {
       this.pos = this.pos.add(movement)
     }
   }
-  
+
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// EOF

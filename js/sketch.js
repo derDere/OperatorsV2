@@ -65,7 +65,7 @@ function draw() {
   tick += 1
 
   doCanvasDrag()
-  
+
   clear()
   noSmooth()
 
@@ -81,35 +81,3 @@ function draw() {
 
   linesNextFrame()
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// EOF
