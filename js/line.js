@@ -27,7 +27,6 @@ class Line {
   }
 
   isMouseOver(ap) {
-    /* I take no credit for this function it was made by AI */
     if (!this.start || !this.end) {
       return false
     }
@@ -133,7 +132,7 @@ class Line {
     else {
       startPos = mousePos.copy()
     }
-    
+
     if (!!this.end) {
       endPos = this.end.actualPos.copy()
       oneEndSet = true
@@ -169,7 +168,7 @@ class Line {
         endPos.x, endPos.y
       )
     }
-    
+
     pop()
   }
 }
@@ -180,7 +179,7 @@ function updateLines(tick) {
   }
 
   lineHover = null
-  
+
   for(let lin of AllLines) {
     lin.update(tick)
     lin.mouseIsOver = false
