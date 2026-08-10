@@ -6,9 +6,25 @@ var dragOffset = null
 var canvasIsDragged = false
 var lastDragMousePos = null
 var mainCanvas = null
+var screenSplit = 0.4
+
+function updateSplitter() {
+  let canvasSize = round(windowWidth * (1 - screenSplit))
+  if (canvasSize < 50) {
+    canvasSize = 50
+  }
+  let space = windowWidth - canvasSize - SPLITTER_WIDTH
+  if (space < 50) {
+    space = 50
+  }
+  appgui.style.width = space + 'px'
+  appgui_splitter.style.left = space + 'px'
+  appgui_splitter.dataset.space = space
+  return canvasSize
+}
 
 function setup() {
-  mainCanvas = createCanvas(windowWidth, windowHeight)
+  mainCanvas = createCanvas(updateSplitter(), windowHeight)
 
   dragOffset = createVector(0, 0)
 
@@ -16,6 +32,8 @@ function setup() {
     let entry = OperatorRegistry[i]
     entry.new(0, (i - ((OperatorRegistry.length - 1) / 2)) * 80)
   }
+
+  initSplitter()
 }
 
 function doubleClicked() {
@@ -23,11 +41,17 @@ function doubleClicked() {
 }
 
 function windowResized() {
-  resizeCanvas(windowWidth, windowHeight)
+  resizeCanvas(updateSplitter(), windowHeight)
 }
 
 function mousePressed() {
-  if (!hoverControl) {
+  if (
+    (!hoverControl) &&
+    (mouseX >= 0) &&
+    (mouseX < width) &&
+    (mouseY >= 0) &&
+    (mouseY < height)
+  ) {
     canvasIsDragged = true
   }
 }

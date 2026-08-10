@@ -1,7 +1,7 @@
 const Op_Switch = register(
   "Switch",
   "Toggle it on or off",
-  class extends Operator {
+  class extends Placeable {
     
     constructor(x = 0, y = 0) {
       super(x, y)

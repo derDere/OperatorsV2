@@ -14,3 +14,35 @@ canvas {
   image-rendering: pixelated;
   image-rendering: crisp-edges;
 }
+
+#maincanvas {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  height: 100%;
+}
+
+#appgui {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  height: 100%;
+  background: #fff;
+  border: 0 none;
+  overflow: auto;
+  scrollbar-width: thin;
+}
+
+#appgui_splitter {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  height: 100%;
+  box-sizing: border-box;
+  background: #999;
+  border: 0 none;
+  cursor: ew-resize;
+}

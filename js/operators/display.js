@@ -1,20 +1,7 @@
-class base_Display extends Operator {
-    
-    constructor(x = 0, y = 0) {
-      super(x, y)
-  
-      this.label = 'Unknown'
-      this.col = 0
-      this.row = 0
-      this.colSpan = 1
-      this.rowSpan = 1
-    }
-}
-
 const Op_Lamp = register(
   "Lamp",
   "Displays a state of ON or OFF",
-  class extends base_Display {
+  class extends Placeable {
     
     constructor(x = 0, y = 0) {
       super(x, y)
