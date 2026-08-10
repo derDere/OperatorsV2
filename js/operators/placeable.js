@@ -127,6 +127,8 @@ function updateTableOfElements() {
                 cell.className = "toe-cell"
                 cell.dataset.x = x
                 cell.dataset.y = y
+                cell.align = 'center'
+                cell.valign = 'middle'
                 row.appendChild(cell)
             }
         }
