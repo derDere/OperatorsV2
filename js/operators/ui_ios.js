@@ -102,25 +102,40 @@ const Op_Tick = register(
   }
 )
 
-/*
-const Op_Tick = register(
-  "Tick",
-  "Switches state every frame",
+const Op_Clock = register(
+  "Clock",
+  "Switches Output every X Ticks if powered",
   class extends Operator {
     
     constructor(x = 0, y = 0) {
       super(x, y)
   
+      this.count = 0
       this.state = false
+      this.b = 0
+
+      this.in_b = this.newInput("B")
+      this.in_p = this.newInput("P")
   
-      this.out_c = this.newOutput("T")
-      this.out_not_c = this.newOutput("!T")
+      this.out_c = this.newOutput("C")
+      this.out_nc = this.newOutput("!C")
     }
   
     doUpdate(tick) {
       super.doUpdate(tick)
   
-      this.state = (tick % 2) == 1
+      let p = !!(this.in_p.value)
+      let b = (this.in_b.value) & 255
+      this.b = b
+
+      if (p) {
+        this.count += 1
+      }
+
+      if (this.count >= b && p) {
+        this.state = !this.state
+        this.count = 0
+      }
       
       let a = !!(this.state)
       
@@ -128,7 +143,7 @@ const Op_Tick = register(
       let nc = !c
       
       this.out_c.value = c
-      this.out_not_c.value = nc
+      this.out_nc.value = nc
     }
   
     doDraw(tick) {
@@ -138,12 +153,14 @@ const Op_Tick = register(
   
       noStroke()
       fill(0)
-      textAlign(CENTER, CENTER)
+      textAlign(CENTER, BOTTOM)
       textSize(18)
-      text('TICK', 0, 0)
+      text('CLK', 0, 5)
+      textAlign(CENTER, TOP)
+      textSize(10)
+      text('T: ' + this.b, 0, 5)
       
       pop()
     }
   }
 )
-*/
