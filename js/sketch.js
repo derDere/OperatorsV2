@@ -6,7 +6,7 @@ var dragOffset = null
 var canvasIsDragged = false
 var lastDragMousePos = null
 var mainCanvas = null
-var screenSplit = 0.4
+var screenSplit = 0.2
 
 function updateSplitter() {
   let canvasSize = round(windowWidth * (1 - screenSplit))
@@ -24,6 +24,8 @@ function updateSplitter() {
 }
 
 function setup() {
+  initProps()
+
   mainCanvas = createCanvas(updateSplitter(), windowHeight)
 
   dragOffset = createVector(0, 0)
@@ -51,7 +53,8 @@ function mousePressed() {
     (mouseX >= 0) &&
     (mouseX < width) &&
     (mouseY >= 0) &&
-    (mouseY < height)
+    (mouseY < height) &&
+    (mouseButton.right)
   ) {
     canvasIsDragged = true
   }
@@ -61,11 +64,29 @@ function mouseReleased() {
   canvasIsDragged = false
 }
 
+var shiftPressed = false
+var ctrlPressed = false
+
 function keyPressed(e) {
   if(e.key == 'Delete') {
     if (!!lineHover) {
       lineHover.kill()
     }
+  }
+  if(e.key == 'Shift') {
+    shiftPressed = true
+  }
+  if(e.key == 'Control') {
+    ctrlPressed = true
+  }
+}
+
+function keyReleased(e) {
+  if(e.key == 'Shift') {
+    shiftPressed = false
+  }
+  if(e.key == 'Control') {
+    ctrlPressed = false
   }
 }
 
@@ -73,6 +94,7 @@ function doCanvasDrag() {
   let mouseDragPos = createVector(mouseX, mouseY)
   if (canvasIsDragged) {
     dragOffset = dragOffset.copy().sub(lastDragMousePos.copy().sub(mouseDragPos))
+    cursor(MOVE)
   }
   lastDragMousePos = mouseDragPos.copy()
 }
@@ -88,6 +110,8 @@ function setCanvasPosition() {
 
 function draw() {
   tick += 1
+  
+  cursor('default')
 
   doCanvasDrag()
 

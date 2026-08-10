@@ -37,8 +37,12 @@ class Movable extends Control {
 
   _moveDrag(sender, movement) {
     if (this.isMoving == true) {
-      this.pos = this.pos.add(movement)
+      this.onMove(movement)
     }
+  }
+
+  onMove(movement) {
+    this.pos = this.pos.add(movement)
   }
 
 }

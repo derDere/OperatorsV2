@@ -1,4 +1,5 @@
 const OperatorRegistry = []
+var selectedOperators = []
 
 function valueColor(value, m = 1, isLine = false) {
   if (value === true) {
@@ -88,11 +89,63 @@ class Operator extends Movable {
   constructor(x = 0, y = 0) {
     super(x, y, DEFAULT_SIZE, BOUNDS_TYPE_RECT)
 
+    this.isSelected = false
+
     this.width += 20
     this.inputs = []
     this.outputs = []
 
     this.fixPlacement()
+
+    this._movedBySelection = false
+
+    this.onMouseClick(this.selectionClick.bind(this))
+  }
+
+  selectionClick() {
+    if ((!shiftPressed) && (!ctrlPressed)) {
+      selectedOperators = []
+      updateProps(this)
+    }
+    let i = selectedOperators.indexOf(this)
+    if (i <= -1) {
+      selectedOperators.push(this)
+    }
+    else if (ctrlPressed) {
+      selectedOperators.splice(i, 1)
+    }
+  }
+
+  onMove(movement) {
+    super.onMove(movement)
+    if (!this._movedBySelection) {
+      if (this.isSelected) {
+        for(let op of selectedOperators) {
+          if (op == this) {
+            continue
+          }
+          op._movedBySelection = true
+          op.onMove(movement)
+          op._movedBySelection = false
+        }
+      }
+    }
+  }
+
+  fixPlacement() {
+    super.fixPlacement()
+    if (!this._movedBySelection) {
+      if (this.isSelected) {
+        for(let op of selectedOperators) {
+          if (op == this) {
+            continue
+          }
+          op._movedBySelection = true
+          op.fixPlacement()
+          op._movedBySelection = false
+        }
+      }
+    }
   }
 
   doUpdate(tick) {
@@ -100,10 +153,25 @@ class Operator extends Movable {
       (mouseLine.start != null) ||
       (mouseLine.end != null)
     )
+    let i = selectedOperators.indexOf(this)
+    if (i >= 0) {
+      this.isSelected = true
+    }
+    else {
+      this.isSelected = false
+    }
   }
 
   doDraw(tick) {
     push()
+    if (this.isSelected) {
+      push()
+      stroke('#0080ff40')
+      strokeWeight(5)
+      noFill()
+      rect(0, 0, this.width + 5, this.height + 5)
+      pop()
+    }
     fill(0)
     noStroke()
     textAlign(LEFT, CENTER)

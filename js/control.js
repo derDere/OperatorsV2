@@ -331,7 +331,6 @@ class Control {
 }
 
 function updateControls(tick) {
-  cursor('default')
   if (!lastMousePos) {
     lastMousePos = mousePos.copy()
   }
