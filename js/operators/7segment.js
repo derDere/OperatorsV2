@@ -36,7 +36,28 @@ const Op_7sDisplay = register(
     }
 
     getEle(callback) {
-        return super.getEle(callback)
+      let r = '<div class="seven-segment-display">'
+      
+      r += '<div class="segment segment-top disabled"></div>'
+      r += '<div class="segment segment-top-left disabled"></div>'
+      r += '<div class="segment segment-top-right disabled"></div>'
+      r += '<div class="segment segment-middle disabled"></div>'
+      r += '<div class="segment segment-bottom-left disabled"></div>'
+      r += '<div class="segment segment-bottom-right disabled"></div>'
+      r += '<div class="segment segment-bottom disabled"></div>'
+      r += '<div class="segment segment-dot disabled"></div>'
+
+      if (this.s7_t) r += '<div class="segment segment-top"></div>'
+      if (this.s7_tl) r += '<div class="segment segment-top-left"></div>'
+      if (this.s7_tr) r += '<div class="segment segment-top-right"></div>'
+      if (this.s7_m) r += '<div class="segment segment-middle"></div>'
+      if (this.s7_bl) r += '<div class="segment segment-bottom-left"></div>'
+      if (this.s7_br) r += '<div class="segment segment-bottom-right"></div>'
+      if (this.s7_b) r += '<div class="segment segment-bottom"></div>'
+      if (this.s7_d) r += '<div class="segment segment-dot"></div>'
+      
+      r += '</div>'
+      return r
     }
   
     doUpdate(tick) {
