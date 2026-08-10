@@ -33,13 +33,6 @@ function setup() {
     entry.new(0, (i - ((OperatorRegistry.length - 1) / 2)) * 80)
   }
 
-  new Op_Or()
-  new Op_Switch()
-  new Op_TFlipFlop()
-  new Op_TFlipFlop()
-  new Op_TFlipFlop()
-  new Op_TFlipFlop()
-
   initSplitter()
   createTableOfElements()
 }

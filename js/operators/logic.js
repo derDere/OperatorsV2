@@ -158,3 +158,58 @@ const Op_TFlipFlop = register(
     }
   }
 )
+
+const Op_Memory = register(
+  "Memory",
+  "Stores 1bit of memory when triggered",
+  class extends Operator {
+    
+    constructor(x = 0, y = 0) {
+      super(x, y)
+  
+      this.state = false
+      this.last = false
+      
+      this.in_v = this.newInput("B1")
+      this.in_t = this.newInput("T")
+  
+      this.out_b = this.newOutput("B")
+      this.out_nb = this.newOutput("!B")
+    }
+  
+    doUpdate(tick) {
+      super.doUpdate(tick)
+  
+      let v = !!(this.in_v.value)
+      let t = !!(this.in_t.value)
+      
+      if (t != this.last) {
+        if (t) {
+            this.state = v
+        }
+      }
+
+      this.last = t
+      
+      this.out_b.value = this.state
+      this.out_nb.value = !this.state
+    }
+  
+    doDraw(tick) {
+      super.doDraw(tick)
+      
+      push()
+  
+      noStroke()
+      fill(0)
+      textAlign(CENTER, BOTTOM)
+      textSize(18)
+      text(this.state ? '1' : '0', 0, 5)
+      textAlign(CENTER, TOP)
+      textSize(10)
+      text('Memory', 0, 5)
+      
+      pop()
+    }
+  }
+)
