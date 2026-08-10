@@ -27,6 +27,9 @@ class Line {
     if (lineHover == this) {
       lineHover = null
     }
+    if (this.end) {
+      this.end.value = false
+    }
   }
 
   /** Der zu zeichnende Weg; ohne verlegten Weg die direkte Verbindung. */
