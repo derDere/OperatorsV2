@@ -129,8 +129,6 @@ const Op_4bit_to_7sSeg = register(
       this.ou6 = this.newOutput("S6") // Bottom Right
       this.ou7 = this.newOutput("S7") // Bottom
       this.ouD = this.newOutput("D") // Dot
-
-      this.v = 0
     }
   
     doUpdate(tick) {

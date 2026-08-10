@@ -101,3 +101,49 @@ const Op_Tick = register(
     }
   }
 )
+
+/*
+const Op_Tick = register(
+  "Tick",
+  "Switches state every frame",
+  class extends Operator {
+    
+    constructor(x = 0, y = 0) {
+      super(x, y)
+  
+      this.state = false
+  
+      this.out_c = this.newOutput("T")
+      this.out_not_c = this.newOutput("!T")
+    }
+  
+    doUpdate(tick) {
+      super.doUpdate(tick)
+  
+      this.state = (tick % 2) == 1
+      
+      let a = !!(this.state)
+      
+      let c = a
+      let nc = !c
+      
+      this.out_c.value = c
+      this.out_not_c.value = nc
+    }
+  
+    doDraw(tick) {
+      super.doDraw(tick)
+      
+      push()
+  
+      noStroke()
+      fill(0)
+      textAlign(CENTER, CENTER)
+      textSize(18)
+      text('TICK', 0, 0)
+      
+      pop()
+    }
+  }
+)
+*/
