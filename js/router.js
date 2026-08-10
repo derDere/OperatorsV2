@@ -24,13 +24,21 @@ const ROUTE_LANE_SPACING = 15
 const ROUTE_LANE_SLACK = 1
 
 /** Gerades Stück, das ein Weg aus dem Pin heraus läuft, bevor der erste Knick kommt. */
-const ROUTE_ESCAPE_LENGTH = 20
+const ROUTE_ESCAPE_LENGTH = 10
 
 /** Zusätzliche Absprunglänge je weiterer Linie am selben Operator. */
 const ROUTE_ESCAPE_STAGGER = 5
 
 /** Anzahl der Staffelstufen; danach beginnt die Staffelung wieder bei null. */
 const ROUTE_ESCAPE_SLOTS = 4
+
+/**
+ * Luftlinie, bis zu der ein Weg schnurgerade von Pin zu Pin läuft — ohne
+ * Absprung, ohne Knick und ohne Suche. Auf so kurzer Strecke ist die Gerade
+ * das klarste Bild; jeder Umweg um Abstände oder Übersprünge würde mehr
+ * auffallen als er einbringt.
+ */
+const ROUTE_DIRECT_DISTANCE = 100
 
 /** Sicherheitsabstand, den ein Weg um einen Operator herum hält. */
 const ROUTE_OBSTACLE_MARGIN = 5
@@ -1080,6 +1088,11 @@ class WireRouter {
    * nach rechts, -1 nach links und 0 für ein loses Ende ohne Absprung.
    */
   routePath(from, to) {
+    if (Math.hypot(to.x - from.x, to.y - from.y) < ROUTE_DIRECT_DISTANCE) {
+      this.usedFallback = false
+      return compressPolyline([{ x: from.x, y: from.y }, { x: to.x, y: to.y }])
+    }
+
     const startCell = this._escapeCell(from)
     const goalCell = this._escapeCell(to)
 
