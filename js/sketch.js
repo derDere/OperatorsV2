@@ -34,6 +34,7 @@ function setup() {
   }
 
   initSplitter()
+  createTableOfElements()
 }
 
 function doubleClicked() {
@@ -104,4 +105,6 @@ function draw() {
   drawControls(tick)
 
   linesNextFrame()
+
+  updatePlacableElements()
 }

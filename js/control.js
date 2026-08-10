@@ -1,4 +1,5 @@
 const AllControls = []
+const ControlMap = {}
 var hoverControl = null
 var lastHoverControl = null
 var mouseWasDown = false
@@ -7,6 +8,10 @@ var lastMousePos = null
 const BOUNDS_TYPE_RECT = 'rect'
 const BOUNDS_TYPE_CIRCLE = 'circle'
 const DEFAULT_SIZE = 30
+
+function NewId() {
+  return crypto.randomUUID()
+}
 
 class Control {
 
@@ -24,6 +29,7 @@ class Control {
   doDraw(tick) { /* virtual */ }
 
   constructor(x = 0, y = 0, size = DEFAULT_SIZE, type = BOUNDS_TYPE_RECT, parent = null) {
+    this.id = NewId()
     this.pos = createVector(x, y)
     this.width = size * 2
     this.height = size * 2
@@ -72,6 +78,7 @@ class Control {
     this.zIndex = zIndex
 
     AllControls.push(this)
+    ControlMap[this.id] = this
   }
 
   kill() {
@@ -84,6 +91,7 @@ class Control {
       this._parent?.children?.splice(i, 1)
     }
     this.parent = null
+    delete ControlMap[this.id]
   }
 
   get parent() {

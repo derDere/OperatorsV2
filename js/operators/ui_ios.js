@@ -17,6 +17,15 @@ const Op_Switch = register(
     switched(sender) {
       this.state = !this.state
     }
+
+    getEle(callback) {
+      let checked = this.state ? 'checked' : ''
+      return '<input type="checkbox" class="switch" onchange="' + callback + '" ' + checked + '/>'
+    }
+
+    eleChanged(newValue) {
+      this.state = (newValue == true)
+    }
   
     doUpdate(tick) {
       super.doUpdate(tick)

@@ -10,6 +10,15 @@ const Op_Lamp = register(
   
       this.in = this.newInput("I")
     }
+
+    getEle(callback) {
+        if (this.state) {
+            return '<div class="lamp-on"></div>'
+        }
+        else {
+            return '<div class="lamp-off"></div>'
+        }
+    }
   
     doUpdate(tick) {
       super.doUpdate(tick)
