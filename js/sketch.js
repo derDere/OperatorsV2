@@ -110,23 +110,28 @@ function draw() {
 	tick += 1
 
 	cursor('default')
-
-	doCanvasDrag()
-
 	clear()
 	noSmooth()
 
+	if (!newOpDialogOpen) {
+		doCanvasDrag()
+	}
+	
 	setCanvasPosition()
 
 	mousePos = createVector(mouseX - (width / 2) - dragOffset.x, mouseY - (height / 2) - dragOffset.y)
 
-	updateLines(tick)
-	updateControls(tick)
+	if (!newOpDialogOpen) {
+		updateLines(tick)
+		updateControls(tick)
+	}
 
 	drawLines(tick)
 	drawControls(tick)
 
-	linesNextFrame()
+	if (!newOpDialogOpen) {
+		linesNextFrame()
+	}
 
 	updatePlacableElements()
 }
