@@ -435,3 +435,79 @@ const Op_byte_to_8bit = register(
 		}
 	}
 )
+
+const Op_Counter = register(
+	"Counter",
+	"Counts up a 4bit value if triggered",
+	class extends Operator {
+
+		constructor(x = 0, y = 0) {
+			super(x, y)
+
+			this.value = 0
+			this.last = false
+
+			this.in_t = this.newInput("T")
+			this.in_r = this.newInput("R")
+
+			this.out_b1 = this.newOutput("B0")
+			this.out_b2 = this.newOutput("B1")
+			this.out_b3 = this.newOutput("B2")
+			this.out_b4 = this.newOutput("B3")
+
+			this.out_o = this.newOutput("O")
+		}
+
+		doUpdate(tick) {
+			super.doUpdate(tick)
+
+			let t = !!(this.in_t.value)
+			let r = !!(this.in_r.value)
+
+			if (t != this.last) {
+				if (t) {
+					this.value += 1
+				}
+			}
+
+			if (r) {
+				this.value = 0
+			}
+
+			this.last = t
+
+			let b0 = !!(this.value & 1)
+			let b1 = !!(this.value & 2)
+			let b2 = !!(this.value & 4)
+			let b3 = !!(this.value & 8)
+			let o = this.value >= 16
+
+			if (o) {
+				this.value = 0
+			}
+			
+			this.out_b1.value = b0
+			this.out_b2.value = b1
+			this.out_b3.value = b2
+			this.out_b4.value = b3
+			this.out_o.value = o
+		}
+
+		doDraw(tick) {
+			super.doDraw(tick)
+
+			push()
+
+			noStroke()
+			fill(0)
+			textAlign(CENTER, BOTTOM)
+			textSize(18)
+			text(this.value, 0, 5)
+			textAlign(CENTER, TOP)
+			textSize(10)
+			text('COUNTER', 0, 5)
+
+			pop()
+		}
+	}
+)
