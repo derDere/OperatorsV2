@@ -21,13 +21,15 @@ class Placeable extends Operator {
 	}
 
 	getConfig() {
-		return {
+		let sreturn = {
 			...super.getConfig(),
-			col: this._col,
-			row: this._row,
-			colSpan: this._colSpan,
-			rowSpan: this._rowSpan
+			col: this.col,
+			row: this.row,
+			colSpan: this.colSpan,
+			rowSpan: this.rowSpan
 		}
+		print(sreturn)
+		return sreturn
 	}
 
 	setConfig(conf, loaded = false) {
@@ -55,34 +57,34 @@ class Placeable extends Operator {
 	}
 
 	get col() {
-		return this._col
+		return round(max(this._col, 0))
 	}
 	set col(value) {
-		this._col = value
+		this._col = round(max(value, 0))
 		updateTableOfElements()
 	}
 
 	get row() {
-		return this._row
+		return round(max(this._row, 0))
 	}
 	set row(value) {
-		this._row = value
+		this._row = round(max(value, 0))
 		updateTableOfElements()
 	}
 
 	get colSpan() {
-		return this._colSpan
+		return round(max(this._colSpan ,1))
 	}
 	set colSpan(value) {
-		this._colSpan = value
+		this._colSpan = round(max(value, 1))
 		updateTableOfElements()
 	}
 
 	get rowSpan() {
-		return this._rowSpan
+		return round(max(this._rowSpan, 1))
 	}
 	set rowSpan(value) {
-		this._rowSpan = value
+		this._rowSpan = round(max(value, 1))
 		updateTableOfElements()
 	}
 
@@ -114,10 +116,10 @@ function updateTableOfElements() {
 	let maxR = 0
 	for (let p of AllPlaceables) {
 		if ((p.col + p.colSpan) > maxC) {
-			maxC = p.col + p.colSpan
+			maxC = max(round(p.col), 0) + max(round(p.colSpan), 1)
 		}
 		if ((p.row + p.rowSpan) > maxR) {
-			maxR = p.row + p.rowSpan
+			maxR = max(round(p.row), 0) + max(round(p.rowSpan), 1)
 		}
 	}
 	let grid = []
@@ -127,6 +129,21 @@ function updateTableOfElements() {
 			row.push(1)
 		}
 		grid.push(row)
+	}
+	let currentRows = TableOfEle.children
+	while(currentRows.length > grid.length) {
+		currentRows[currentRows.length - 1].remove()
+		currentRows = TableOfEle.children
+	}
+	if (currentRows.length > 0) {
+		let cellLen = currentRows[0].children.length
+		while (cellLen > grid[0].length) {
+			for (let row of currentRows) {
+				let cells = row.children
+				cells[cells.length - 1].remove()
+			}
+			cellLen = currentRows[0].children.length
+		}
 	}
 	for (let p of AllPlaceables) {
 		let px = p.col
@@ -169,7 +186,9 @@ function updatePlacableElements() {
 		let cellId = 'toe-cell-' + p.col + '-' + p.row
 		if (p._lastCellId.length > 0 && p._lastCellId != cellId) {
 			let oldCell = document.getElementById(p._lastCellId)
-			oldCell.innerHTML = ""
+			if (!!oldCell) {
+				oldCell.innerHTML = ""
+			}
 			p._lastEle = ""
 		}
 		p._lastCellId = cellId
@@ -185,8 +204,8 @@ function updatePlacableElements() {
 }
 
 function findFreeSpace() {
-	let maxC = 1
-	let maxR = 1
+	let maxC = 0
+	let maxR = 0
 	let blocked = {}
 	for (let p of AllPlaceables) {
 		if ((p.col + p.colSpan) > maxC) {
