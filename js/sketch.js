@@ -36,7 +36,7 @@ function setup() {
 }
 
 function doubleClicked(event) {
-	if (!hoverControl) {
+	if (!hoverControl && !newOpDialogOpen) {
 		addNewOperator(event)
 	}
 }
@@ -116,7 +116,7 @@ function draw() {
 	if (!newOpDialogOpen) {
 		doCanvasDrag()
 	}
-	
+
 	setCanvasPosition()
 
 	mousePos = createVector(mouseX - (width / 2) - dragOffset.x, mouseY - (height / 2) - dragOffset.y)
