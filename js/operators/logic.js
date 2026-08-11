@@ -159,9 +159,9 @@ const Op_TFlipFlop = register(
 	}
 )
 
-const Op_Memory = register(
-	"Memory",
-	"Stores 1bit of memory when triggered",
+const Op_Memory1 = register(
+	"Memory (1 bit)",
+	"Stores 1 bit of memory when triggered",
 	class extends Operator {
 
 		constructor(x = 0, y = 0) {
@@ -207,7 +207,60 @@ const Op_Memory = register(
 			text(this.state ? '1' : '0', 0, 5)
 			textAlign(CENTER, TOP)
 			textSize(10)
-			text('Memory', 0, 5)
+			text('MEM1', 0, 5)
+
+			pop()
+		}
+	}
+)
+
+const Op_Memory8 = register(
+	"Memory (1 byte)",
+	"Stores 1 byte of memory when triggered",
+	class extends Operator {
+
+		constructor(x = 0, y = 0) {
+			super(x, y)
+
+			this.state = 0
+			this.last = false
+
+			this.in_v = this.newInput("B")
+			this.in_t = this.newInput("T")
+
+			this.out_b = this.newOutput("B")
+		}
+
+		doUpdate(tick) {
+			super.doUpdate(tick)
+
+			let v = (this.in_v.value & 255)
+			let t = !!(this.in_t.value)
+
+			if (t != this.last) {
+				if (t) {
+					this.state = v
+				}
+			}
+
+			this.last = t
+
+			this.out_b.value = this.state
+		}
+
+		doDraw(tick) {
+			super.doDraw(tick)
+
+			push()
+
+			noStroke()
+			fill(0)
+			textAlign(CENTER, BOTTOM)
+			textSize(18)
+			text(this.state, 0, 5)
+			textAlign(CENTER, TOP)
+			textSize(10)
+			text('MEM8', 0, 5)
 
 			pop()
 		}
@@ -445,10 +498,14 @@ const Op_Counter = register(
 			super(x, y)
 
 			this.value = 0
-			this.last = false
+			this.lastI = false
+			this.lastD = false
 
-			this.in_t = this.newInput("T")
+			this.in_i = this.newInput("I")
+			this.in_d = this.newInput("D")
 			this.in_r = this.newInput("R")
+
+			this.out_u = this.newOutput("U")
 
 			this.out_b1 = this.newOutput("B0")
 			this.out_b2 = this.newOutput("B1")
@@ -461,12 +518,18 @@ const Op_Counter = register(
 		doUpdate(tick) {
 			super.doUpdate(tick)
 
-			let t = !!(this.in_t.value)
+			let i = !!(this.in_i.value)
+			let d = !!(this.in_d.value)
 			let r = !!(this.in_r.value)
 
-			if (t != this.last) {
-				if (t) {
+			if (i != this.lastI) {
+				if (i) {
 					this.value += 1
+				}
+			}
+			else if (d != this.lastD) {
+				if (d) {
+					this.value -= 1
 				}
 			}
 
@@ -474,18 +537,24 @@ const Op_Counter = register(
 				this.value = 0
 			}
 
-			this.last = t
+			this.lastI = i
+			this.lastD = d
 
 			let b0 = !!(this.value & 1)
 			let b1 = !!(this.value & 2)
 			let b2 = !!(this.value & 4)
 			let b3 = !!(this.value & 8)
 			let o = this.value >= 16
+			let u = this.value < 0
 
 			if (o) {
 				this.value = 0
 			}
+			if (u) {
+				this.value = 15
+			}
 			
+			this.out_u.value = u
 			this.out_b1.value = b0
 			this.out_b2.value = b1
 			this.out_b3.value = b2
