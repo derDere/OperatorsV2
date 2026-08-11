@@ -13,8 +13,35 @@ class Placeable extends Operator {
         this._colSpan = 1
         this._rowSpan = 1
         this._lastEle = ""
+        this._lastCellId = ""
 
         AllPlaceables.push(this)
+    }
+
+    getConfig() {
+        return {
+            ...super.getConfig(),
+            col: this._col,
+            row: this._row,
+            colSpan: this._colSpan,
+            rowSpan: this._rowSpan
+        }
+    }
+
+    setConfig(conf, loaded = false) {
+        super.setConfig(conf, loaded)
+        if ("col" in conf) {
+            this.col = conf.col
+        }
+        if ("row" in conf) {
+            this.row = conf.row
+        }
+        if ("colSpan" in conf) {
+            this.colSpan = conf.colSpan
+        }
+        if ("rowSpan" in conf) {
+            this.rowSpan = conf.rowSpan
+        }
     }
 
     kill() {
@@ -138,6 +165,12 @@ function updateTableOfElements() {
 function updatePlacableElements() {
     for(let p of AllPlaceables) {
         let cellId = 'toe-cell-' + p.col + '-' + p.row
+        if (p._lastCellId.length > 0 && p._lastCellId != cellId) {
+            let oldCell = document.getElementById(p._lastCellId)
+            oldCell.innerHTML = ""
+            p._lastEle = ""
+        }
+        p._lastCellId = cellId
         let cell = document.getElementById(cellId)
         let newEle = p.getEle('placeableEleChanged(this);')
         if (p._lastEle != newEle) {

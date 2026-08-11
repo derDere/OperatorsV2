@@ -17,7 +17,7 @@ function valueColor(value, m = 1, isLine = false) {
   }
 }
 
-class IOControl extends Control {
+class IOControl extends Control { ////////////////////////////////////////////////////////////////////////////////////
 
   constructor(parent) {
     super(0, 0, 5, BOUNDS_TYPE_CIRCLE, parent)
@@ -84,7 +84,7 @@ function register(name, description, classFnk) {
   return classFnk
 }
 
-class Operator extends Movable {
+class Operator extends Movable { ////////////////////////////////////////////////////////////////////////////////////
 
   constructor(x = 0, y = 0) {
     super(x, y, DEFAULT_SIZE, BOUNDS_TYPE_RECT)
@@ -100,6 +100,26 @@ class Operator extends Movable {
     this._movedBySelection = false
 
     this.onMouseClick(this.selectionClick.bind(this))
+  }
+
+  getConfig() {
+    return {
+      _id: this.id,
+      _x: this.pos.x,
+      _y: this.pos.y
+    }
+  }
+
+  setConfig(conf, loaded = false) {
+    if ("_id" in conf && loaded) {
+      this.id = conf._id
+    }
+    if ("_x" in conf && loaded) {
+      this.pos.x = conf._x
+    }
+    if ("_y" in conf && loaded) {
+      this.pos.y = conf._y
+    }
   }
 
   selectionClick() {
