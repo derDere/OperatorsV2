@@ -1196,10 +1196,10 @@ class WireRouter {
 		}
 		this._reportedFallbacks = fallbacks
 		if (fallbacks > 0) {
-			console.warn(
-				`Leitungsführung: ${fallbacks} von ${routed} Wegen über den Ersatzweg — `
-				+ 'Knotenbudget erschöpft, diese Wege ignorieren Belegung und Abstände.'
-			)
+			//console.warn(
+			//	`Leitungsführung: ${fallbacks} von ${routed} Wegen über den Ersatzweg — `
+			//	+ 'Knotenbudget erschöpft, diese Wege ignorieren Belegung und Abstände.'
+			//)
 		}
 	}
 
