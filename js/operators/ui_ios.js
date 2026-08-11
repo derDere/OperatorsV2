@@ -58,6 +58,81 @@ const Op_Switch = register(
 	}
 )
 
+const Op_Button = register(
+	"Button",
+	"Click to send a 1 tick pulse",
+	class extends Placeable {
+
+		constructor(x = 0, y = 0) {
+			super(x, y)
+
+			this.pressed = false
+			this.text = "Press!"
+
+			this.out_c = this.newOutput("O")
+			this.out_not_c = this.newOutput("!O")
+
+			this.onMouseClick(this.switched.bind(this))
+		}
+
+		getConfig() {
+			return {
+				...super.getConfig(),
+				text: this.text
+			}
+		}
+
+		setConfig(conf, loaded = false) {
+			super.setConfig(conf, loaded = false)
+			if ('text' in conf) {
+				this.text = conf.text
+			}
+		}
+
+		switched(sender) {
+			this.pressed = true
+		}
+
+		getEle(callback) {
+			return '<input type="button" class="btn" onclick="' + callback + '" value="' + encodeHtml(this.text) + '" />'
+		}
+
+		eleChanged(newValue) {
+			this.pressed = true
+		}
+
+		doUpdate(tick) {
+			super.doUpdate(tick)
+
+			let a = !!(this.pressed)
+			this.pressed = false
+
+			let c = a
+			let nc = !c
+
+			this.out_c.value = c
+			this.out_not_c.value = nc
+		}
+
+		doDraw(tick) {
+			super.doDraw(tick)
+
+			push()
+
+			noStroke()
+			fill(0)
+			textAlign(CENTER, CENTER)
+			textSize(18)
+			text('BTN', 0, 0)
+			textSize(10)
+			text(this.text, 0, -20)
+			text('Click Me', 0, 20)
+
+			pop()
+		}
+	}
+)
+
 const Op_Tick = register(
 	"Tick",
 	"Switches state every frame",

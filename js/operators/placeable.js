@@ -1,6 +1,15 @@
 const AllPlaceables = []
 var TableOfEle;
 
+function encodeHtml(html) {
+  let encodedStr = html.replace(/[\u00A0-\u9999<>\&]/g, function(i) {
+		return '&#'+i.charCodeAt(0)+';'
+	})
+	encodedStr = encodedStr.replace(/"/g, '&quot;')
+	encodedStr = encodedStr.replace(/'/g, '&#39;')
+	return encodedStr
+}
+
 class Placeable extends Operator {
 
 	constructor(x = 0, y = 0) {
