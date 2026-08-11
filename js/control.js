@@ -307,8 +307,8 @@ class Control {
 			// draw
 			if (this.hasRectBounds) {
 				rectMode(CENTER)
-				let xOff = ((this.borderWeight - windowWidth) % 2) / 2
-				let yOff = ((this.borderWeight - windowHeight) % 2) / 2
+				let xOff = ((this.borderWeight - width) % 2) / 2
+				let yOff = ((this.borderWeight - height) % 2) / 2
 				translate(xOff, yOff)
 				rect(0, 0, this.width, this.height)
 			}
