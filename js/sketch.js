@@ -36,6 +36,9 @@ function setup() {
 }
 
 function doubleClicked(event) {
+	if (event.originalTarget != mainCanvas.elt) {
+		return
+	}
 	if (!hoverControl && !newOpDialogOpen) {
 		addNewOperator(event)
 	}
@@ -45,7 +48,7 @@ function windowResized() {
 	resizeCanvas(updateSplitter(), windowHeight)
 }
 
-function mousePressed() {
+function mousePressed(event) {
 	if (
 		(!hoverControl) &&
 		(mouseX >= 0) &&

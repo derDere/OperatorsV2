@@ -28,7 +28,6 @@ class Placeable extends Operator {
 			colSpan: this.colSpan,
 			rowSpan: this.rowSpan
 		}
-		print(sreturn)
 		return sreturn
 	}
 
