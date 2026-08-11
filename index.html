@@ -1,40 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <script src="libs/p5.js"></script>
-    <script src="libs/p5.sound.min.js"></script>
-    <script src="libs/dat.gui.js"></script>
 
-    <link rel="stylesheet" type="text/css" href="libs/dat-gui-light-theme.css">
-    <link rel="stylesheet" type="text/css" href="css/style.css">
-    <link rel="stylesheet" type="text/css" href="css/app.css">
-    <meta charset="utf-8" />
+<head>
+	<script src="libs/p5.js"></script>
+	<script src="libs/p5.sound.min.js"></script>
+	<script src="libs/dat.gui.js"></script>
 
-  </head>
-  <body oncontextmenu="return false;">
-    <main id="maincanvas"></main>
-    <div id="appgui"></div>
-    <div id="appgui_splitter"></div>
-    <dialog id="newOperatorDialog" popover>
-      <select id="newOperatorSelection">
-        <option value="__NONE__" selected>&lt;Select Operator&gt;</option>
-      </select>
-      <button popovertarget="newOperatorDialog" popovertargetaction="hide">Cancel</button>
-    </dialog>
-    <script src="js/properties.js"></script>
-    <script src="js/splitscreen.js"></script>
-    <script src="js/control.js"></script>
-    <script src="js/movable.js"></script>
-    <script src="js/router.js"></script>
-    <script src="js/line.js"></script>
-    <script src="js/operator.js"></script>
-    <script src="js/operators/placeable.js"></script>
-    <script src="js/operators/simple.js"></script>
-    <script src="js/operators/ui_ios.js"></script>
-    <script src="js/operators/display.js"></script>
-    <script src="js/operators/7segment.js"></script>
-    <script src="js/operators/logic.js"></script>
-    <script src="js/gui.js"></script>
-    <script src="js/sketch.js"></script>
-  </body>
+	<link rel="stylesheet" type="text/css" href="libs/dat-gui-light-theme.css">
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+	<link rel="stylesheet" type="text/css" href="css/app.css">
+	<meta charset="utf-8" />
+
+</head>
+
+<body oncontextmenu="return false;">
+	<main id="maincanvas"></main>
+	<div id="appgui"></div>
+	<div id="appgui_splitter"></div>
+	<dialog id="newOperatorDialog" popover>
+		<select id="newOperatorSelection">
+			<option value="__NONE__" selected>&lt;Select Operator&gt;</option>
+		</select>
+		<button popovertarget="newOperatorDialog" popovertargetaction="hide">Cancel</button>
+	</dialog>
+	<script src="js/properties.js"></script>
+	<script src="js/splitscreen.js"></script>
+	<script src="js/control.js"></script>
+	<script src="js/movable.js"></script>
+	<script src="js/router.js"></script>
+	<script src="js/line.js"></script>
+	<script src="js/operator.js"></script>
+	<script src="js/operators/placeable.js"></script>
+	<script src="js/operators/simple.js"></script>
+	<script src="js/operators/ui_ios.js"></script>
+	<script src="js/operators/display.js"></script>
+	<script src="js/operators/7segment.js"></script>
+	<script src="js/operators/logic.js"></script>
+	<script src="js/gui.js"></script>
+	<script src="js/sketch.js"></script>
+</body>
+
 </html>
