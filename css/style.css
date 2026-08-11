@@ -47,3 +47,28 @@ canvas {
   border: 0 none;
   cursor: ew-resize;
 }
+
+#newOperatorDialog {
+  /* Hebt die zentrierende Popover-Vorgabe des Browsers auf, damit left/top greifen */
+  position: fixed;/*
+  inset: auto; */
+  margin: 0;
+
+  z-index: 1000000;
+  background: #fff;
+  border: 1px solid #999;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 5px #00000040;
+}
+
+#newOperatorDialog::backdrop {
+  /*
+  background: #FFFFFF20;
+  background: radial-gradient(ellipse at center,  #FFFFFF20 0%,#FFFFFFC0 100%);
+
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  */
+  background: transparent;
+}

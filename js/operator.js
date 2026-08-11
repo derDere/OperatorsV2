@@ -1,4 +1,4 @@
-const OperatorRegistry = []
+const OperatorRegistry = {}
 var selectedOperators = []
 
 function valueColor(value, m = 1, isLine = false) {
@@ -80,7 +80,7 @@ class OperatorEntry {
 
 function register(name, description, classFnk) {
   let entry = new OperatorEntry(name, description, classFnk)
-  OperatorRegistry.push(entry)
+  OperatorRegistry[entry.name] = entry
   return classFnk
 }
 

@@ -30,17 +30,15 @@ function setup() {
 
   dragOffset = createVector(0, 0)
 
-  for (let i = 0; i < OperatorRegistry.length; i++) {
-    let entry = OperatorRegistry[i]
-    entry.new(0, (i - ((OperatorRegistry.length - 1) / 2)) * 80)
-  }
-
   initSplitter()
+  initNewOperatorDialog()
   createTableOfElements()
 }
 
-function doubleClicked() {
-  addNewOperator()
+function doubleClicked(event) {
+  if (!hoverControl) {
+    addNewOperator(event)
+  }
 }
 
 function windowResized() {

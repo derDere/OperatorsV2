@@ -16,6 +16,8 @@ class Placeable extends Operator {
         this._lastCellId = ""
 
         AllPlaceables.push(this)
+
+        updateTableOfElements()
     }
 
     getConfig() {
@@ -183,8 +185,8 @@ function updatePlacableElements() {
 }
 
 function findFreeSpace() {
-    let maxC = 0
-    let maxR = 0
+    let maxC = 1
+    let maxR = 1
     let blocked = {}
     for(let p of AllPlaceables) {
         if ((p.col + p.colSpan) > maxC) {
