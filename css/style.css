@@ -6,7 +6,7 @@ body {
 	font-family: Arial, Helvetica, sans-serif;
 }
 
-canvas {
+#maincanvas canvas {
 	display: block;
 
 	background: url(/gfx/grid-bg.png);
@@ -52,16 +52,14 @@ canvas {
 #newOperatorDialog {
 	position: fixed;
 	margin: 0;
-	max-width: 410px;
-	max-height: 410px;
-	overflow: auto;
 	scrollbar-width: thin;
 	z-index: 1000000;
 	background: #fff;
 	border: 1px solid #999;
-	padding: 20px;
 	border-radius: 10px;
+	padding: 0px;
 	box-shadow: 0 0 5px #00000040;
+	overflow: visible;
 }
 
 #newOperatorDialog::backdrop {
@@ -75,13 +73,78 @@ canvas {
 	background: transparent;
 }
 
+#newOperatorSelection {
+	padding: 20px 20px 60px 20px;
+	max-width: 440px;
+	max-height: 400px;
+	overflow: auto;
+}
+
 .new-entry-option {
 	font-size: 10px;
 	display: inline-block;
-	width: 50px;
-	height: 50px;
+	width: 80px;
+	height: 80px;
+	line-height: 80px;
+	vertical-align: middle;
 	border: 1px solid #aaa;
 	background-color: #F0F0F0;
 	overflow: hidden;
 	margin: 3px;
+	text-align: center;
+	border-radius: 5px;
+}
+
+.new-entry-option:hover {
+	background-color: #fff;
+}
+
+.new-entry-option:active {
+	background-color: #cef;
+}
+
+.new-entry-option canvas {
+	display: inline-block;
+	margin: auto;
+	max-width: 100%;
+	max-height: 100%;
+	object-fit: contain;
+	line-height: 80px;
+	vertical-align: middle;
+	image-rendering: auto;
+  image-rendering: smooth;
+}
+
+#dialog-bottom {
+	position: absolute;
+	bottom: 0;
+	height: 25px;
+	background: #ffffffF0;
+	left: 12px;
+	right: 12px;
+	vertical-align: middle;
+	text-align: right;
+	padding: 15px;
+	border: 0 none;
+	border-top: #eee 1px solid;
+}
+
+#dialog-info-box {
+	position: absolute;
+	min-width: 210px;
+	min-height: 100px;
+	max-width: 500px;
+	height: auto;
+	width: auto;
+	background: #ffffffe0;
+	border: 1px solid #aaa;
+	border-radius: 5px;
+	top: 10px;
+	left: calc(100% + 10px);
+	padding: 20px;
+}
+
+#dialog-info-box-title {
+	font-weight: bold;
+	margin: 0 0 20px 0;
 }

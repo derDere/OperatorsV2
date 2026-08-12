@@ -62,6 +62,7 @@ class Placeable extends Operator {
 		if (i >= 0) {
 			AllPlaceables.splice(i, 1)
 		}
+		updateTableOfElements()
 	}
 
 	get col() {
