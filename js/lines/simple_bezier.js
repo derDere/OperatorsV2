@@ -29,8 +29,27 @@ const SIMPLE_BEZIER_CHAMFER = 20
  * senkrechten Achse gespiegelt gerechnet und das Ergebnis zurückgespiegelt.
  * Die Geometrie-Helfer compressPolyline und chamferCorners kommen aus
  * router.js.
+ *
+ * Der fertige Weg wird samt umschließendem Rechteck zwischengespeichert und
+ * erst neu gerechnet, wenn sich ein Ende bewegt. Treffer- und Zeichenprüfung
+ * laufen zuerst gegen das Rechteck: Linien außerhalb des Bilds oder abseits
+ * der Maus kosten damit je Bild nur ein paar Vergleiche.
  */
 class SimpleBezier extends ConnectionLine {
+
+	constructor(connection) {
+		super(connection)
+
+		// Zwischengespeicherter Weg samt umschließendem Rechteck und der
+		// Endlage, für die er gerechnet wurde. NaN erzwingt den ersten Aufbau.
+		this._path = []
+		this._box = null
+		this._keyAx = NaN
+		this._keyAy = NaN
+		this._keyBx = NaN
+		this._keyBy = NaN
+		this._keyMirrored = false
+	}
 
 	/**
 	 * Die beiden Endpunkte der Linie. Ein fehlendes Ende folgt dem
@@ -62,8 +81,7 @@ class SimpleBezier extends ConnectionLine {
 
 	/**
 	 * Läuft die Linie aus dem Startende nach links hinaus? Das ist der Fall,
-	 * wenn sie an einem Eingang beginnt — oder rückwärts von einem Ausgang
-	 * her aufgezogen wird. Dann wird gespiegelt gerechnet.
+	 * wenn sie an einem Eingang beginnt. Dann wird gespiegelt gerechnet.
 	 */
 	_isMirrored() {
 		if (!!this.connection.start) {
@@ -75,32 +93,67 @@ class SimpleBezier extends ConnectionLine {
 		return false
 	}
 
-	/** Der Polygonzug der Linie in Weltkoordinaten. */
+	/**
+	 * Der Polygonzug der Linie in Weltkoordinaten — aus dem Zwischenspeicher,
+	 * solange sich die Endlage nicht geändert hat.
+	 */
 	get points() {
 		const ends = this._endPoints()
 		if (!ends) {
 			return []
 		}
 
+		const a = ends[0]
+		const b = ends[1]
 		const mirrored = this._isMirrored()
-		let a = ends[0]
-		let b = ends[1]
-		if (mirrored) {
-			a = { x: -a.x, y: a.y }
-			b = { x: -b.x, y: b.y }
+		if (
+			(a.x === this._keyAx) && (a.y === this._keyAy) &&
+			(b.x === this._keyBx) && (b.y === this._keyBy) &&
+			(mirrored === this._keyMirrored)
+		) {
+			return this._path
 		}
 
-		let path = this._route(a, b)
+		let path
 		if (mirrored) {
-			path = path.map((point) => ({ x: -point.x, y: point.y }))
+			path = this._route({ x: -a.x, y: a.y }, { x: -b.x, y: b.y })
+			for (const point of path) {
+				point.x = -point.x
+			}
 		}
-		return compressPolyline(path)
+		else {
+			path = this._route(a, b)
+		}
+		path = compressPolyline(path)
+
+		const box = {
+			left: path[0].x,
+			right: path[0].x,
+			top: path[0].y,
+			bottom: path[0].y,
+		}
+		for (const point of path) {
+			if (point.x < box.left) box.left = point.x
+			if (point.x > box.right) box.right = point.x
+			if (point.y < box.top) box.top = point.y
+			if (point.y > box.bottom) box.bottom = point.y
+		}
+
+		this._path = path
+		this._box = box
+		this._keyAx = a.x
+		this._keyAy = a.y
+		this._keyBx = b.x
+		this._keyBy = b.y
+		this._keyMirrored = mirrored
+		return this._path
 	}
 
 	/**
 	 * Baut den Weg von `a` nach `b` für die Normal-Ausrichtung: aus `a` geht
-	 * es nach rechts hinaus, in `b` von links hinein. Die Fallgrenzen sind so
-	 * gewählt, dass die Formen an ihnen stetig ineinander übergehen.
+	 * es nach rechts hinaus, in `b` von links hinein. Alle Punkte sind frisch
+	 * erzeugt und dürfen verändert werden. Die Fallgrenzen sind so gewählt,
+	 * dass die Formen an ihnen stetig ineinander übergehen.
 	 */
 	_route(a, b) {
 		const escape = SIMPLE_BEZIER_ESCAPE
@@ -113,10 +166,10 @@ class SimpleBezier extends ConnectionLine {
 		if (dx >= (ady + (2 * escape))) {
 			const stub = (dx - ady) / 2
 			return [
-				a,
+				{ x: a.x, y: a.y },
 				{ x: a.x + stub, y: a.y },
 				{ x: b.x - stub, y: b.y },
-				b,
+				{ x: b.x, y: b.y },
 			]
 		}
 
@@ -125,12 +178,12 @@ class SimpleBezier extends ConnectionLine {
 		if (dx >= (2 * escape)) {
 			const diag = (dx - (2 * escape)) / 2
 			return [
-				a,
+				{ x: a.x, y: a.y },
 				{ x: a.x + escape, y: a.y },
 				{ x: a.x + escape + diag, y: a.y + (ys * diag) },
 				{ x: b.x - escape - diag, y: b.y - (ys * diag) },
 				{ x: b.x - escape, y: b.y },
-				b,
+				{ x: b.x, y: b.y },
 			]
 		}
 
@@ -140,12 +193,12 @@ class SimpleBezier extends ConnectionLine {
 		if (ady >= (diag + (2 * SIMPLE_BEZIER_MIN_VERTICAL))) {
 			const vertical = (ady - diag) / 2
 			return [
-				a,
+				{ x: a.x, y: a.y },
 				{ x: a.x + escape, y: a.y },
 				{ x: a.x + escape, y: a.y + (ys * vertical) },
 				{ x: b.x - escape, y: b.y - (ys * vertical) },
 				{ x: b.x - escape, y: b.y },
-				b,
+				{ x: b.x, y: b.y },
 			]
 		}
 
@@ -155,12 +208,12 @@ class SimpleBezier extends ConnectionLine {
 		const depth = Math.max(SIMPLE_BEZIER_LOOP_MIN, diag / 2)
 		const yFar = ((dy < 0) ? Math.min(a.y, b.y) : Math.max(a.y, b.y)) + (ys * depth)
 		return chamferCorners([
-			a,
+			{ x: a.x, y: a.y },
 			{ x: a.x + escape, y: a.y },
 			{ x: a.x + escape, y: yFar },
 			{ x: b.x - escape, y: yFar },
 			{ x: b.x - escape, y: b.y },
-			b,
+			{ x: b.x, y: b.y },
 		], SIMPLE_BEZIER_CHAMFER)
 	}
 
@@ -175,7 +228,14 @@ class SimpleBezier extends ConnectionLine {
 			return false
 		}
 
+		// Grobe Vorprüfung gegen das umschließende Rechteck des Wegs.
 		const tolerance = this.mouseOverWeight / 2
+		const box = this._box
+		if (ap.x < (box.left - tolerance)) return false
+		if (ap.x > (box.right + tolerance)) return false
+		if (ap.y < (box.top - tolerance)) return false
+		if (ap.y > (box.bottom + tolerance)) return false
+
 		for (let i = 1; i < points.length; i++) {
 			if (this._distanceToSegment(ap, points[i - 1], points[i]) <= tolerance) {
 				return true
@@ -201,10 +261,27 @@ class SimpleBezier extends ConnectionLine {
 		return Math.hypot(point.x - closestX, point.y - closestY)
 	}
 
+	/** Berührt das umschließende Rechteck des Wegs den sichtbaren Ausschnitt? */
+	_isInFrame(box, padding, p5ctx) {
+		const viewLeft = -(p5ctx.width / 2) - dragOffset.x - padding
+		const viewTop = -(p5ctx.height / 2) - dragOffset.y - padding
+		const viewRight = viewLeft + p5ctx.width + (2 * padding)
+		const viewBottom = viewTop + p5ctx.height + (2 * padding)
+
+		if (box.right < viewLeft) return false
+		if (box.left > viewRight) return false
+		if (box.bottom < viewTop) return false
+		if (box.top > viewBottom) return false
+		return true
+	}
+
 	/** Zeichnet die Linie, bei Maus-über mit Hervorhebung darunter. */
 	draw(tick, p5ctx) {
 		const points = this.points
 		if (points.length < 2) {
+			return
+		}
+		if (!this._isInFrame(this._box, this.mouseOverWeight, p5ctx)) {
 			return
 		}
 

@@ -61,10 +61,27 @@ class Direkt extends ConnectionLine {
 		return Math.hypot(point.x - closestX, point.y - closestY)
 	}
 
+	/** Berührt die Strecke den sichtbaren Ausschnitt? */
+	_isInFrame(from, to, padding, p5ctx) {
+		const viewLeft = -(p5ctx.width / 2) - dragOffset.x - padding
+		const viewTop = -(p5ctx.height / 2) - dragOffset.y - padding
+		const viewRight = viewLeft + p5ctx.width + (2 * padding)
+		const viewBottom = viewTop + p5ctx.height + (2 * padding)
+
+		if (Math.max(from.x, to.x) < viewLeft) return false
+		if (Math.min(from.x, to.x) > viewRight) return false
+		if (Math.max(from.y, to.y) < viewTop) return false
+		if (Math.min(from.y, to.y) > viewBottom) return false
+		return true
+	}
+
 	/** Zeichnet die Strecke, bei Maus-über mit Hervorhebung darunter. */
 	draw(tick, p5ctx) {
 		const ends = this._endPoints()
 		if (!ends) {
+			return
+		}
+		if (!this._isInFrame(ends[0], ends[1], this.mouseOverWeight, p5ctx)) {
 			return
 		}
 

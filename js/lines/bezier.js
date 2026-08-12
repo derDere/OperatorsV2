@@ -184,10 +184,42 @@ class Bezier extends ConnectionLine {
 		return Math.hypot(point.x - closestX, point.y - closestY)
 	}
 
+	/**
+	 * Berührt die Kurve den sichtbaren Ausschnitt? Geprüft wird das
+	 * umschließende Rechteck der vier Kurvenpunkte — die Kurve liegt
+	 * vollständig in deren konvexer Hülle, abgetastet werden muss nichts.
+	 */
+	_isInFrame(curve, padding, p5ctx) {
+		let left = curve[0].x
+		let right = curve[0].x
+		let top = curve[0].y
+		let bottom = curve[0].y
+		for (const point of curve) {
+			if (point.x < left) left = point.x
+			if (point.x > right) right = point.x
+			if (point.y < top) top = point.y
+			if (point.y > bottom) bottom = point.y
+		}
+
+		const viewLeft = -(p5ctx.width / 2) - dragOffset.x - padding
+		const viewTop = -(p5ctx.height / 2) - dragOffset.y - padding
+		const viewRight = viewLeft + p5ctx.width + (2 * padding)
+		const viewBottom = viewTop + p5ctx.height + (2 * padding)
+
+		if (right < viewLeft) return false
+		if (left > viewRight) return false
+		if (bottom < viewTop) return false
+		if (top > viewBottom) return false
+		return true
+	}
+
 	/** Zeichnet die Kurve, bei Maus-über mit Hervorhebung darunter. */
 	draw(tick, p5ctx) {
 		const curve = this._curvePoints()
 		if (!curve) {
+			return
+		}
+		if (!this._isInFrame(curve, this.mouseOverWeight, p5ctx)) {
 			return
 		}
 

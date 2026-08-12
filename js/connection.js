@@ -68,8 +68,21 @@ function updateConnections(tick, p5ctx) {
 
 	connectionHover = null
 
-	wireRouter.updateRoutes(AllConnections)
-	mouseConnection.path = wireRouter.previewRoute(mouseConnection, mousePos)
+	// Nur ChipPath-Linien brauchen einen verlegten Weg — alle anderen
+	// Linienarten rechnen ihre Form selbst, für sie wäre der Router reine
+	// verschenkte Rechenzeit.
+	const routedConnections = []
+	for (let con of AllConnections) {
+		if (con.line instanceof ChipPath) {
+			routedConnections.push(con)
+		}
+	}
+	if (routedConnections.length > 0) {
+		wireRouter.updateRoutes(routedConnections)
+	}
+	if (mouseConnection.line instanceof ChipPath) {
+		mouseConnection.path = wireRouter.previewRoute(mouseConnection, mousePos)
+	}
 
 	for (let con of AllConnections) {
 		con.update(tick, p5ctx)
