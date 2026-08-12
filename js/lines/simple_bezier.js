@@ -30,25 +30,47 @@ const SIMPLE_BEZIER_CHAMFER = 20
  * Die Geometrie-Helfer compressPolyline und chamferCorners kommen aus
  * router.js.
  *
- * Der fertige Weg wird samt umschließendem Rechteck zwischengespeichert und
- * erst neu gerechnet, wenn sich ein Ende bewegt. Treffer- und Zeichenprüfung
- * laufen zuerst gegen das Rechteck: Linien außerhalb des Bilds oder abseits
- * der Maus kosten damit je Bild nur ein paar Vergleiche.
+ * Senkrechte Teilstücke, die mit anderen SimpleBezier-Linien exakt
+ * übereinander liegen, werden über simple_bezier_fan.js seitlich
+ * aufgefächert. Dafür hält jede Linie zwei Zwischenspeicher: die Grundform
+ * (nur von der Endlage abhängig) und den fertigen Weg samt umschließendem
+ * Rechteck (zusätzlich vom zugeteilten Versatz abhängig). Beides wird nur
+ * neu gerechnet, wenn sich Endlage bzw. Versatz wirklich ändern; Treffer-
+ * und Zeichenprüfung laufen zuerst gegen das Rechteck.
  */
 class SimpleBezier extends ConnectionLine {
 
 	constructor(connection) {
 		super(connection)
 
-		// Zwischengespeicherter Weg samt umschließendem Rechteck und der
-		// Endlage, für die er gerechnet wurde. NaN erzwingt den ersten Aufbau.
-		this._path = []
-		this._box = null
+		// Grundform samt Endlage, für die sie gerechnet wurde;
+		// NaN erzwingt den ersten Aufbau.
+		this._basePath = []
+		this._shape = null
+		this._verticals = []
 		this._keyAx = NaN
 		this._keyAy = NaN
 		this._keyBx = NaN
 		this._keyBy = NaN
 		this._keyMirrored = false
+
+		// Fertiger Weg (Grundform plus Versätze) samt umschließendem Rechteck.
+		this._path = []
+		this._box = null
+		this._finalDirty = false
+
+		AllSimpleBezierLines.push(this)
+		simpleBezierFanInvalidate()
+	}
+
+	/** Trägt die Linie aus dem Auffächern aus. */
+	kill() {
+		super.kill()
+		const i = AllSimpleBezierLines.indexOf(this)
+		if (i >= 0) {
+			AllSimpleBezierLines.splice(i, 1)
+		}
+		simpleBezierFanInvalidate()
 	}
 
 	/**
@@ -93,14 +115,34 @@ class SimpleBezier extends ConnectionLine {
 		return false
 	}
 
-	/**
-	 * Der Polygonzug der Linie in Weltkoordinaten — aus dem Zwischenspeicher,
-	 * solange sich die Endlage nicht geändert hat.
-	 */
+	/** Der Polygonzug der Linie in Weltkoordinaten, aus dem Zwischenspeicher. */
 	get points() {
+		simpleBezierFanSync()
+		if (this._finalDirty) {
+			this._rebuildFinal()
+		}
+		return this._path
+	}
+
+	/**
+	 * Bringt die Grundform auf Stand: rechnet Weg, Form und Senkrechten neu,
+	 * wenn sich die Endlage geändert hat. Liefert, ob etwas neu gerechnet
+	 * wurde — das Signal für simpleBezierFanSync, neu zu bündeln.
+	 */
+	_updateBase() {
 		const ends = this._endPoints()
 		if (!ends) {
-			return []
+			if (this._basePath.length === 0) {
+				return false
+			}
+			this._basePath = []
+			this._shape = null
+			this._verticals = []
+			this._path = []
+			this._box = null
+			this._finalDirty = false
+			this._keyAx = NaN
+			return true
 		}
 
 		const a = ends[0]
@@ -111,49 +153,39 @@ class SimpleBezier extends ConnectionLine {
 			(b.x === this._keyBx) && (b.y === this._keyBy) &&
 			(mirrored === this._keyMirrored)
 		) {
-			return this._path
+			return false
 		}
 
-		let path
+		let route
 		if (mirrored) {
-			path = this._route({ x: -a.x, y: a.y }, { x: -b.x, y: b.y })
-			for (const point of path) {
+			route = this._route({ x: -a.x, y: a.y }, { x: -b.x, y: b.y })
+			for (const point of route.points) {
 				point.x = -point.x
 			}
 		}
 		else {
-			path = this._route(a, b)
-		}
-		path = compressPolyline(path)
-
-		const box = {
-			left: path[0].x,
-			right: path[0].x,
-			top: path[0].y,
-			bottom: path[0].y,
-		}
-		for (const point of path) {
-			if (point.x < box.left) box.left = point.x
-			if (point.x > box.right) box.right = point.x
-			if (point.y < box.top) box.top = point.y
-			if (point.y > box.bottom) box.bottom = point.y
+			route = this._route(a, b)
 		}
 
-		this._path = path
-		this._box = box
+		this._basePath = route.points
+		this._shape = route.shape
+		this._extractVerticals()
+		this._finalDirty = true
 		this._keyAx = a.x
 		this._keyAy = a.y
 		this._keyBx = b.x
 		this._keyBy = b.y
 		this._keyMirrored = mirrored
-		return this._path
+		return true
 	}
 
 	/**
 	 * Baut den Weg von `a` nach `b` für die Normal-Ausrichtung: aus `a` geht
-	 * es nach rechts hinaus, in `b` von links hinein. Alle Punkte sind frisch
-	 * erzeugt und dürfen verändert werden. Die Fallgrenzen sind so gewählt,
-	 * dass die Formen an ihnen stetig ineinander übergehen.
+	 * es nach rechts hinaus, in `b` von links hinein. Der Bogen (loop) kommt
+	 * unabgeschrägt zurück — die Abschrägung passiert erst beim fertigen Weg,
+	 * damit Versätze vorher eingerechnet werden können. Alle Punkte sind
+	 * frisch erzeugt. Die Fallgrenzen sind so gewählt, dass die Formen an
+	 * ihnen stetig ineinander übergehen.
 	 */
 	_route(a, b) {
 		const escape = SIMPLE_BEZIER_ESCAPE
@@ -165,26 +197,32 @@ class SimpleBezier extends ConnectionLine {
 		// Flach genug nach vorn: eine Diagonale, mittig zwischen den Enden.
 		if (dx >= (ady + (2 * escape))) {
 			const stub = (dx - ady) / 2
-			return [
-				{ x: a.x, y: a.y },
-				{ x: a.x + stub, y: a.y },
-				{ x: b.x - stub, y: b.y },
-				{ x: b.x, y: b.y },
-			]
+			return {
+				shape: 'flat',
+				points: [
+					{ x: a.x, y: a.y },
+					{ x: a.x + stub, y: a.y },
+					{ x: b.x - stub, y: b.y },
+					{ x: b.x, y: b.y },
+				],
+			}
 		}
 
 		// Steil nach vorn: die Diagonale allein schafft die Höhe nicht — die
 		// Mitte wird senkrecht und hängt über zwei Diagonalen an den Absprüngen.
 		if (dx >= (2 * escape)) {
 			const diag = (dx - (2 * escape)) / 2
-			return [
-				{ x: a.x, y: a.y },
-				{ x: a.x + escape, y: a.y },
-				{ x: a.x + escape + diag, y: a.y + (ys * diag) },
-				{ x: b.x - escape - diag, y: b.y - (ys * diag) },
-				{ x: b.x - escape, y: b.y },
-				{ x: b.x, y: b.y },
-			]
+			return {
+				shape: 'steep',
+				points: [
+					{ x: a.x, y: a.y },
+					{ x: a.x + escape, y: a.y },
+					{ x: a.x + escape + diag, y: a.y + (ys * diag) },
+					{ x: b.x - escape - diag, y: b.y - (ys * diag) },
+					{ x: b.x - escape, y: b.y },
+					{ x: b.x, y: b.y },
+				],
+			}
 		}
 
 		// Nach hinten mit genug Höhe: außen 90° in die Senkrechten, den
@@ -192,29 +230,186 @@ class SimpleBezier extends ConnectionLine {
 		const diag = (2 * escape) - dx
 		if (ady >= (diag + (2 * SIMPLE_BEZIER_MIN_VERTICAL))) {
 			const vertical = (ady - diag) / 2
-			return [
-				{ x: a.x, y: a.y },
-				{ x: a.x + escape, y: a.y },
-				{ x: a.x + escape, y: a.y + (ys * vertical) },
-				{ x: b.x - escape, y: b.y - (ys * vertical) },
-				{ x: b.x - escape, y: b.y },
-				{ x: b.x, y: b.y },
-			]
+			return {
+				shape: 'back',
+				points: [
+					{ x: a.x, y: a.y },
+					{ x: a.x + escape, y: a.y },
+					{ x: a.x + escape, y: a.y + (ys * vertical) },
+					{ x: b.x - escape, y: b.y - (ys * vertical) },
+					{ x: b.x - escape, y: b.y },
+					{ x: b.x, y: b.y },
+				],
+			}
 		}
 
 		// Nach hinten ohne Höhe: die S-Form hat keinen Platz, der Weg läuft
-		// als Bogen außen herum — auf der Seite des Ziels, mit abgeschrägten
-		// Ecken statt der rohen 90°-Knicke.
+		// als Bogen außen herum — auf der Seite des Ziels.
 		const depth = Math.max(SIMPLE_BEZIER_LOOP_MIN, diag / 2)
 		const yFar = ((dy < 0) ? Math.min(a.y, b.y) : Math.max(a.y, b.y)) + (ys * depth)
-		return chamferCorners([
-			{ x: a.x, y: a.y },
-			{ x: a.x + escape, y: a.y },
-			{ x: a.x + escape, y: yFar },
-			{ x: b.x - escape, y: yFar },
-			{ x: b.x - escape, y: b.y },
-			{ x: b.x, y: b.y },
-		], SIMPLE_BEZIER_CHAMFER)
+		return {
+			shape: 'loop',
+			points: [
+				{ x: a.x, y: a.y },
+				{ x: a.x + escape, y: a.y },
+				{ x: a.x + escape, y: yFar },
+				{ x: b.x - escape, y: yFar },
+				{ x: b.x - escape, y: b.y },
+				{ x: b.x, y: b.y },
+			],
+		}
+	}
+
+	/**
+	 * Sammelt die senkrechten Teilstücke der Grundform fürs Auffächern —
+	 * je Senkrechte Lage, Ordnungsschlüssel und Versatz-Budget.
+	 */
+	_extractVerticals() {
+		this._verticals = []
+		const pts = this._basePath
+		if ((this._shape !== 'steep') && (this._shape !== 'back') && (this._shape !== 'loop')) {
+			return
+		}
+
+		// Abwärts heißt: der Start liegt über dem Ende. Der Ordnungsschlüssel
+		// sortiert ein Bündel von links nach rechts — abwärts liegt die höhere
+		// Linie rechts (großes y zuerst), aufwärts links (kleines y zuerst).
+		const down = pts[pts.length - 1].y >= pts[0].y
+
+		const add = (i0, i1, lo, hi) => {
+			const y0 = Math.min(pts[i0].y, pts[i1].y)
+			const y1 = Math.max(pts[i0].y, pts[i1].y)
+			const band = (y0 + y1) / 2
+			this._verticals.push({
+				x: pts[i0].x,
+				y0: y0,
+				y1: y1,
+				order: down ? -band : band,
+				lo: lo,
+				hi: hi,
+				shift: 0,
+				applied: 0,
+			})
+		}
+
+		if (this._shape === 'steep') {
+			// Die Mittelsenkrechte darf zwischen den beiden festen Ecken der
+			// Absprünge wandern; 1 px Diagonale bleibt auf jeder Seite übrig.
+			const xMin = Math.min(pts[1].x, pts[4].x) + 1
+			const xMax = Math.max(pts[1].x, pts[4].x) - 1
+			add(2, 3, Math.min(0, xMin - pts[2].x), Math.max(0, xMax - pts[2].x))
+			return
+		}
+
+		// back und loop: je eine Senkrechte am Start- und am Zielabsprung.
+		// Zum Pin hin begrenzt die Mindestlänge des Absprungs den Spielraum,
+		// nach außen ist er offen.
+		const stubStart = pts[1].x - pts[0].x
+		if (stubStart >= 0) {
+			add(1, 2, Math.min(0, SIMPLE_BEZIER_MIN_STUB - stubStart), SIMPLE_BEZIER_FAN_OPEN)
+		}
+		else {
+			add(1, 2, -SIMPLE_BEZIER_FAN_OPEN, Math.max(0, -stubStart - SIMPLE_BEZIER_MIN_STUB))
+		}
+
+		const stubEnd = pts[5].x - pts[4].x
+		if (stubEnd >= 0) {
+			add(3, 4, -SIMPLE_BEZIER_FAN_OPEN, Math.max(0, stubEnd - SIMPLE_BEZIER_MIN_STUB))
+		}
+		else {
+			add(3, 4, Math.min(0, stubEnd + SIMPLE_BEZIER_MIN_STUB), SIMPLE_BEZIER_FAN_OPEN)
+		}
+	}
+
+	/**
+	 * Baut den fertigen Weg aus Grundform und zugeteilten Versätzen:
+	 * Senkrechte verschieben, beim Bogen abschrägen, Weg säubern und das
+	 * umschließende Rechteck bestimmen.
+	 */
+	_rebuildFinal() {
+		this._finalDirty = false
+
+		const base = this._basePath
+		if (base.length < 2) {
+			this._path = []
+			this._box = null
+			return
+		}
+
+		let shifted = false
+		for (const vertical of this._verticals) {
+			if (vertical.shift !== 0) {
+				shifted = true
+				break
+			}
+		}
+
+		let pts
+		if (!shifted) {
+			for (const vertical of this._verticals) {
+				vertical.applied = 0
+			}
+			pts = base
+		}
+		else {
+			pts = base.map((point) => ({ x: point.x, y: point.y }))
+
+			if (this._shape === 'steep') {
+				// Die Mittelsenkrechte wandert an den 45°-Diagonalen entlang:
+				// x und y verschieben sich gemeinsam, die Länge bleibt.
+				const vertical = this._verticals[0]
+				const slope = (((pts[2].x - pts[1].x) * (pts[2].y - pts[1].y)) > 0) ? 1 : -1
+				pts[2].x += vertical.shift
+				pts[2].y += slope * vertical.shift
+				pts[3].x += vertical.shift
+				pts[3].y += slope * vertical.shift
+				vertical.applied = vertical.shift
+			}
+			else {
+				// back und loop: beide Senkrechten wandern waagerecht, die
+				// Absprünge ändern nur ihre Länge.
+				const v1 = this._verticals[0]
+				const v2 = this._verticals[1]
+				pts[1].x += v1.shift
+				pts[2].x += v1.shift
+				pts[3].x += v2.shift
+				pts[4].x += v2.shift
+				v1.applied = v1.shift
+				v2.applied = v2.shift
+
+				if ((this._shape === 'back') && (v1.shift !== v2.shift)) {
+					// Ungleiche Versätze verändern die Breite der Mitteldiagonale;
+					// die Höhendifferenz schlucken die beiden Senkrechten je zur
+					// Hälfte, damit die Diagonale exakt 45° behält.
+					const span = Math.abs(pts[3].x - pts[2].x)
+					const sigma = (pts[3].y >= pts[2].y) ? 1 : -1
+					const diff = (sigma * span) - (pts[3].y - pts[2].y)
+					pts[2].y -= diff / 2
+					pts[3].y += diff / 2
+				}
+			}
+		}
+
+		if (this._shape === 'loop') {
+			pts = chamferCorners(pts, SIMPLE_BEZIER_CHAMFER)
+		}
+		pts = compressPolyline(pts)
+
+		const box = {
+			left: pts[0].x,
+			right: pts[0].x,
+			top: pts[0].y,
+			bottom: pts[0].y,
+		}
+		for (const point of pts) {
+			if (point.x < box.left) box.left = point.x
+			if (point.x > box.right) box.right = point.x
+			if (point.y < box.top) box.top = point.y
+			if (point.y > box.bottom) box.bottom = point.y
+		}
+
+		this._path = pts
+		this._box = box
 	}
 
 	/** Liegt der Punkt `ap` (Weltkoordinaten) auf der Linie? */
