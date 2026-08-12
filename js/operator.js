@@ -32,16 +32,16 @@ class IOControl extends Control { //////////////////////////////////////////////
 
 		this.value = false
 
-		this.onMouseDown(this.lineStart.bind(this))
-		this.onMouseUp(this.lineEnd.bind(this))
+		this.onMouseDown(this.connectionStart.bind(this))
+		this.onMouseUp(this.connectionEnd.bind(this))
 	}
 
-	lineStart(sender) {
-		mouseLine.start = this
+	connectionStart(sender) {
+		mouseConnection.start = this
 	}
 
-	lineEnd(sender) {
-		let other = mouseLine.start
+	connectionEnd(sender) {
+		let other = mouseConnection.start
 		if (
 			(!!other) &&
 			(other != this) &&
@@ -54,9 +54,9 @@ class IOControl extends Control { //////////////////////////////////////////////
 				eio = sio
 				sio = tmp
 			}
-			let nl = new Line(sio, eio)
+			new Connection(sio, eio)
 		}
-		mouseLine.start = null
+		mouseConnection.start = null
 	}
 
 	doUpdate(tick, p5ctx) {
@@ -170,8 +170,8 @@ class Operator extends Movable { ///////////////////////////////////////////////
 
 	doUpdate(tick, p5ctx) {
 		this.doNotCaptureMouse = (
-			(mouseLine.start != null) ||
-			(mouseLine.end != null)
+			(mouseConnection.start != null) ||
+			(mouseConnection.end != null)
 		)
 		let i = selectedOperators.indexOf(this)
 		if (i >= 0) {

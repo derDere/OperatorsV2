@@ -71,8 +71,8 @@ var ctrlPressed = false
 
 function keyPressed(e) {
 	if (e.key == 'Delete') {
-		if (!!lineHover) {
-			lineHover.kill()
+		if (!!connectionHover) {
+			connectionHover.kill()
 		}
 	}
 	if (e.key == 'Shift') {
@@ -128,15 +128,15 @@ function main_draw(p5ctx) {
 	mousePos = p5ctx.createVector(p5ctx.mouseX - (p5ctx.width / 2) - dragOffset.x, p5ctx.mouseY - (p5ctx.height / 2) - dragOffset.y)
 
 	if (!newOpDialogOpen) {
-		updateLines(tick, p5ctx)
+		updateConnections(tick, p5ctx)
 		updateControls(tick, p5ctx)
 	}
 
-	drawLines(tick, p5ctx)
+	drawConnections(tick, p5ctx)
 	drawControls(tick, p5ctx)
 
 	if (!newOpDialogOpen) {
-		linesNextFrame(p5ctx)
+		connectionsNextFrame(p5ctx)
 	}
 
 	updatePlacableElements()
