@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>SimpleBezier — Auffächern übereinanderliegender Linien</title>
+	<style>
+		:root {
+			--bg: #f3f4f2;
+			--panel: #ffffff;
+			--ink: #1c2024;
+			--muted: #5f6a72;
+			--wire: #2b3138;
+			--wire2: #8b98a3;
+			--grid: #e6e9e5;
+			--border: #dde1dd;
+			--ok: #188a4a;
+			--ok-bg: #e2f3e9;
+			--bad: #c93636;
+			--bad-bg: #fae4e4;
+		}
+		@media (prefers-color-scheme: dark) {
+			:root {
+				--bg: #15181b;
+				--panel: #1e2226;
+				--ink: #e7eaec;
+				--muted: #98a2aa;
+				--wire: #d6dade;
+				--wire2: #77828c;
+				--grid: #282d32;
+				--border: #2e343a;
+				--ok: #3fbf77;
+				--ok-bg: #1d3a2a;
+				--bad: #e05d5d;
+				--bad-bg: #432729;
+			}
+		}
+
+		body {
+			background: var(--bg);
+			color: var(--ink);
+			font: 16px/1.55 system-ui, "Segoe UI", sans-serif;
+			margin: 0;
+			padding: 36px 20px 64px;
+		}
+		main {
+			max-width: 1120px;
+			margin: 0 auto;
+			display: flex;
+			flex-direction: column;
+			gap: 36px;
+		}
+
+		header { max-width: 70ch; }
+		.eyebrow {
+			font: 700 12px/1 ui-monospace, Consolas, monospace;
+			letter-spacing: .12em;
+			text-transform: uppercase;
+			color: var(--muted);
+			margin: 0 0 10px;
+		}
+		h1 {
+			font-size: 27px;
+			line-height: 1.2;
+			margin: 0 0 14px;
+			text-wrap: balance;
+		}
+		header p { color: var(--muted); margin: 0; }
+
+		.rules {
+			margin: 0;
+			padding: 0 0 0 24px;
+			display: flex;
+			flex-direction: column;
+			gap: 10px;
+			max-width: 75ch;
+		}
+		.rules li::marker { font-weight: 700; color: var(--muted); }
+		.rules strong { font-weight: 650; }
+		.rules ul {
+			margin: 6px 0 0;
+			padding-left: 20px;
+			display: flex;
+			flex-direction: column;
+			gap: 6px;
+		}
+
+		.legend {
+			color: var(--muted);
+			font-size: 14.5px;
+			border-left: 3px solid var(--border);
+			padding-left: 12px;
+			max-width: 75ch;
+		}
+		.legend .pinword { color: var(--ink); font-weight: 600; white-space: nowrap; }
+
+		section { display: flex; flex-direction: column; gap: 14px; }
+		h2 {
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			font-size: 18px;
+			margin: 0;
+		}
+		.chip {
+			padding: 3px 12px;
+			border-radius: 999px;
+			font: 700 12px/1.4 system-ui, "Segoe UI", sans-serif;
+			letter-spacing: .08em;
+			text-transform: uppercase;
+		}
+		.chip.ok  { background: var(--ok-bg);  color: var(--ok); }
+		.chip.bad { background: var(--bad-bg); color: var(--bad); }
+		h2 small { font-weight: 400; font-size: 14px; color: var(--muted); }
+
+		.cards {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+			gap: 16px;
+		}
+		.card {
+			background: var(--panel);
+			border: 1px solid var(--border);
+			border-radius: 10px;
+			padding: 14px;
+			display: flex;
+			flex-direction: column;
+			gap: 10px;
+		}
+		.card-head {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+		}
+		.tag {
+			width: 26px;
+			height: 26px;
+			border-radius: 7px;
+			display: grid;
+			place-items: center;
+			font: 700 14px ui-monospace, Consolas, monospace;
+			background: var(--bg);
+			border: 1px solid var(--border);
+			color: var(--ink);
+			flex: none;
+		}
+		.notation {
+			margin-left: auto;
+			font: 600 13px ui-monospace, Consolas, monospace;
+			color: var(--muted);
+			white-space: nowrap;
+		}
+		.card svg { width: 100%; height: auto; display: block; }
+		.card p { margin: 0; font-size: 14.5px; color: var(--muted); }
+		.card p strong { color: var(--ink); font-weight: 600; }
+
+		svg .wire {
+			fill: none;
+			stroke: var(--wire);
+			stroke-width: 3;
+			stroke-linecap: round;
+			stroke-linejoin: miter;
+		}
+		svg .wire.low { stroke: var(--wire2); }
+		svg .guide {
+			fill: none;
+			stroke: var(--muted);
+			stroke-width: 1.5;
+			stroke-dasharray: 4 5;
+			opacity: .7;
+		}
+		svg .merge {
+			fill: none;
+			stroke: var(--bad);
+			stroke-width: 9;
+			opacity: .45;
+			stroke-linecap: round;
+		}
+		svg .pin-out { fill: var(--wire); }
+		svg .pin-in { fill: var(--panel); stroke: var(--wire); stroke-width: 2.5; }
+		svg .pin-out.low { fill: var(--wire2); }
+		svg .pin-in.low { stroke: var(--wire2); }
+		svg .spike { fill: none; stroke: var(--bad); stroke-width: 2; }
+		svg text {
+			font: 600 13px ui-monospace, Consolas, monospace;
+		}
+		svg .lbl-ok  { fill: var(--ok); }
+		svg .lbl-bad { fill: var(--bad); }
+		svg .lbl-muted { fill: var(--muted); }
+
+		footer {
+			border-top: 1px solid var(--border);
+			padding-top: 18px;
+			color: var(--muted);
+			max-width: 75ch;
+		}
+		footer strong { color: var(--ink); font-weight: 600; }
+	</style>
+</head>
+
+<body>
+	<main>
+		<header>
+			<p class="eyebrow">OperatorsV2 · Linienarten · SimpleBezier</p>
+			<h1>Auffächern exakt übereinanderliegender Senkrechten — habe ich es richtig verstanden?</h1>
+			<p>Laufen mehrere SimpleBezier-Linien leicht versetzt nebeneinander, landen ihre senkrechten Teilstücke auf exakt derselben x-Position und verschmelzen im Bild zu einer Linie. Der Plan: kein Router, kein A* — nur ein kleiner fester Versatz zur Seite, mit der richtigen Seite je Laufrichtung.</p>
+		</header>
+
+		<p class="legend">In allen Bildern: <span class="pinword">● Ausgang (Start)</span> und <span class="pinword">○ Eingang (Ziel)</span>; die <span class="pinword">dunkle Linie</span> ist die insgesamt höhere, die <span class="pinword">helle Linie</span> die insgesamt tiefere.</p>
+
+		<section>
+			<h2><span class="chip bad">Das Problem</span> <small>so sieht es ohne Versatz aus</small></h2>
+			<div class="cards">
+
+				<div class="card">
+					<div class="card-head"><span class="tag">1</span><span class="notation">2× H–D–V–D–H</span></div>
+					<svg viewBox="0 0 380 330" role="img" aria-label="Zwei Linien mit verschmolzener senkrechter Mitte">
+						<defs><pattern id="og-1" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M 20 0 H 0 V 20" fill="none" stroke="var(--grid)" stroke-width="1"/></pattern></defs>
+						<rect width="380" height="330" fill="url(#og-1)"/>
+						<path class="wire low" d="M 60 60 H 70 L 150 140 V 210 L 230 290 H 240"/>
+						<path class="wire" d="M 60 30 H 70 L 150 110 V 180 L 230 260 H 240"/>
+						<path class="merge" d="M 150 140 V 180"/>
+						<text class="lbl-bad" x="160" y="164">verschmolzen ✗</text>
+						<circle class="pin-out" cx="60" cy="30" r="5.5"/>
+						<circle class="pin-in" cx="240" cy="260" r="5.5"/>
+						<circle class="pin-out low" cx="60" cy="60" r="5.5"/>
+						<circle class="pin-in low" cx="240" cy="290" r="5.5"/>
+					</svg>
+					<p><strong>Beide Mittelsenkrechten liegen auf demselben x</strong> (der Mitte zwischen den Pins) und überlappen sich: die Linien scheinen zu einer zu verschmelzen und sich wieder aufzuteilen.</p>
+				</div>
+
+			</div>
+		</section>
+
+		<ol class="rules">
+			<li><strong>Erkennung:</strong> behandelt werden nur senkrechte Teilstücke, die exakt übereinander liegen — gleiche x-Position (mit minimaler Rundungstoleranz) und überlappender y-Bereich. Keine Wegsuche, kein A*, kein Router.</li>
+			<li><strong>Versatz:</strong> solche Senkrechten werden mit einem kleinen festen Abstand (Stellschraube, z. B. 8 px) seitlich aufgefächert. Nur die Senkrechte wandert; die angrenzenden 45°-Diagonalen werden dadurch länger bzw. kürzer. Pins, Absprünge und die Winkelregeln bleiben unberührt.</li>
+			<li><strong>Die Seite ergibt sich aus der Laufrichtung</strong>, sodass das Bild parallel versetzter echter Bezierkurven entsteht:
+				<ul>
+					<li>Linie läuft <strong>abwärts</strong> (Start liegt über dem Ende): die insgesamt <strong>höhere</strong> Linie rückt nach <strong>rechts</strong>, die tiefere nach links.</li>
+					<li>Linie läuft <strong>aufwärts</strong> (Start liegt unter dem Ende): gespiegelt — die <strong>höhere</strong> nach <strong>links</strong>, die tiefere nach rechts.</li>
+				</ul>
+				Merkregel: vergleicht man zwei Linien auf gleicher Höhe, liegt jede genau dort, wo auch ihre echte, parallel versetzte Bezier-Schwester läge.</li>
+		</ol>
+
+		<section>
+			<h2><span class="chip ok">Richtig</span> <small>so sollen die Stränge auffächern</small></h2>
+			<div class="cards">
+
+				<div class="card">
+					<div class="card-head"><span class="tag">2</span><span class="notation">abwärts</span></div>
+					<svg viewBox="0 0 380 330" role="img" aria-label="Abwärts laufende Linien: die höhere rückt nach rechts">
+						<defs><pattern id="og-2" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M 20 0 H 0 V 20" fill="none" stroke="var(--grid)" stroke-width="1"/></pattern></defs>
+						<rect width="380" height="330" fill="url(#og-2)"/>
+						<path class="guide" d="M 150 100 V 240"/>
+						<text class="lbl-muted" x="150" y="92" text-anchor="middle">vorher</text>
+						<path class="wire low" d="M 60 60 H 70 L 142 132 V 202 L 230 290 H 240"/>
+						<path class="wire" d="M 60 30 H 70 L 158 118 V 188 L 230 260 H 240"/>
+						<text class="lbl-ok" x="166" y="150">obere → rechts</text>
+						<text class="lbl-ok" x="134" y="180" text-anchor="end">untere → links</text>
+						<circle class="pin-out" cx="60" cy="30" r="5.5"/>
+						<circle class="pin-in" cx="240" cy="260" r="5.5"/>
+						<circle class="pin-out low" cx="60" cy="60" r="5.5"/>
+						<circle class="pin-in low" cx="240" cy="290" r="5.5"/>
+					</svg>
+					<p><strong>Abwärts:</strong> die höhere Linie rückt nach rechts, die tiefere nach links — auf gleicher Höhe liegt die tiefere Linie links, wie bei echten parallelen Bezierkurven.</p>
+				</div>
+
+				<div class="card">
+					<div class="card-head"><span class="tag">3</span><span class="notation">aufwärts</span></div>
+					<svg viewBox="0 0 380 340" role="img" aria-label="Aufwärts laufende Linien: die höhere rückt nach links">
+						<defs><pattern id="og-3" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M 20 0 H 0 V 20" fill="none" stroke="var(--grid)" stroke-width="1"/></pattern></defs>
+						<rect width="380" height="340" fill="url(#og-3)"/>
+						<path class="guide" d="M 150 110 V 250"/>
+						<text class="lbl-muted" x="150" y="102" text-anchor="middle">vorher</text>
+						<path class="wire low" d="M 60 300 H 70 L 158 212 V 142 L 230 70 H 240"/>
+						<path class="wire" d="M 60 270 H 70 L 142 198 V 128 L 230 40 H 240"/>
+						<text class="lbl-ok" x="134" y="166" text-anchor="end">obere → links</text>
+						<text class="lbl-ok" x="166" y="196">untere → rechts</text>
+						<circle class="pin-out" cx="60" cy="270" r="5.5"/>
+						<circle class="pin-in" cx="240" cy="40" r="5.5"/>
+						<circle class="pin-out low" cx="60" cy="300" r="5.5"/>
+						<circle class="pin-in low" cx="240" cy="70" r="5.5"/>
+					</svg>
+					<p><strong>Aufwärts:</strong> gespiegelt — die höhere Linie rückt nach links, die tiefere nach rechts.</p>
+				</div>
+
+				<div class="card">
+					<div class="card-head"><span class="tag">4</span><span class="notation">rückwärts, 2× H–V–D–V–H</span></div>
+					<svg viewBox="0 0 380 330" role="img" aria-label="Rückwärtslinien: dieselbe Regel für die Senkrechten an Start und Ziel">
+						<defs><pattern id="og-4" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M 20 0 H 0 V 20" fill="none" stroke="var(--grid)" stroke-width="1"/></pattern></defs>
+						<rect width="380" height="330" fill="url(#og-4)"/>
+						<path class="wire low" d="M 280 70 H 286 V 105 L 146 245 V 280 H 160"/>
+						<path class="wire" d="M 280 40 H 294 V 75 L 154 215 V 250 H 160"/>
+						<text class="lbl-ok" x="302" y="62">obere → rechts</text>
+						<text class="lbl-ok" x="278" y="96" text-anchor="end">untere → links</text>
+						<text class="lbl-ok" x="162" y="232">obere → rechts</text>
+						<text class="lbl-ok" x="138" y="264" text-anchor="end">untere → links</text>
+						<circle class="pin-out" cx="280" cy="40" r="5.5"/>
+						<circle class="pin-in" cx="160" cy="250" r="5.5"/>
+						<circle class="pin-out low" cx="280" cy="70" r="5.5"/>
+						<circle class="pin-in low" cx="160" cy="280" r="5.5"/>
+					</svg>
+					<p><strong>Rückwärtskurven, gleiche Regel:</strong> beide laufen abwärts, also liegt die höhere Linie überall rechts der tieferen — am Start rückt sie damit nach außen, am Ziel nach innen; die tiefere umläuft das Ziel außen.</p>
+				</div>
+
+				<div class="card">
+					<div class="card-head"><span class="tag">6</span><span class="notation">5× H–D–V–D–H</span></div>
+					<svg viewBox="0 0 380 350" role="img" aria-label="Fünf Linien fächern mit fester Schrittweite auf">
+						<defs><pattern id="og-6" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M 20 0 H 0 V 20" fill="none" stroke="var(--grid)" stroke-width="1"/></pattern></defs>
+						<rect width="380" height="350" fill="url(#og-6)"/>
+						<path class="guide" d="M 140 90 V 250"/>
+						<text class="lbl-muted" x="140" y="82" text-anchor="middle">vorher</text>
+						<path class="wire low" d="M 60 50 H 70 L 148 128 V 188 L 210 250 H 220"/>
+						<path class="wire low" d="M 60 70 H 70 L 140 140 V 200 L 210 270 H 220"/>
+						<path class="wire low" d="M 60 90 H 70 L 132 152 V 212 L 210 290 H 220"/>
+						<path class="wire low" d="M 60 110 H 70 L 124 164 V 224 L 210 310 H 220"/>
+						<path class="wire" d="M 60 30 H 70 L 156 116 V 176 L 210 230 H 220"/>
+						<text class="lbl-ok" x="162" y="140">höchste → ganz rechts</text>
+						<text class="lbl-ok" x="118" y="212" text-anchor="end">tiefste → ganz links</text>
+						<circle class="pin-out" cx="60" cy="30" r="5.5"/>
+						<circle class="pin-out low" cx="60" cy="50" r="5.5"/>
+						<circle class="pin-out low" cx="60" cy="70" r="5.5"/>
+						<circle class="pin-out low" cx="60" cy="90" r="5.5"/>
+						<circle class="pin-out low" cx="60" cy="110" r="5.5"/>
+						<circle class="pin-in" cx="220" cy="230" r="5.5"/>
+						<circle class="pin-in low" cx="220" cy="250" r="5.5"/>
+						<circle class="pin-in low" cx="220" cy="270" r="5.5"/>
+						<circle class="pin-in low" cx="220" cy="290" r="5.5"/>
+						<circle class="pin-in low" cx="220" cy="310" r="5.5"/>
+					</svg>
+					<p><strong>Fünf Stück:</strong> feste Schrittweite s zwischen Nachbarn, symmetrisch um die ursprüngliche Mitte (−2s, −s, 0, +s, +2s), Reihenfolge streng nach der Richtungsregel — abwärts: je höher die Linie, desto weiter rechts. Kein Strang kreuzt einen anderen. Bei 4 Linien wären die Plätze ±0,5s und ±1,5s, bei 8 Linien −3,5s … +3,5s.</p>
+				</div>
+
+			</div>
+		</section>
+
+		<section>
+			<h2><span class="chip bad">Falsch</span> <small>so nicht</small></h2>
+			<div class="cards">
+
+				<div class="card">
+					<div class="card-head"><span class="tag">5</span><span class="notation">Seiten vertauscht</span></div>
+					<svg viewBox="0 0 380 330" role="img" aria-label="Vertauschte Seiten lassen die Linien kreuzen">
+						<defs><pattern id="og-5" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M 20 0 H 0 V 20" fill="none" stroke="var(--grid)" stroke-width="1"/></pattern></defs>
+						<rect width="380" height="330" fill="url(#og-5)"/>
+						<path class="wire low" d="M 60 60 H 70 L 158 148 V 218 L 230 290 H 240"/>
+						<path class="wire" d="M 60 30 H 70 L 142 102 V 172 L 230 260 H 240"/>
+						<circle class="spike" cx="142" cy="132" r="9"/>
+						<circle class="spike" cx="158" cy="188" r="9"/>
+						<text class="lbl-bad" x="128" y="126" text-anchor="end">✗</text>
+						<text class="lbl-bad" x="172" y="196">✗</text>
+						<circle class="pin-out" cx="60" cy="30" r="5.5"/>
+						<circle class="pin-in" cx="240" cy="260" r="5.5"/>
+						<circle class="pin-out low" cx="60" cy="60" r="5.5"/>
+						<circle class="pin-in low" cx="240" cy="290" r="5.5"/>
+					</svg>
+					<p><strong>Seiten vertauscht</strong> (abwärts, aber die höhere nach links): die Stränge kreuzen sich zweimal ohne Not — genau das soll die Richtungsregel verhindern.</p>
+				</div>
+
+			</div>
+		</section>
+
+		<section>
+			<h2><span class="chip ok">Umsetzung</span> <small>Details und Sonderfälle</small></h2>
+			<ol class="rules">
+				<li>Bei <strong>mehr als zwei Linien</strong> fächern die Senkrechten mit fester Schrittweite s symmetrisch um die ursprüngliche Lage auf: Versatz der i-ten Linie = (i − (N−1)/2) · s. Bei N=4 also ±0,5·s und ±1,5·s, bei N=5 −2·s … +2·s, bei N=8 −3,5·s … +3,5·s — Gesamtbreite (N−1)·s. Sortiert wird nach der Höhenlage, die Seite folgt der Richtungsregel. Senkrechten, die kettenweise überlappen, bilden dabei ein gemeinsames Bündel.</li>
+				<li>Wird der Platz <strong>eng</strong> (eine angrenzende Diagonale würde sonst eine negative Länge bekommen), rückt das ganze Bündel enger zusammen: die Schrittweite schrumpft, alle Stränge bleiben getrennt.</li>
+				<li><strong>Gegenläufige Linien</strong> (eine aufwärts, eine abwärts) am selben x kreuzen sich ohnehin — sie bekommen einfach unterschiedliche Versätze, die Reihenfolge ist dort zweitrangig.</li>
+				<li><strong>Waagerechte Teilstücke</strong> werden nicht behandelt: durch die Höhenversätze der Pins liegen sie praktisch nie exakt übereinander.</li>
+			</ol>
+		</section>
+
+		<footer>
+			<p>Passen Problem (1), die Regel, die Seitenzuordnung in <strong>2–4</strong> und das Auffächern in <strong>6</strong>? Kurz bestätigen — oder korrigieren (z. B. „2 ist falsch herum") — dann baue ich das Auffächern genau so in die SimpleBezier-Klasse ein.</p>
+		</footer>
+	</main>
+</body>
+
+</html>
