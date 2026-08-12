@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>SimpleBezier — Verständnis-Check</title>
+	<style>
+		:root {
+			--bg: #f3f4f2;
+			--panel: #ffffff;
+			--ink: #1c2024;
+			--muted: #5f6a72;
+			--wire: #2b3138;
+			--grid: #e6e9e5;
+			--border: #dde1dd;
+			--ok: #188a4a;
+			--ok-bg: #e2f3e9;
+			--bad: #c93636;
+			--bad-bg: #fae4e4;
+			--ask: #b8730a;
+			--ask-bg: #f7ecd8;
+		}
+		@media (prefers-color-scheme: dark) {
+			:root {
+				--bg: #15181b;
+				--panel: #1e2226;
+				--ink: #e7eaec;
+				--muted: #98a2aa;
+				--wire: #d6dade;
+				--grid: #282d32;
+				--border: #2e343a;
+				--ok: #3fbf77;
+				--ok-bg: #1d3a2a;
+				--bad: #e05d5d;
+				--bad-bg: #432729;
+				--ask: #e0a33c;
+				--ask-bg: #3e3220;
+			}
+		}
+
+		body {
+			background: var(--bg);
+			color: var(--ink);
+			font: 16px/1.55 system-ui, "Segoe UI", sans-serif;
+			margin: 0;
+			padding: 36px 20px 64px;
+		}
+		main {
+			max-width: 1120px;
+			margin: 0 auto;
+			display: flex;
+			flex-direction: column;
+			gap: 36px;
+		}
+
+		header { max-width: 70ch; }
+		.eyebrow {
+			font: 700 12px/1 ui-monospace, Consolas, monospace;
+			letter-spacing: .12em;
+			text-transform: uppercase;
+			color: var(--muted);
+			margin: 0 0 10px;
+		}
+		h1 {
+			font-size: 27px;
+			line-height: 1.2;
+			margin: 0 0 14px;
+			text-wrap: balance;
+		}
+		header p { color: var(--muted); margin: 0; }
+
+		.rules {
+			margin: 0;
+			padding: 0 0 0 24px;
+			display: flex;
+			flex-direction: column;
+			gap: 10px;
+			max-width: 75ch;
+		}
+		.rules li::marker { font-weight: 700; color: var(--muted); }
+		.rules strong { font-weight: 650; }
+
+		.legend {
+			color: var(--muted);
+			font-size: 14.5px;
+			border-left: 3px solid var(--border);
+			padding-left: 12px;
+			max-width: 75ch;
+		}
+		.legend .pinword { color: var(--ink); font-weight: 600; white-space: nowrap; }
+
+		section { display: flex; flex-direction: column; gap: 14px; }
+		h2 {
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			font-size: 18px;
+			margin: 0;
+		}
+		.chip {
+			padding: 3px 12px;
+			border-radius: 999px;
+			font: 700 12px/1.4 system-ui, "Segoe UI", sans-serif;
+			letter-spacing: .08em;
+			text-transform: uppercase;
+		}
+		.chip.ok  { background: var(--ok-bg);  color: var(--ok); }
+		.chip.bad { background: var(--bad-bg); color: var(--bad); }
+		.chip.ask { background: var(--ask-bg); color: var(--ask); }
+		h2 small { font-weight: 400; font-size: 14px; color: var(--muted); }
+
+		.cards {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+			gap: 16px;
+		}
+		.card {
+			background: var(--panel);
+			border: 1px solid var(--border);
+			border-radius: 10px;
+			padding: 14px;
+			display: flex;
+			flex-direction: column;
+			gap: 10px;
+		}
+		.card-head {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+		}
+		.tag {
+			width: 26px;
+			height: 26px;
+			border-radius: 7px;
+			display: grid;
+			place-items: center;
+			font: 700 14px ui-monospace, Consolas, monospace;
+			background: var(--bg);
+			border: 1px solid var(--border);
+			color: var(--ink);
+			flex: none;
+		}
+		.notation {
+			margin-left: auto;
+			font: 600 13px ui-monospace, Consolas, monospace;
+			color: var(--muted);
+			white-space: nowrap;
+		}
+		.card svg { width: 100%; height: auto; display: block; }
+		.card p { margin: 0; font-size: 14.5px; color: var(--muted); }
+		.card p strong { color: var(--ink); font-weight: 600; }
+
+		svg .wire {
+			fill: none;
+			stroke: var(--wire);
+			stroke-width: 3;
+			stroke-linecap: round;
+			stroke-linejoin: miter;
+		}
+		svg .wire.bad-part { stroke: var(--bad); }
+		svg .bend { fill: var(--wire); }
+		svg .pin-out { fill: var(--wire); }
+		svg .pin-in { fill: var(--panel); stroke: var(--wire); stroke-width: 2.5; }
+		svg .spike { fill: none; stroke: var(--bad); stroke-width: 2; }
+		svg text {
+			font: 600 13px ui-monospace, Consolas, monospace;
+		}
+		svg .ang-ok  { fill: var(--ok); }
+		svg .ang-bad { fill: var(--bad); }
+		svg .ang-ask { fill: var(--ask); }
+
+		footer {
+			border-top: 1px solid var(--border);
+			padding-top: 18px;
+			color: var(--muted);
+			max-width: 75ch;
+		}
+		footer strong { color: var(--ink); font-weight: 600; }
+	</style>
+</head>
+
+<body>
+	<main>
+		<header>
+			<p class="eyebrow">OperatorsV2 · Linienarten</p>
+			<h1>SimpleBezier — habe ich es richtig verstanden?</h1>
+			<p>So habe ich mir die Regeln aus deiner Erklärung zusammengesetzt. Grün = richtig, Rot = verboten, Orange = zwei Fälle, die du mir noch bestätigen müsstest.</p>
+		</header>
+
+		<ol class="rules">
+			<li>Eine SimpleBezier-Linie besteht <strong>nur aus geraden Teilstücken</strong>: waagerecht, senkrecht oder exakt 45° diagonal.</li>
+			<li>An jedem Knick ist der <strong>spitzeste erlaubte Innenwinkel 90°</strong> — die Richtung ändert sich um höchstens 90°, nie mehr. 45°-Spitzen sind verboten.</li>
+			<li>Normale Kurve nach vorn: <strong>3 Teile</strong> (Horizontale – Diagonale – Horizontale) mit zwei 135°-Knicken. Kurve nach hinten: <strong>5 Teile</strong> — von außen nach innen Horizontale, dann 90° in die Senkrechte, und die beiden Senkrechten verbindet in der Mitte eine Diagonale mit 135°-Anschlüssen.</li>
+		</ol>
+
+		<p class="legend">In allen Bildern: <span class="pinword">● Ausgang (Start)</span> und <span class="pinword">○ Eingang (Ziel)</span>. Eine Linie verlässt den Ausgang immer nach rechts und läuft von links in den Eingang hinein.</p>
+
+		<section>
+			<h2><span class="chip ok">Richtig</span> <small>so soll SimpleBezier aussehen</small></h2>
+			<div class="cards">
+
+				<div class="card">
+					<div class="card-head"><span class="tag">A</span><span class="notation">H–D–H</span></div>
+					<svg viewBox="0 0 380 260" role="img" aria-label="Kurve aus drei Teilen">
+						<defs><pattern id="grid-a" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M 20 0 H 0 V 20" fill="none" stroke="var(--grid)" stroke-width="1"/></pattern></defs>
+						<rect width="380" height="260" fill="url(#grid-a)"/>
+						<path class="wire" d="M 50 60 H 110 L 250 200 H 310"/>
+						<circle class="bend" cx="110" cy="60" r="3"/>
+						<circle class="bend" cx="250" cy="200" r="3"/>
+						<text class="ang-ok" x="122" y="50">135°</text>
+						<text class="ang-ok" x="238" y="224" text-anchor="end">135°</text>
+						<circle class="pin-out" cx="50" cy="60" r="5.5"/>
+						<circle class="pin-in" cx="310" cy="200" r="5.5"/>
+					</svg>
+					<p><strong>Normalfall, 3 Teile:</strong> Horizontale hinaus, Diagonale in der Mitte, Horizontale hinein — beide Knicke 135°.</p>
+				</div>
+
+				<div class="card">
+					<div class="card-head"><span class="tag">B</span><span class="notation">H–V–D–V–H</span></div>
+					<svg viewBox="0 0 380 330" role="img" aria-label="Rückwärtskurve aus fünf Teilen">
+						<defs><pattern id="grid-b" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M 20 0 H 0 V 20" fill="none" stroke="var(--grid)" stroke-width="1"/></pattern></defs>
+						<rect width="380" height="330" fill="url(#grid-b)"/>
+						<path class="wire" d="M 280 45 H 325 V 85 L 165 245 V 285 H 215"/>
+						<circle class="bend" cx="325" cy="45" r="3"/>
+						<circle class="bend" cx="325" cy="85" r="3"/>
+						<circle class="bend" cx="165" cy="245" r="3"/>
+						<circle class="bend" cx="165" cy="285" r="3"/>
+						<text class="ang-ok" x="313" y="68" text-anchor="end">90°</text>
+						<text class="ang-ok" x="311" y="100" text-anchor="end">135°</text>
+						<text class="ang-ok" x="179" y="240">135°</text>
+						<text class="ang-ok" x="180" y="273">90°</text>
+						<circle class="pin-out" cx="280" cy="45" r="5.5"/>
+						<circle class="pin-in" cx="215" cy="285" r="5.5"/>
+					</svg>
+					<p><strong>Rückwärts, 5 Teile:</strong> außen erst 90° in die Senkrechte; den Weg nach hinten macht die Diagonale in der Mitte, die beide Senkrechten mit 135° trifft.</p>
+				</div>
+
+				<div class="card">
+					<div class="card-head"><span class="tag">C</span><span class="notation">H</span></div>
+					<svg viewBox="0 0 380 140" role="img" aria-label="Gerade Verbindung">
+						<defs><pattern id="grid-c" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M 20 0 H 0 V 20" fill="none" stroke="var(--grid)" stroke-width="1"/></pattern></defs>
+						<rect width="380" height="140" fill="url(#grid-c)"/>
+						<path class="wire" d="M 50 70 H 330"/>
+						<circle class="pin-out" cx="50" cy="70" r="5.5"/>
+						<circle class="pin-in" cx="330" cy="70" r="5.5"/>
+					</svg>
+					<p><strong>Gleiche Höhe:</strong> die direkte Waagerechte, ganz ohne Knick.</p>
+				</div>
+
+			</div>
+		</section>
+
+		<section>
+			<h2><span class="chip bad">Falsch</span> <small>das darf SimpleBezier nicht</small></h2>
+			<div class="cards">
+
+				<div class="card">
+					<div class="card-head"><span class="tag">D</span><span class="notation">H–D–H rückwärts</span></div>
+					<svg viewBox="0 0 380 280" role="img" aria-label="Rückwärtskurve mit 45-Grad-Spitzen">
+						<defs><pattern id="grid-d" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M 20 0 H 0 V 20" fill="none" stroke="var(--grid)" stroke-width="1"/></pattern></defs>
+						<rect width="380" height="280" fill="url(#grid-d)"/>
+						<path class="wire" d="M 280 50 H 325 L 150 225 H 200"/>
+						<circle class="spike" cx="325" cy="50" r="10"/>
+						<circle class="spike" cx="150" cy="225" r="10"/>
+						<text class="ang-bad" x="332" y="76">45°</text>
+						<text class="ang-bad" x="142" y="204" text-anchor="end">45°</text>
+						<circle class="pin-out" cx="280" cy="50" r="5.5"/>
+						<circle class="pin-in" cx="200" cy="225" r="5.5"/>
+					</svg>
+					<p><strong>Rückwärts mit nur 3 Teilen:</strong> die Diagonale ginge im 45°-Winkel nach hinten — an beiden Knicken entstehen 45°-Spitzen, spitzer als 90° ist verboten.</p>
+				</div>
+
+				<div class="card">
+					<div class="card-head"><span class="tag">E</span><span class="notation">≈27°</span></div>
+					<svg viewBox="0 0 380 200" role="img" aria-label="Teilstück in beliebiger Schräge">
+						<defs><pattern id="grid-e" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M 20 0 H 0 V 20" fill="none" stroke="var(--grid)" stroke-width="1"/></pattern></defs>
+						<rect width="380" height="200" fill="url(#grid-e)"/>
+						<path class="wire" d="M 50 60 H 110"/>
+						<path class="wire bad-part" d="M 110 60 L 270 140"/>
+						<path class="wire" d="M 270 140 H 330"/>
+						<circle class="bend" cx="110" cy="60" r="3"/>
+						<circle class="bend" cx="270" cy="140" r="3"/>
+						<text class="ang-bad" x="196" y="86">≈27°</text>
+						<circle class="pin-out" cx="50" cy="60" r="5.5"/>
+						<circle class="pin-in" cx="330" cy="140" r="5.5"/>
+					</svg>
+					<p><strong>Beliebige Schräge:</strong> der Mittelteil läuft mit ≈27° — erlaubt sind nur waagerecht, senkrecht und exakt 45°.</p>
+				</div>
+
+				<div class="card">
+					<div class="card-head"><span class="tag">F</span><span class="notation">runde Kurve</span></div>
+					<svg viewBox="0 0 380 260" role="img" aria-label="Echte runde Bezierkurve">
+						<defs><pattern id="grid-f" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M 20 0 H 0 V 20" fill="none" stroke="var(--grid)" stroke-width="1"/></pattern></defs>
+						<rect width="380" height="260" fill="url(#grid-f)"/>
+						<path class="wire bad-part" d="M 50 60 C 170 60 210 200 330 200"/>
+						<text class="ang-bad" x="190" y="112" text-anchor="middle">rund ✗</text>
+						<circle class="pin-out" cx="50" cy="60" r="5.5"/>
+						<circle class="pin-in" cx="330" cy="200" r="5.5"/>
+					</svg>
+					<p><strong>Echte Kurve:</strong> runde Bögen sind die normale Bezier-Linienart — SimpleBezier besteht ausschließlich aus geraden Teilstücken.</p>
+				</div>
+
+			</div>
+		</section>
+
+		<section>
+			<h2><span class="chip ask">Bitte klären</span> <small>zwei Fälle, die aus deiner Erklärung nicht eindeutig hervorgehen</small></h2>
+			<div class="cards">
+
+				<div class="card">
+					<div class="card-head"><span class="tag">G</span><span class="notation">H–D–V–D–H</span></div>
+					<svg viewBox="0 0 380 330" role="img" aria-label="Steile Kurve mit senkrechter Mitte">
+						<defs><pattern id="grid-g" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M 20 0 H 0 V 20" fill="none" stroke="var(--grid)" stroke-width="1"/></pattern></defs>
+						<rect width="380" height="330" fill="url(#grid-g)"/>
+						<path class="wire" d="M 50 40 H 95 L 165 110 V 210 L 235 280 H 290"/>
+						<circle class="bend" cx="95" cy="40" r="3"/>
+						<circle class="bend" cx="165" cy="110" r="3"/>
+						<circle class="bend" cx="165" cy="210" r="3"/>
+						<circle class="bend" cx="235" cy="280" r="3"/>
+						<text class="ang-ask" x="105" y="32">135°</text>
+						<text class="ang-ask" x="178" y="118">135°</text>
+						<text class="ang-ask" x="154" y="222" text-anchor="end">135°</text>
+						<text class="ang-ask" x="244" y="304">135°</text>
+						<circle class="pin-out" cx="50" cy="40" r="5.5"/>
+						<circle class="pin-in" cx="290" cy="280" r="5.5"/>
+					</svg>
+					<p><strong>Frage 1 — steile Kurve nach vorn:</strong> eine Diagonale allein schafft die Höhe nicht. Mein Vorschlag: senkrechte Mitte, über Diagonalen angebunden, alle Knicke 135°. Richtig so?</p>
+				</div>
+
+				<div class="card">
+					<div class="card-head"><span class="tag">H</span><span class="notation">H–V–H</span></div>
+					<svg viewBox="0 0 380 290" role="img" aria-label="Kurve nur aus 90-Grad-Knicken">
+						<defs><pattern id="grid-h" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M 20 0 H 0 V 20" fill="none" stroke="var(--grid)" stroke-width="1"/></pattern></defs>
+						<rect width="380" height="290" fill="url(#grid-h)"/>
+						<path class="wire" d="M 60 50 H 190 V 240 H 320"/>
+						<circle class="bend" cx="190" cy="50" r="3"/>
+						<circle class="bend" cx="190" cy="240" r="3"/>
+						<text class="ang-ask" x="200" y="42">90°</text>
+						<text class="ang-ask" x="182" y="262" text-anchor="end">90°</text>
+						<circle class="pin-out" cx="60" cy="50" r="5.5"/>
+						<circle class="pin-in" cx="320" cy="240" r="5.5"/>
+					</svg>
+					<p><strong>Frage 2 — nur 90°-Knicke, ohne Diagonale:</strong> nach der Winkelregel wäre das erlaubt. Soll das zulässig sein, oder muss der Übergang immer über eine Diagonale laufen, wenn der Platz reicht?</p>
+				</div>
+
+			</div>
+		</section>
+
+		<footer>
+			<p>Wenn die grünen und roten Bilder deinem Bild entsprechen: <strong>kurz bestätigen</strong> und die beiden Fragen zu <strong>G</strong> und <strong>H</strong> beantworten — dann baue ich SimpleBezier genau danach.</p>
+		</footer>
+	</main>
+</body>
+
+</html>

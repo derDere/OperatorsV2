@@ -4,7 +4,7 @@ var connectionHover = null
 
 class Connection {
 
-	constructor(start, end, lineType = Bezier) {
+	constructor(start, end, lineType = SimpleBezier) {
 		this.start = start
 		this.end = end
 		this.value = false
