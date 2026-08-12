@@ -7,13 +7,14 @@ var canvasIsDragged = false
 var lastDragMousePos = null
 var mainCanvas = null
 var screenSplit = 0.2
+var mainP5 = null
 
-function updateSplitter() {
-	let canvasSize = round(windowWidth * (1 - screenSplit))
+function updateSplitter(p5ctx) {
+	let canvasSize = p5ctx.round(p5ctx.windowWidth * (1 - screenSplit))
 	if (canvasSize < 50) {
 		canvasSize = 50
 	}
-	let space = windowWidth - canvasSize - SPLITTER_WIDTH
+	let space = p5ctx.windowWidth - canvasSize - SPLITTER_WIDTH
 	if (space < 50) {
 		space = 50
 	}
@@ -23,39 +24,39 @@ function updateSplitter() {
 	return canvasSize
 }
 
-function setup() {
+function main_setup(p5ctx) {
 	initProps()
 
-	mainCanvas = createCanvas(updateSplitter(), windowHeight)
+	mainCanvas = p5ctx.createCanvas(updateSplitter(p5ctx), p5ctx.windowHeight)
 
-	dragOffset = createVector(0, 0)
+	dragOffset = p5ctx.createVector(0, 0)
 
 	initSplitter()
 	initNewOperatorDialog()
 	createTableOfElements()
 }
 
-function doubleClicked(event) {
+function doubleClicked(event, p5ctx) {
 	if (event.originalTarget != mainCanvas.elt) {
 		return
 	}
 	if (!hoverControl && !newOpDialogOpen) {
-		addNewOperator(event)
+		addNewOperator(event, p5ctx)
 	}
 }
 
-function windowResized() {
-	resizeCanvas(updateSplitter(), windowHeight)
+function windowResized(p5ctx) {
+	p5ctx.resizeCanvas(updateSplitter(p5ctx), p5ctx.windowHeight)
 }
 
-function mousePressed(event) {
+function mousePressed(event, p5ctx) {
 	if (
 		(!hoverControl) &&
-		(mouseX >= 0) &&
-		(mouseX < width) &&
-		(mouseY >= 0) &&
-		(mouseY < height) &&
-		(mouseButton.right)
+		(p5ctx.mouseX >= 0) &&
+		(p5ctx.mouseX < p5ctx.width) &&
+		(p5ctx.mouseY >= 0) &&
+		(p5ctx.mouseY < p5ctx.height) &&
+		(p5ctx.mouseButton.right)
 	) {
 		canvasIsDragged = true
 	}
@@ -91,50 +92,77 @@ function keyReleased(e) {
 	}
 }
 
-function doCanvasDrag() {
-	let mouseDragPos = createVector(mouseX, mouseY)
+function doCanvasDrag(p5ctx) {
+	let mouseDragPos = p5ctx.createVector(p5ctx.mouseX, p5ctx.mouseY)
 	if (canvasIsDragged) {
 		dragOffset = dragOffset.copy().sub(lastDragMousePos.copy().sub(mouseDragPos))
-		cursor(MOVE)
+		p5ctx.cursor(p5ctx.MOVE)
 	}
 	lastDragMousePos = mouseDragPos.copy()
 }
 
-function setCanvasPosition() {
-	translate(width / 2, height / 2)
-	translate(dragOffset.x, dragOffset.y)
+function setCanvasPosition(p5ctx) {
+	p5ctx.translate(p5ctx.width / 2, p5ctx.height / 2)
+	p5ctx.translate(dragOffset.x, dragOffset.y)
 
 	const BORDER_CORRECTION = 11 // makes the elements border fit on the grid correctly
-	mainCanvas.elt.style.backgroundPositionX = round((width / 2) + dragOffset.x - BORDER_CORRECTION) + 'px'
-	mainCanvas.elt.style.backgroundPositionY = round((height / 2) + dragOffset.y - BORDER_CORRECTION) + 'px'
+	mainCanvas.elt.style.backgroundPositionX = p5ctx.round((p5ctx.width / 2) + dragOffset.x - BORDER_CORRECTION) + 'px'
+	mainCanvas.elt.style.backgroundPositionY = p5ctx.round((p5ctx.height / 2) + dragOffset.y - BORDER_CORRECTION) + 'px'
 }
 
-function draw() {
+function main_draw(p5ctx) {
 	tick += 1
 
-	cursor('default')
-	clear()
-	noSmooth()
+	p5ctx.push()
+
+	p5ctx.cursor('default')
+	p5ctx.clear()
+	p5ctx.noSmooth()
 
 	if (!newOpDialogOpen) {
-		doCanvasDrag()
+		doCanvasDrag(p5ctx)
 	}
 
-	setCanvasPosition()
+	setCanvasPosition(p5ctx)
 
-	mousePos = createVector(mouseX - (width / 2) - dragOffset.x, mouseY - (height / 2) - dragOffset.y)
+	mousePos = p5ctx.createVector(p5ctx.mouseX - (p5ctx.width / 2) - dragOffset.x, p5ctx.mouseY - (p5ctx.height / 2) - dragOffset.y)
 
 	if (!newOpDialogOpen) {
-		updateLines(tick)
-		updateControls(tick)
+		updateLines(tick, p5ctx)
+		updateControls(tick, p5ctx)
 	}
 
-	drawLines(tick)
-	drawControls(tick)
+	drawLines(tick, p5ctx)
+	drawControls(tick, p5ctx)
 
 	if (!newOpDialogOpen) {
-		linesNextFrame()
+		linesNextFrame(p5ctx)
 	}
 
 	updatePlacableElements()
+
+	p5ctx.pop()
+
+	p5ctx.push()
+
+	p5ctx.noStroke()
+	p5ctx.fill('#00000080')
+	p5ctx.textSize(12)
+	p5ctx.textAlign(p5ctx.LEFT, p5ctx.TOP)
+	p5ctx.text("Double click to add operators.\nRight click to move.", 10, 10)
+
+	p5ctx.pop()
 }
+
+new p5(p => {
+	mainP5 = p
+
+	p.setup = () => main_setup(p)
+	p.draw = () => main_draw(p)
+	p.windowResized = () => windowResized(p)
+	p.doubleClicked = (event) => doubleClicked(event, p)
+	p.mousePressed = (event) => mousePressed(event, p)
+	p.mouseReleased = () => mouseReleased()
+	p.keyPressed = (event) => keyPressed(event)
+	p.keyReleased = (event) => keyReleased(event)
+})

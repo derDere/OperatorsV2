@@ -52,7 +52,10 @@ canvas {
 #newOperatorDialog {
 	position: fixed;
 	margin: 0;
-
+	max-width: 410px;
+	max-height: 410px;
+	overflow: auto;
+	scrollbar-width: thin;
 	z-index: 1000000;
 	background: #fff;
 	border: 1px solid #999;
@@ -70,4 +73,15 @@ canvas {
   -webkit-backdrop-filter: blur(2px);
   */
 	background: transparent;
+}
+
+.new-entry-option {
+	font-size: 10px;
+	display: inline-block;
+	width: 50px;
+	height: 50px;
+	border: 1px solid #aaa;
+	background-color: #F0F0F0;
+	overflow: hidden;
+	margin: 3px;
 }

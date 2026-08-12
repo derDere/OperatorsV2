@@ -8,11 +8,11 @@ class Line {
 		this.start = start
 		this.end = end
 
-		this.lineColor = color(0)
+		this.lineColor = mainP5.color(0)
 		this.lineWeight = 2
 		this.value = false
 		this.mouseOverWeight = 5
-		this.mouseOverColor = color(0, 255, 0, 192)
+		this.mouseOverColor = mainP5.color(0, 255, 0, 192)
 		this.mouseIsOver = false
 
 		// Stützpunkte des verlegten Wegs in Weltkoordinaten, vom Router gefüllt
@@ -62,7 +62,7 @@ class Line {
 	}
 
 	/** Berührt der Weg den sichtbaren Ausschnitt? */
-	isInFrame(points, padding = 0) {
+	isInFrame(points, padding, p5ctx) {
 		if (points.length < 2) {
 			return false
 		}
@@ -78,10 +78,10 @@ class Line {
 			if (point.y > bottom) bottom = point.y
 		}
 
-		const viewLeft = -(width / 2) - dragOffset.x - padding
-		const viewTop = -(height / 2) - dragOffset.y - padding
-		const viewRight = viewLeft + width + (2 * padding)
-		const viewBottom = viewTop + height + (2 * padding)
+		const viewLeft = -(p5ctx.width / 2) - dragOffset.x - padding
+		const viewTop = -(p5ctx.height / 2) - dragOffset.y - padding
+		const viewRight = viewLeft + p5ctx.width + (2 * padding)
+		const viewBottom = viewTop + p5ctx.height + (2 * padding)
 
 		if (right < viewLeft) return false
 		if (left > viewRight) return false
@@ -90,7 +90,7 @@ class Line {
 		return true
 	}
 
-	isMouseOver(ap) {
+	isMouseOver(ap, p5ctx) {
 		if (!this.start || !this.end) {
 			return false
 		}
@@ -101,7 +101,7 @@ class Line {
 		}
 
 		const tolerance = this.mouseOverWeight / 2
-		if (!this.isInFrame(points, tolerance)) {
+		if (!this.isInFrame(points, tolerance, p5ctx)) {
 			return false
 		}
 
@@ -130,8 +130,8 @@ class Line {
 		return Math.hypot(point.x - closestX, point.y - closestY)
 	}
 
-	update(tick) {
-		if (this.isMouseOver(mousePos)) {
+	update(tick, p5ctx) {
+		if (this.isMouseOver(mousePos, p5ctx)) {
 			lineHover = this
 		}
 		if (
@@ -140,48 +140,48 @@ class Line {
 		) {
 			this.end.value = this.start.value
 			this.value = this.start.value
-			this.lineColor = valueColor(this.value, 1, true)
+			this.lineColor = valueColor(this.value, 1, true, p5ctx)
 		}
 		else {
-			this.lineColor = color(255)
+			this.lineColor = p5ctx.color(255)
 		}
 	}
 
-	draw(tick) {
+	draw(tick, p5ctx) {
 		const points = this.points
 		if (points.length < 2) {
 			return false
 		}
-		if (!this.isInFrame(points, this.mouseOverWeight)) {
+		if (!this.isInFrame(points, this.mouseOverWeight, p5ctx)) {
 			return false
 		}
 
-		push()
-		noFill()
+		p5ctx.push()
+		p5ctx.noFill()
 
 		if (this.mouseIsOver) {
-			stroke(this.mouseOverColor)
-			strokeWeight(this.mouseOverWeight)
-			this._strokePath(points)
+			p5ctx.stroke(this.mouseOverColor)
+			p5ctx.strokeWeight(this.mouseOverWeight)
+			this._strokePath(points, p5ctx)
 		}
 
-		stroke(this.lineColor)
-		strokeWeight(this.lineWeight)
-		this._strokePath(points)
+		p5ctx.stroke(this.lineColor)
+		p5ctx.strokeWeight(this.lineWeight)
+		this._strokePath(points, p5ctx)
 
-		pop()
+		p5ctx.pop()
 	}
 
-	_strokePath(points) {
-		beginShape()
+	_strokePath(points, p5ctx) {
+		p5ctx.beginShape()
 		for (const point of points) {
-			vertex(point.x, point.y)
+			p5ctx.vertex(point.x, point.y)
 		}
-		endShape()
+		p5ctx.endShape()
 	}
 }
 
-function updateLines(tick) {
+function updateLines(tick, p5ctx) {
 	if (mouseLine === null) {
 		mouseLine = new Line(null, null)
 	}
@@ -192,7 +192,7 @@ function updateLines(tick) {
 	mouseLine.path = wireRouter.previewRoute(mouseLine, mousePos)
 
 	for (let lin of AllLines) {
-		lin.update(tick)
+		lin.update(tick, p5ctx)
 		lin.mouseIsOver = false
 	}
 
@@ -201,16 +201,16 @@ function updateLines(tick) {
 	}
 }
 
-function linesNextFrame() {
-	if (!mouseIsPressed) {
+function linesNextFrame(p5ctx) {
+	if (!p5ctx.mouseIsPressed) {
 		mouseLine.start = null
 		mouseLine.end = null
 		mouseLine.path = null
 	}
 }
 
-function drawLines(tick) {
+function drawLines(tick, p5ctx) {
 	for (let lin of AllLines) {
-		lin.draw(tick)
+		lin.draw(tick, p5ctx)
 	}
 }

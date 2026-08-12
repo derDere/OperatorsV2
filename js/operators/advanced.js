@@ -26,8 +26,8 @@ const Op_Stack = register(
 			this.out_e = this.newOutput("E")
 		}
 
-		doUpdate(tick) {
-			super.doUpdate(tick)
+		doUpdate(tick, p5ctx) {
+			super.doUpdate(tick, p5ctx)
 
 			let v = (this.in_v.value & 255)
 			let t = !!(this.in_t.value)
@@ -88,31 +88,31 @@ const Op_Stack = register(
 			let b2 = !!(this.value & 4)
 			let b3 = !!(this.value & 8)
 			let o = this.value >= 16
-			
+
 			this.out_b.value = this.output
 			this.out_t.value = outT
 			this.out_e.value = empty
 		}
 
-		doDraw(tick) {
-			super.doDraw(tick)
+		doDraw(tick, p5ctx) {
+			super.doDraw(tick, p5ctx)
 
-			push()
+			p5ctx.push()
 
-			noStroke()
-			fill(0)
-			textAlign(CENTER, BOTTOM)
-			textSize(18)
-			text(this.stack.length, 0, 5)
-			textAlign(CENTER, TOP)
-			textSize(10)
-			text('STACK', 0, 5)
+			p5ctx.noStroke()
+			p5ctx.fill(0)
+			p5ctx.textAlign(p5ctx.CENTER, p5ctx.BOTTOM)
+			p5ctx.textSize(18)
+			p5ctx.text(this.stack.length, 0, 5)
+			p5ctx.textAlign(p5ctx.CENTER, p5ctx.TOP)
+			p5ctx.textSize(10)
+			p5ctx.text('STACK', 0, 5)
 
       for(let i = 0; i < this.stack.length; i++) {
-        text(this.stack[i], 0, -30 - (i * 10))
+        p5ctx.text(this.stack[i], 0, -30 - (i * 10))
       }
 
-			pop()
+			p5ctx.pop()
 		}
 	}
 )

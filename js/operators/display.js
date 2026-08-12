@@ -20,40 +20,40 @@ const Op_Lamp = register(
 			}
 		}
 
-		doUpdate(tick) {
-			super.doUpdate(tick)
+		doUpdate(tick, p5ctx) {
+			super.doUpdate(tick, p5ctx)
 
 			this.state = !!(this.in.value)
 		}
 
-		doDraw(tick) {
-			super.doDraw(tick)
+		doDraw(tick, p5ctx) {
+			super.doDraw(tick, p5ctx)
 
-			push()
+			p5ctx.push()
 
-			stroke(0)
+			p5ctx.stroke(0)
 			if (this.state) {
-				fill(255, 0, 0)
+				p5ctx.fill(255, 0, 0)
 			} else {
-				fill(100)
+				p5ctx.fill(100)
 			}
-			circle(0, 0, 30)
-			noStroke()
+			p5ctx.circle(0, 0, 30)
+			p5ctx.noStroke()
 			if (this.state) {
-				fill(255, 255, 255, 30)
+				p5ctx.fill(255, 255, 255, 30)
 				for (let i = 27; i > 5; i -= 3) {
-					circle(0, 0, 30 - i)
+					p5ctx.circle(0, 0, 30 - i)
 				}
 			}
 
-			noStroke()
-			fill(0)
-			textAlign(CENTER, CENTER)
-			textSize(10)
-			text('LAMP', 0, -21)
-			text(this.state ? 'ON' : 'OFF', 0, 23)
+			p5ctx.noStroke()
+			p5ctx.fill(0)
+			p5ctx.textAlign(p5ctx.CENTER, p5ctx.CENTER)
+			p5ctx.textSize(10)
+			p5ctx.text('LAMP', 0, -21)
+			p5ctx.text(this.state ? 'ON' : 'OFF', 0, 23)
 
-			pop()
+			p5ctx.pop()
 		}
 	}
 )

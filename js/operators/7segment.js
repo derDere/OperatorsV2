@@ -60,8 +60,8 @@ const Op_7sDisplay = register(
 			return r
 		}
 
-		doUpdate(tick) {
-			super.doUpdate(tick)
+		doUpdate(tick, p5ctx) {
+			super.doUpdate(tick, p5ctx)
 
 			this.s7_t = !!(this.in1.value)
 			this.s7_tl = !!(this.in2.value)
@@ -73,36 +73,36 @@ const Op_7sDisplay = register(
 			this.s7_d = !!(this.in8.value)
 		}
 
-		doDraw(tick) {
-			super.doDraw(tick)
+		doDraw(tick, p5ctx) {
+			super.doDraw(tick, p5ctx)
 
-			push()
+			p5ctx.push()
 
-			noFill()
-			stroke('#00000020')
-			strokeWeight(8)
+			p5ctx.noFill()
+			p5ctx.stroke('#00000020')
+			p5ctx.strokeWeight(8)
 
-			line(-5, -35, 20, -35) // Top
-			line(-10, -7.5, -10, -27.5) // Top Left
-			line(25, -7.5, 25, -27.5) // Top Right
-			line(-5, 0, 20, 0) // Middle
-			line(-10, 7.5, -10, 27.5) // Bottom Left
-			line(25, 7.5, 25, 27.5) // Bottom Right
-			line(-5, 35, 20, 35) // Bottom
-			line(35, 35, 35, 35) // Dot
+			p5ctx.line(-5, -35, 20, -35) // Top
+			p5ctx.line(-10, -7.5, -10, -27.5) // Top Left
+			p5ctx.line(25, -7.5, 25, -27.5) // Top Right
+			p5ctx.line(-5, 0, 20, 0) // Middle
+			p5ctx.line(-10, 7.5, -10, 27.5) // Bottom Left
+			p5ctx.line(25, 7.5, 25, 27.5) // Bottom Right
+			p5ctx.line(-5, 35, 20, 35) // Bottom
+			p5ctx.line(35, 35, 35, 35) // Dot
 
-			stroke(255, 0, 0)
+			p5ctx.stroke(255, 0, 0)
 
-			if (this.s7_t) line(-5, -35, 20, -35) // Top
-			if (this.s7_tl) line(-10, -7.5, -10, -27.5) // Top Left
-			if (this.s7_tr) line(25, -7.5, 25, -27.5) // Top Right
-			if (this.s7_m) line(-5, 0, 20, 0) // Middle
-			if (this.s7_bl) line(-10, 7.5, -10, 27.5) // Bottom Left
-			if (this.s7_br) line(25, 7.5, 25, 27.5) // Bottom Right
-			if (this.s7_b) line(-5, 35, 20, 35) // Bottom
-			if (this.s7_d) line(35, 35, 35, 35) // Dot
+			if (this.s7_t) p5ctx.line(-5, -35, 20, -35) // Top
+			if (this.s7_tl) p5ctx.line(-10, -7.5, -10, -27.5) // Top Left
+			if (this.s7_tr) p5ctx.line(25, -7.5, 25, -27.5) // Top Right
+			if (this.s7_m) p5ctx.line(-5, 0, 20, 0) // Middle
+			if (this.s7_bl) p5ctx.line(-10, 7.5, -10, 27.5) // Bottom Left
+			if (this.s7_br) p5ctx.line(25, 7.5, 25, 27.5) // Bottom Right
+			if (this.s7_b) p5ctx.line(-5, 35, 20, 35) // Bottom
+			if (this.s7_d) p5ctx.line(35, 35, 35, 35) // Dot
 
-			pop()
+			p5ctx.pop()
 		}
 	}
 )
@@ -131,8 +131,8 @@ const Op_4bit_to_7sSeg = register(
 			this.ouD = this.newOutput("D") // Dot
 		}
 
-		doUpdate(tick) {
-			super.doUpdate(tick)
+		doUpdate(tick, p5ctx) {
+			super.doUpdate(tick, p5ctx)
 
 			let b0 = !!(this.in1.value) ? 1 : 0
 			let b1 = !!(this.in2.value) ? 1 : 0
@@ -164,19 +164,19 @@ const Op_4bit_to_7sSeg = register(
 			this.ouD.value = !!(this.inD.value)
 		}
 
-		doDraw(tick) {
-			super.doDraw(tick)
+		doDraw(tick, p5ctx) {
+			super.doDraw(tick, p5ctx)
 
-			push()
+			p5ctx.push()
 
-			noStroke()
-			fill(0)
+			p5ctx.noStroke()
+			p5ctx.fill(0)
 
-			rotate(PI / 2)
-			textAlign(CENTER, CENTER)
-			text("4bit to 7seg", 0, 0)
+			p5ctx.rotate(p5ctx.PI / 2)
+			p5ctx.textAlign(p5ctx.CENTER, p5ctx.CENTER)
+			p5ctx.text("4bit to 7seg", 0, 0)
 
-			pop()
+			p5ctx.pop()
 		}
 	}
 )

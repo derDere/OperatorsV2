@@ -27,8 +27,8 @@ const Op_Switch = register(
 			this.state = (newValue == true)
 		}
 
-		doUpdate(tick) {
-			super.doUpdate(tick)
+		doUpdate(tick, p5ctx) {
+			super.doUpdate(tick, p5ctx)
 
 			let a = !!(this.state)
 
@@ -39,21 +39,21 @@ const Op_Switch = register(
 			this.out_not_c.value = nc
 		}
 
-		doDraw(tick) {
-			super.doDraw(tick)
+		doDraw(tick, p5ctx) {
+			super.doDraw(tick, p5ctx)
 
-			push()
+			p5ctx.push()
 
-			noStroke()
-			fill(0)
-			textAlign(CENTER, CENTER)
-			textSize(18)
-			text(this.state ? 'ON' : 'OFF', 0, 0)
-			textSize(10)
-			text('SWITCH', 0, -20)
-			text('Click Me', 0, 20)
+			p5ctx.noStroke()
+			p5ctx.fill(0)
+			p5ctx.textAlign(p5ctx.CENTER, p5ctx.CENTER)
+			p5ctx.textSize(18)
+			p5ctx.text(this.state ? 'ON' : 'OFF', 0, 0)
+			p5ctx.textSize(10)
+			p5ctx.text('SWITCH', 0, -20)
+			p5ctx.text('Click Me', 0, 20)
 
-			pop()
+			p5ctx.pop()
 		}
 	}
 )
@@ -101,8 +101,8 @@ const Op_Button = register(
 			this.pressed = true
 		}
 
-		doUpdate(tick) {
-			super.doUpdate(tick)
+		doUpdate(tick, p5ctx) {
+			super.doUpdate(tick, p5ctx)
 
 			let a = !!(this.pressed)
 			this.pressed = false
@@ -114,21 +114,21 @@ const Op_Button = register(
 			this.out_not_c.value = nc
 		}
 
-		doDraw(tick) {
-			super.doDraw(tick)
+		doDraw(tick, p5ctx) {
+			super.doDraw(tick, p5ctx)
 
-			push()
+			p5ctx.push()
 
-			noStroke()
-			fill(0)
-			textAlign(CENTER, CENTER)
-			textSize(18)
-			text('BTN', 0, 0)
-			textSize(10)
-			text(this.text, 0, -20)
-			text('Click Me', 0, 20)
+			p5ctx.noStroke()
+			p5ctx.fill(0)
+			p5ctx.textAlign(p5ctx.CENTER, p5ctx.CENTER)
+			p5ctx.textSize(18)
+			p5ctx.text('BTN', 0, 0)
+			p5ctx.textSize(10)
+			p5ctx.text(this.text, 0, -20)
+			p5ctx.text('Click Me', 0, 20)
 
-			pop()
+			p5ctx.pop()
 		}
 	}
 )
@@ -147,8 +147,8 @@ const Op_Tick = register(
 			this.out_not_c = this.newOutput("!T")
 		}
 
-		doUpdate(tick) {
-			super.doUpdate(tick)
+		doUpdate(tick, p5ctx) {
+			super.doUpdate(tick, p5ctx)
 
 			this.state = (tick % 2) == 1
 
@@ -161,18 +161,18 @@ const Op_Tick = register(
 			this.out_not_c.value = nc
 		}
 
-		doDraw(tick) {
-			super.doDraw(tick)
+		doDraw(tick, p5ctx) {
+			super.doDraw(tick, p5ctx)
 
-			push()
+			p5ctx.push()
 
-			noStroke()
-			fill(0)
-			textAlign(CENTER, CENTER)
-			textSize(18)
-			text('TICK', 0, 0)
+			p5ctx.noStroke()
+			p5ctx.fill(0)
+			p5ctx.textAlign(p5ctx.CENTER, p5ctx.CENTER)
+			p5ctx.textSize(18)
+			p5ctx.text('TICK', 0, 0)
 
-			pop()
+			p5ctx.pop()
 		}
 	}
 )
@@ -196,8 +196,8 @@ const Op_Clock = register(
 			this.out_nc = this.newOutput("!C")
 		}
 
-		doUpdate(tick) {
-			super.doUpdate(tick)
+		doUpdate(tick, p5ctx) {
+			super.doUpdate(tick, p5ctx)
 
 			let p = !!(this.in_p.value)
 			let b = (this.in_b.value) & 255
@@ -221,21 +221,21 @@ const Op_Clock = register(
 			this.out_nc.value = nc
 		}
 
-		doDraw(tick) {
-			super.doDraw(tick)
+		doDraw(tick, p5ctx) {
+			super.doDraw(tick, p5ctx)
 
-			push()
+			p5ctx.push()
 
-			noStroke()
-			fill(0)
-			textAlign(CENTER, BOTTOM)
-			textSize(18)
-			text('CLK', 0, 5)
-			textAlign(CENTER, TOP)
-			textSize(10)
-			text('T: ' + this.b, 0, 5)
+			p5ctx.noStroke()
+			p5ctx.fill(0)
+			p5ctx.textAlign(p5ctx.CENTER, p5ctx.BOTTOM)
+			p5ctx.textSize(18)
+			p5ctx.text('CLK', 0, 5)
+			p5ctx.textAlign(p5ctx.CENTER, p5ctx.TOP)
+			p5ctx.textSize(10)
+			p5ctx.text('T: ' + this.b, 0, 5)
 
-			pop()
+			p5ctx.pop()
 		}
 	}
 )

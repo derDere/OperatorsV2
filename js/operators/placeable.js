@@ -65,34 +65,34 @@ class Placeable extends Operator {
 	}
 
 	get col() {
-		return round(max(this._col, 0))
+		return mainP5.round(mainP5.max(this._col, 0))
 	}
 	set col(value) {
-		this._col = round(max(value, 0))
+		this._col = mainP5.round(mainP5.max(value, 0))
 		updateTableOfElements()
 	}
 
 	get row() {
-		return round(max(this._row, 0))
+		return mainP5.round(mainP5.max(this._row, 0))
 	}
 	set row(value) {
-		this._row = round(max(value, 0))
+		this._row = mainP5.round(mainP5.max(value, 0))
 		updateTableOfElements()
 	}
 
 	get colSpan() {
-		return round(max(this._colSpan ,1))
+		return mainP5.round(mainP5.max(this._colSpan ,1))
 	}
 	set colSpan(value) {
-		this._colSpan = round(max(value, 1))
+		this._colSpan = mainP5.round(mainP5.max(value, 1))
 		updateTableOfElements()
 	}
 
 	get rowSpan() {
-		return round(max(this._rowSpan, 1))
+		return mainP5.round(mainP5.max(this._rowSpan, 1))
 	}
 	set rowSpan(value) {
-		this._rowSpan = round(max(value, 1))
+		this._rowSpan = mainP5.round(mainP5.max(value, 1))
 		updateTableOfElements()
 	}
 
@@ -124,10 +124,10 @@ function updateTableOfElements() {
 	let maxR = 0
 	for (let p of AllPlaceables) {
 		if ((p.col + p.colSpan) > maxC) {
-			maxC = max(round(p.col), 0) + max(round(p.colSpan), 1)
+			maxC = mainP5.max(mainP5.round(p.col), 0) + mainP5.max(mainP5.round(p.colSpan), 1)
 		}
 		if ((p.row + p.rowSpan) > maxR) {
-			maxR = max(round(p.row), 0) + max(round(p.rowSpan), 1)
+			maxR = mainP5.max(mainP5.round(p.row), 0) + mainP5.max(mainP5.round(p.rowSpan), 1)
 		}
 	}
 	let grid = []

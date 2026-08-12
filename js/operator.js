@@ -1,19 +1,19 @@
 const OperatorRegistry = {}
 var selectedOperators = []
 
-function valueColor(value, m = 1, isLine = false) {
+function valueColor(value, m = 1, isLine = false, p5ctx = mainP5) {
 	if (value === true) {
-		return color(255 * m, 0, 0)
+		return p5ctx.color(255 * m, 0, 0)
 	}
 	else if (value === false) {
 		if (isLine) {
-			return color(0 + (255 * (1 - m)))
+			return p5ctx.color(0 + (255 * (1 - m)))
 		} else {
-			return color(255 * m)
+			return p5ctx.color(255 * m)
 		}
 	}
 	else {
-		return color(0, 128 * m, 255 * m)
+		return p5ctx.color(0, 128 * m, 255 * m)
 	}
 }
 
@@ -27,8 +27,8 @@ class IOControl extends Control { //////////////////////////////////////////////
 
 		this.doNotCaptureMouse = true
 
-		this.borderActiveColor = color(0, 128, 0)
-		this.backgroundActiveColor = color(0, 255, 0)
+		this.borderActiveColor = mainP5.color(0, 128, 0)
+		this.backgroundActiveColor = mainP5.color(0, 255, 0)
 
 		this.value = false
 
@@ -59,9 +59,9 @@ class IOControl extends Control { //////////////////////////////////////////////
 		mouseLine.start = null
 	}
 
-	doUpdate(tick) {
-		this.backgroundColor = valueColor(this.value)
-		this.backgroundHoverColor = valueColor(this.value, 0.8)
+	doUpdate(tick, p5ctx) {
+		this.backgroundColor = valueColor(this.value, 1, false, p5ctx)
+		this.backgroundHoverColor = valueColor(this.value, 0.8, false, p5ctx)
 	}
 
 }
@@ -168,7 +168,7 @@ class Operator extends Movable { ///////////////////////////////////////////////
 		}
 	}
 
-	doUpdate(tick) {
+	doUpdate(tick, p5ctx) {
 		this.doNotCaptureMouse = (
 			(mouseLine.start != null) ||
 			(mouseLine.end != null)
@@ -182,32 +182,32 @@ class Operator extends Movable { ///////////////////////////////////////////////
 		}
 	}
 
-	doDraw(tick) {
-		push()
+	doDraw(tick, p5ctx) {
+		p5ctx.push()
 		if (this.isSelected) {
-			push()
-			stroke('#0080ff40')
-			strokeWeight(5)
-			noFill()
-			rect(0, 0, this.width + 5, this.height + 5)
-			pop()
+			p5ctx.push()
+			p5ctx.stroke('#0080ff40')
+			p5ctx.strokeWeight(5)
+			p5ctx.noFill()
+			p5ctx.rect(0, 0, this.width + 5, this.height + 5)
+			p5ctx.pop()
 		}
-		fill(0)
-		noStroke()
-		textAlign(LEFT, CENTER)
-		textSize(9)
+		p5ctx.fill(0)
+		p5ctx.noStroke()
+		p5ctx.textAlign(p5ctx.LEFT, p5ctx.CENTER)
+		p5ctx.textSize(9)
 		for (let inp of this.inputs) {
-			text(inp.name, inp.pos.x + inp.radius + inp.borderWeight + 2, inp.pos.y)
+			p5ctx.text(inp.name, inp.pos.x + inp.radius + inp.borderWeight + 2, inp.pos.y)
 		}
-		textAlign(RIGHT, CENTER)
+		p5ctx.textAlign(p5ctx.RIGHT, p5ctx.CENTER)
 		for (let oup of this.outputs) {
-			text(oup.name, oup.pos.x - oup.radius - oup.borderWeight - 2, oup.pos.y)
+			p5ctx.text(oup.name, oup.pos.x - oup.radius - oup.borderWeight - 2, oup.pos.y)
 		}
-		pop()
+		p5ctx.pop()
 	}
 
 	_reorderIOs() {
-		let mC = max(this.inputs.length, this.outputs.length) // Anzahl der Längeren Liste
+		let mC = mainP5.max(this.inputs.length, this.outputs.length) // Anzahl der Längeren Liste
 		let space = 20 // Platz zwichen den IOs der längeren Liste
 		let extra = (mC % 2 == 1) ? 0 : 1 // Extra platz anzahl ausserhalb der IOs
 		let cH = (mC + extra) * space // Neue Höhe des Controls
@@ -233,7 +233,7 @@ class Operator extends Movable { ///////////////////////////////////////////////
 			for (let i = 0; i < list.length; i++) {
 				let y = (-this.height / 2) + (oM + (i * listSpace))
 				let io = list[i]
-				io.pos = createVector(x, y)
+				io.pos = mainP5.createVector(x, y)
 			}
 		}
 	}

@@ -25,12 +25,12 @@ class Control {
 		this.hasCircleBounds = true
 	}
 
-	doUpdate(tick) { /* virtual */ }
-	doDraw(tick) { /* virtual */ }
+	doUpdate(tick, p5ctx) { /* virtual */ }
+	doDraw(tick, p5ctx) { /* virtual */ }
 
 	constructor(x = 0, y = 0, size = DEFAULT_SIZE, type = BOUNDS_TYPE_RECT, parent = null) {
 		this.id = NewId()
-		this.pos = createVector(x, y)
+		this.pos = mainP5.createVector(x, y)
 		this.width = size * 2
 		this.height = size * 2
 		this.radius = size
@@ -51,14 +51,14 @@ class Control {
 
 		this.borderWeight = 1
 
-		this.borderColor = color(0)
-		this.backgroundColor = color(255, 255, 255, 230)
+		this.borderColor = mainP5.color(0)
+		this.backgroundColor = mainP5.color(255, 255, 255, 230)
 
-		this.borderHoverColor = color(0, 128, 255)
-		this.backgroundHoverColor = color(255)
+		this.borderHoverColor = mainP5.color(0, 128, 255)
+		this.backgroundHoverColor = mainP5.color(255)
 
-		this.borderActiveColor = color(255, 0, 0)
-		this.backgroundActiveColor = color(255)
+		this.borderActiveColor = mainP5.color(255, 0, 0)
+		this.backgroundActiveColor = mainP5.color(255)
 
 		this.cursor = 'pointer'
 		this.isMouseOver = false
@@ -243,10 +243,10 @@ class Control {
 		}
 	}
 
-	isInFrame() {
+	isInFrame(p5ctx) {
 		let ap = this.actualPos
 
-		ap = ap.add(width / 2, height / 2)
+		ap = ap.add(p5ctx.width / 2, p5ctx.height / 2)
 		ap = ap.add(dragOffset)
 
 		let xOff = 0
@@ -261,86 +261,86 @@ class Control {
 		}
 
 		if (ap.x < -xOff) return false
-		if (ap.x > width + xOff) return false
+		if (ap.x > p5ctx.width + xOff) return false
 		if (ap.y < -yOff) return false
-		if (ap.y > height + yOff) return false
+		if (ap.y > p5ctx.height + yOff) return false
 		return true
 	}
 
-	update(tick) {
+	update(tick, p5ctx) {
 		if (this.checkMouseOver) {
 			hoverControl = this
 		}
 
-		this.doUpdate(tick)
+		this.doUpdate(tick, p5ctx)
 
 		for (let child of this.children) {
-			child.update(tick)
+			child.update(tick, p5ctx)
 		}
 	}
 
-	draw(tick) {
-		if (this.isInFrame()) {
-			push()
+	draw(tick, p5ctx) {
+		if (this.isInFrame(p5ctx)) {
+			p5ctx.push()
 
-			strokeWeight(this.borderWeight)
+			p5ctx.strokeWeight(this.borderWeight)
 
 			// Set Style
 			if (this.isMouseDown) {
-				stroke(this.borderActiveColor)
-				fill(this.backgroundActiveColor)
+				p5ctx.stroke(this.borderActiveColor)
+				p5ctx.fill(this.backgroundActiveColor)
 			}
 			else if (this.isMouseOver) {
-				stroke(this.borderHoverColor)
-				fill(this.backgroundHoverColor)
+				p5ctx.stroke(this.borderHoverColor)
+				p5ctx.fill(this.backgroundHoverColor)
 			}
 			else {
-				stroke(this.borderColor)
-				fill(this.backgroundColor)
+				p5ctx.stroke(this.borderColor)
+				p5ctx.fill(this.backgroundColor)
 			}
 
 			// Pove by parent
 			let p = this._parent
 			while (!!p) {
-				translate(p.pos.x, p.pos.y)
+				p5ctx.translate(p.pos.x, p.pos.y)
 				p = p._parent
 			}
-			translate(this.pos.x, this.pos.y)
+			p5ctx.translate(this.pos.x, this.pos.y)
 
 			// draw
 			if (this.hasRectBounds) {
-				rectMode(CENTER)
-				let xOff = ((this.borderWeight - width) % 2) / 2
-				let yOff = ((this.borderWeight - height) % 2) / 2
-				translate(xOff, yOff)
-				rect(0, 0, this.width, this.height)
+				p5ctx.rectMode(p5ctx.CENTER)
+				let xOff = ((this.borderWeight - p5ctx.width) % 2) / 2
+				let yOff = ((this.borderWeight - p5ctx.height) % 2) / 2
+				p5ctx.translate(xOff, yOff)
+				p5ctx.rect(0, 0, this.width, this.height)
 			}
 			else if (this.hasCircleBounds) {
-				circle(0, 0, this.radius * 2)
+				p5ctx.circle(0, 0, this.radius * 2)
 			}
 
 			// draw overwrite
-			this.doDraw(tick)
+			this.doDraw(tick, p5ctx)
 
-			pop()
+			p5ctx.pop()
 		}
 
 		const drawOrder = [...this.children];
 		drawOrder.sort((a, b) => a.zIndex - b.zIndex)
 		for (let child of this.children) {
-			child.draw(tick)
+			child.draw(tick, p5ctx)
 		}
 	}
 }
 
-function updateControls(tick) {
+function updateControls(tick, p5ctx) {
 	if (!lastMousePos) {
 		lastMousePos = mousePos.copy()
 	}
 
-	let mouseGotPressed = (mouseIsPressed != mouseWasDown) && mouseIsPressed
-	let mouseGotReleased = (mouseIsPressed != mouseWasDown) && !mouseIsPressed
-	mouseWasDown = mouseIsPressed
+	let mouseGotPressed = (p5ctx.mouseIsPressed != mouseWasDown) && p5ctx.mouseIsPressed
+	let mouseGotReleased = (p5ctx.mouseIsPressed != mouseWasDown) && !p5ctx.mouseIsPressed
+	mouseWasDown = p5ctx.mouseIsPressed
 
 	let mouseMovement = mousePos.copy().sub(lastMousePos)
 	let mouseGotMoved = false
@@ -360,14 +360,14 @@ function updateControls(tick) {
 
 	for (let c of updateOrder) {
 		if (!c._parent) {
-			c.update(tick)
+			c.update(tick, p5ctx)
 		}
 		c.isMouseOver = false
 		c.hasMouseCapture = false
 		c.isMouseDown = false
 	}
 
-	if (mouseIsPressed && !!capturedMouseControl) {
+	if (p5ctx.mouseIsPressed && !!capturedMouseControl) {
 		hoverControl = capturedMouseControl
 	}
 
@@ -387,11 +387,11 @@ function updateControls(tick) {
 	lastHoverControl = hoverControl
 
 	if (!!hoverControl) {
-		cursor('pointer')
+		p5ctx.cursor('pointer')
 
 		hoverControl.isMouseOver = true
 
-		if (mouseIsPressed) {
+		if (p5ctx.mouseIsPressed) {
 			hoverControl.isMouseDown = true
 			if (!hoverControl.doNotCaptureMouse) {
 				hoverControl.hasMouseCapture = true
@@ -410,12 +410,12 @@ function updateControls(tick) {
 	}
 }
 
-function drawControls(tick) {
+function drawControls(tick, p5ctx) {
 	const drawOrder = [...AllControls];
 	drawOrder.sort((a, b) => a.zIndex - b.zIndex)
 
 	for (let c of drawOrder) {
 		if (!!c._parent) continue
-		c.draw(tick)
+		c.draw(tick, p5ctx)
 	}
 }

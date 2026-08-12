@@ -14,8 +14,8 @@ class DatBlocker extends Control {
 	  this.height = 500
 	  this.zIndex = 2000000000
 
-		const TRANSPARENT = color('transparent')
-		const GRAY_BORDER = color('#999')
+		const TRANSPARENT = mainP5.color('transparent')
+		const GRAY_BORDER = mainP5.color('#999')
 		this.borderColor = GRAY_BORDER
 		this.backgroundColor = TRANSPARENT
 		this.borderHoverColor = GRAY_BORDER
@@ -24,14 +24,14 @@ class DatBlocker extends Control {
 		this.backgroundActiveColor = TRANSPARENT
 	}
 
-	doUpdate(tick) {
-		super.doUpdate(tick)
+	doUpdate(tick, p5ctx) {
+		super.doUpdate(tick, p5ctx)
 		let datHeight = dgui.domElement.getBoundingClientRect().height
 		this.width = dgui.width + 1
 		this.height = datHeight + 21
 		this.zIndex = 2000000000
-		let x = (width / 2) - (this.width / 2) - dragOffset.x - 14
-		let y = (-height / 2) + (this.height / 2) - dragOffset.y
+		let x = (p5ctx.width / 2) - (this.width / 2) - dragOffset.x - 14
+		let y = (-p5ctx.height / 2) + (this.height / 2) - dragOffset.y
 		this.pos.x = x
 		this.pos.y = y
 	}

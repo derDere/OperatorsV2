@@ -6,9 +6,9 @@ var splitterDragOffset = 0
 function SplitterMouseMove(event) {
 	if (isSplitterDragging) {
 		let newSpace = event.clientX - splitterDragOffset
-		let spaceP = (newSpace + SPLITTER_WIDTH) / windowWidth
+		let spaceP = (newSpace + SPLITTER_WIDTH) / mainP5.windowWidth
 		screenSplit = spaceP
-		resizeCanvas(updateSplitter(), windowHeight)
+		mainP5.resizeCanvas(updateSplitter(mainP5), mainP5.windowHeight)
 		return false
 	}
 	return true

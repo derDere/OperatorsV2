@@ -12,8 +12,8 @@ class base_Simple extends Operator {
 		this.icon = ""
 	}
 
-	doUpdate(tick) {
-		super.doUpdate(tick)
+	doUpdate(tick, p5ctx) {
+		super.doUpdate(tick, p5ctx)
 
 		let a = !!(this.in_a.value)
 		let b = !!(this.in_b.value)
@@ -25,18 +25,18 @@ class base_Simple extends Operator {
 		this.out_not_c.value = nc
 	}
 
-	doDraw(tick) {
-		super.doDraw(tick)
+	doDraw(tick, p5ctx) {
+		super.doDraw(tick, p5ctx)
 
-		push()
+		p5ctx.push()
 
-		noStroke()
-		fill(0)
-		textAlign(CENTER, CENTER)
-		textSize(18)
-		text(this.icon, 0, 0)
+		p5ctx.noStroke()
+		p5ctx.fill(0)
+		p5ctx.textAlign(p5ctx.CENTER, p5ctx.CENTER)
+		p5ctx.textSize(18)
+		p5ctx.text(this.icon, 0, 0)
 
-		pop()
+		p5ctx.pop()
 	}
 }
 
@@ -115,8 +115,8 @@ const Op_Pipe1 = register(
 			this.height = 20
 		}
 
-		doUpdate(tick) {
-			super.doUpdate(tick)
+		doUpdate(tick, p5ctx) {
+			super.doUpdate(tick, p5ctx)
 
 			this.out_o.value = this.in_i.value
 		}
@@ -144,8 +144,8 @@ const Op_Pipe4 = register(
 			this.out_o4 = this.newOutput("")
 		}
 
-		doUpdate(tick) {
-			super.doUpdate(tick)
+		doUpdate(tick, p5ctx) {
+			super.doUpdate(tick, p5ctx)
 
 			this.out_o1.value = this.in_i1.value
 			this.out_o2.value = this.in_i2.value
@@ -184,8 +184,8 @@ const Op_Pipe8 = register(
 			this.out_o8 = this.newOutput("")
 		}
 
-		doUpdate(tick) {
-			super.doUpdate(tick)
+		doUpdate(tick, p5ctx) {
+			super.doUpdate(tick, p5ctx)
 
 			this.out_o1.value = this.in_i1.value
 			this.out_o2.value = this.in_i2.value
@@ -231,8 +231,8 @@ const Op_Value = register(
 			}
 		}
 
-		doUpdate(tick) {
-			super.doUpdate(tick)
+		doUpdate(tick, p5ctx) {
+			super.doUpdate(tick, p5ctx)
 
 			let v = (this.value & 255)
 			if (this.binary) {
@@ -242,18 +242,18 @@ const Op_Value = register(
 			this.out_v.value = v
 		}
 
-		doDraw(tick) {
-			super.doDraw(tick)
-			push()
-			noStroke()
-			fill(0)
-			textAlign(CENTER, BOTTOM)
-			textSize(18)
-			text(this.out_v.value + '', 0, 5)
-			textAlign(CENTER, TOP)
-			textSize(10)
-			text('VALUE' + '', 0, 5)
-			pop()
+		doDraw(tick, p5ctx) {
+			super.doDraw(tick, p5ctx)
+			p5ctx.push()
+			p5ctx.noStroke()
+			p5ctx.fill(0)
+			p5ctx.textAlign(p5ctx.CENTER, p5ctx.BOTTOM)
+			p5ctx.textSize(18)
+			p5ctx.text(this.out_v.value + '', 0, 5)
+			p5ctx.textAlign(p5ctx.CENTER, p5ctx.TOP)
+			p5ctx.textSize(10)
+			p5ctx.text('VALUE' + '', 0, 5)
+			p5ctx.pop()
 		}
 	}
 )

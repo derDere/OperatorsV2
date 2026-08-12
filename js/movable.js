@@ -25,11 +25,11 @@ class Movable extends Control {
 		let xFix = 0
 		let yFix = 0
 
-		if ((round(this.width / 20) % 2) == 0) xFix = 10
-		if ((round(this.height / 20) % 2) == 0) yFix = 10
+		if ((mainP5.round(this.width / 20) % 2) == 0) xFix = 10
+		if ((mainP5.round(this.height / 20) % 2) == 0) yFix = 10
 
-		let xD = (round((this.pos.x - xFix) / this.placementStep) * this.placementStep) + xFix
-		let yD = (round((this.pos.y - yFix) / this.placementStep) * this.placementStep) + yFix
+		let xD = (mainP5.round((this.pos.x - xFix) / this.placementStep) * this.placementStep) + xFix
+		let yD = (mainP5.round((this.pos.y - yFix) / this.placementStep) * this.placementStep) + yFix
 
 		this.pos.x = xD
 		this.pos.y = yD

@@ -14,8 +14,8 @@ const Op_Pulse = register(
 			this.out_p_d = this.newOutput("D")
 		}
 
-		doUpdate(tick) {
-			super.doUpdate(tick)
+		doUpdate(tick, p5ctx) {
+			super.doUpdate(tick, p5ctx)
 
 			let inputState = !!(this.in_s.value)
 
@@ -37,18 +37,18 @@ const Op_Pulse = register(
 			this.last = inputState
 		}
 
-		doDraw(tick) {
-			super.doDraw(tick)
+		doDraw(tick, p5ctx) {
+			super.doDraw(tick, p5ctx)
 
-			push()
+			p5ctx.push()
 
-			noStroke()
-			fill(0)
-			textAlign(CENTER, CENTER)
-			textSize(12)
-			text('PULSE', 0, 0)
+			p5ctx.noStroke()
+			p5ctx.fill(0)
+			p5ctx.textAlign(p5ctx.CENTER, p5ctx.CENTER)
+			p5ctx.textSize(12)
+			p5ctx.text('PULSE', 0, 0)
 
-			pop()
+			p5ctx.pop()
 		}
 	}
 )
@@ -70,8 +70,8 @@ const Op_RsFlipFlop = register(
 			this.out_no = this.newOutput("!Q")
 		}
 
-		doUpdate(tick) {
-			super.doUpdate(tick)
+		doUpdate(tick, p5ctx) {
+			super.doUpdate(tick, p5ctx)
 
 			let s = !!(this.in_s.value)
 			let r = !!(this.in_r.value)
@@ -87,21 +87,21 @@ const Op_RsFlipFlop = register(
 			this.out_no.value = !this.state
 		}
 
-		doDraw(tick) {
-			super.doDraw(tick)
+		doDraw(tick, p5ctx) {
+			super.doDraw(tick, p5ctx)
 
-			push()
+			p5ctx.push()
 
-			noStroke()
-			fill(0)
-			textAlign(CENTER, BOTTOM)
-			textSize(18)
-			text('R/S', 0, 5)
-			textAlign(CENTER, TOP)
-			textSize(10)
-			text('FlipFlop', 0, 5)
+			p5ctx.noStroke()
+			p5ctx.fill(0)
+			p5ctx.textAlign(p5ctx.CENTER, p5ctx.BOTTOM)
+			p5ctx.textSize(18)
+			p5ctx.text('R/S', 0, 5)
+			p5ctx.textAlign(p5ctx.CENTER, p5ctx.TOP)
+			p5ctx.textSize(10)
+			p5ctx.text('FlipFlop', 0, 5)
 
-			pop()
+			p5ctx.pop()
 		}
 	}
 )
@@ -123,8 +123,8 @@ const Op_TFlipFlop = register(
 			this.out_no = this.newOutput("!Q")
 		}
 
-		doUpdate(tick) {
-			super.doUpdate(tick)
+		doUpdate(tick, p5ctx) {
+			super.doUpdate(tick, p5ctx)
 
 			let t = !!(this.in_t.value)
 
@@ -140,21 +140,21 @@ const Op_TFlipFlop = register(
 			this.out_no.value = !this.state
 		}
 
-		doDraw(tick) {
-			super.doDraw(tick)
+		doDraw(tick, p5ctx) {
+			super.doDraw(tick, p5ctx)
 
-			push()
+			p5ctx.push()
 
-			noStroke()
-			fill(0)
-			textAlign(CENTER, BOTTOM)
-			textSize(18)
-			text('T', 0, 5)
-			textAlign(CENTER, TOP)
-			textSize(10)
-			text('FlipFlop', 0, 5)
+			p5ctx.noStroke()
+			p5ctx.fill(0)
+			p5ctx.textAlign(p5ctx.CENTER, p5ctx.BOTTOM)
+			p5ctx.textSize(18)
+			p5ctx.text('T', 0, 5)
+			p5ctx.textAlign(p5ctx.CENTER, p5ctx.TOP)
+			p5ctx.textSize(10)
+			p5ctx.text('FlipFlop', 0, 5)
 
-			pop()
+			p5ctx.pop()
 		}
 	}
 )
@@ -177,8 +177,8 @@ const Op_Memory1 = register(
 			this.out_nb = this.newOutput("!B")
 		}
 
-		doUpdate(tick) {
-			super.doUpdate(tick)
+		doUpdate(tick, p5ctx) {
+			super.doUpdate(tick, p5ctx)
 
 			let v = !!(this.in_v.value)
 			let t = !!(this.in_t.value)
@@ -195,21 +195,21 @@ const Op_Memory1 = register(
 			this.out_nb.value = !this.state
 		}
 
-		doDraw(tick) {
-			super.doDraw(tick)
+		doDraw(tick, p5ctx) {
+			super.doDraw(tick, p5ctx)
 
-			push()
+			p5ctx.push()
 
-			noStroke()
-			fill(0)
-			textAlign(CENTER, BOTTOM)
-			textSize(18)
-			text(this.state ? '1' : '0', 0, 5)
-			textAlign(CENTER, TOP)
-			textSize(10)
-			text('MEM1', 0, 5)
+			p5ctx.noStroke()
+			p5ctx.fill(0)
+			p5ctx.textAlign(p5ctx.CENTER, p5ctx.BOTTOM)
+			p5ctx.textSize(18)
+			p5ctx.text(this.state ? '1' : '0', 0, 5)
+			p5ctx.textAlign(p5ctx.CENTER, p5ctx.TOP)
+			p5ctx.textSize(10)
+			p5ctx.text('MEM1', 0, 5)
 
-			pop()
+			p5ctx.pop()
 		}
 	}
 )
@@ -231,8 +231,8 @@ const Op_Memory8 = register(
 			this.out_b = this.newOutput("B")
 		}
 
-		doUpdate(tick) {
-			super.doUpdate(tick)
+		doUpdate(tick, p5ctx) {
+			super.doUpdate(tick, p5ctx)
 
 			let v = (this.in_v.value & 255)
 			let t = !!(this.in_t.value)
@@ -248,21 +248,21 @@ const Op_Memory8 = register(
 			this.out_b.value = this.state
 		}
 
-		doDraw(tick) {
-			super.doDraw(tick)
+		doDraw(tick, p5ctx) {
+			super.doDraw(tick, p5ctx)
 
-			push()
+			p5ctx.push()
 
-			noStroke()
-			fill(0)
-			textAlign(CENTER, BOTTOM)
-			textSize(18)
-			text(this.state, 0, 5)
-			textAlign(CENTER, TOP)
-			textSize(10)
-			text('MEM8', 0, 5)
+			p5ctx.noStroke()
+			p5ctx.fill(0)
+			p5ctx.textAlign(p5ctx.CENTER, p5ctx.BOTTOM)
+			p5ctx.textSize(18)
+			p5ctx.text(this.state, 0, 5)
+			p5ctx.textAlign(p5ctx.CENTER, p5ctx.TOP)
+			p5ctx.textSize(10)
+			p5ctx.text('MEM8', 0, 5)
 
-			pop()
+			p5ctx.pop()
 		}
 	}
 )
@@ -283,8 +283,8 @@ const Op_4bit_to_byte = register(
 			this.ouByte = this.newOutput("B")
 		}
 
-		doUpdate(tick) {
-			super.doUpdate(tick)
+		doUpdate(tick, p5ctx) {
+			super.doUpdate(tick, p5ctx)
 
 			let b0 = !!(this.in1.value) ? 1 : 0
 			let b1 = !!(this.in2.value) ? 1 : 0
@@ -300,19 +300,19 @@ const Op_4bit_to_byte = register(
 			this.ouByte.value = v
 		}
 
-		doDraw(tick) {
-			super.doDraw(tick)
+		doDraw(tick, p5ctx) {
+			super.doDraw(tick, p5ctx)
 
-			push()
+			p5ctx.push()
 
-			noStroke()
-			fill(0)
+			p5ctx.noStroke()
+			p5ctx.fill(0)
 
-			rotate(PI / 2)
-			textAlign(CENTER, CENTER)
-			text("4bit to Byte", 0, 0)
+			p5ctx.rotate(p5ctx.PI / 2)
+			p5ctx.textAlign(p5ctx.CENTER, p5ctx.CENTER)
+			p5ctx.text("4bit to Byte", 0, 0)
 
-			pop()
+			p5ctx.pop()
 		}
 	}
 )
@@ -337,8 +337,8 @@ const Op_8bit_to_byte = register(
 			this.ouByte = this.newOutput("B")
 		}
 
-		doUpdate(tick) {
-			super.doUpdate(tick)
+		doUpdate(tick, p5ctx) {
+			super.doUpdate(tick, p5ctx)
 
 			let b0 = !!(this.in1.value) ? 1 : 0
 			let b1 = !!(this.in2.value) ? 1 : 0
@@ -362,19 +362,19 @@ const Op_8bit_to_byte = register(
 			this.ouByte.value = v
 		}
 
-		doDraw(tick) {
-			super.doDraw(tick)
+		doDraw(tick, p5ctx) {
+			super.doDraw(tick, p5ctx)
 
-			push()
+			p5ctx.push()
 
-			noStroke()
-			fill(0)
+			p5ctx.noStroke()
+			p5ctx.fill(0)
 
-			rotate(PI / 2)
-			textAlign(CENTER, CENTER)
-			text("8bit to Byte", 0, 0)
+			p5ctx.rotate(p5ctx.PI / 2)
+			p5ctx.textAlign(p5ctx.CENTER, p5ctx.CENTER)
+			p5ctx.text("8bit to Byte", 0, 0)
 
-			pop()
+			p5ctx.pop()
 		}
 	}
 )
@@ -395,8 +395,8 @@ const Op_byte_to_4bit = register(
 			this.ouB4 = this.newOutput("B3")
 		}
 
-		doUpdate(tick) {
-			super.doUpdate(tick)
+		doUpdate(tick, p5ctx) {
+			super.doUpdate(tick, p5ctx)
 
 			let v = this.in1.value & 255
 
@@ -411,19 +411,19 @@ const Op_byte_to_4bit = register(
 			this.ouB4.value = b3
 		}
 
-		doDraw(tick) {
-			super.doDraw(tick)
+		doDraw(tick, p5ctx) {
+			super.doDraw(tick, p5ctx)
 
-			push()
+			p5ctx.push()
 
-			noStroke()
-			fill(0)
+			p5ctx.noStroke()
+			p5ctx.fill(0)
 
-			rotate(PI / 2)
-			textAlign(CENTER, CENTER)
-			text("Byte to 4bit", 0, 0)
+			p5ctx.rotate(p5ctx.PI / 2)
+			p5ctx.textAlign(p5ctx.CENTER, p5ctx.CENTER)
+			p5ctx.text("Byte to 4bit", 0, 0)
 
-			pop()
+			p5ctx.pop()
 		}
 	}
 )
@@ -448,8 +448,8 @@ const Op_byte_to_8bit = register(
 			this.ouB8 = this.newOutput("B7")
 		}
 
-		doUpdate(tick) {
-			super.doUpdate(tick)
+		doUpdate(tick, p5ctx) {
+			super.doUpdate(tick, p5ctx)
 
 			let v = this.in1.value & 255
 
@@ -472,19 +472,19 @@ const Op_byte_to_8bit = register(
 			this.ouB8.value = b7
 		}
 
-		doDraw(tick) {
-			super.doDraw(tick)
+		doDraw(tick, p5ctx) {
+			super.doDraw(tick, p5ctx)
 
-			push()
+			p5ctx.push()
 
-			noStroke()
-			fill(0)
+			p5ctx.noStroke()
+			p5ctx.fill(0)
 
-			rotate(PI / 2)
-			textAlign(CENTER, CENTER)
-			text("Byte to 8bit", 0, 0)
+			p5ctx.rotate(p5ctx.PI / 2)
+			p5ctx.textAlign(p5ctx.CENTER, p5ctx.CENTER)
+			p5ctx.text("Byte to 8bit", 0, 0)
 
-			pop()
+			p5ctx.pop()
 		}
 	}
 )
@@ -515,8 +515,8 @@ const Op_Counter = register(
 			this.out_o = this.newOutput("O")
 		}
 
-		doUpdate(tick) {
-			super.doUpdate(tick)
+		doUpdate(tick, p5ctx) {
+			super.doUpdate(tick, p5ctx)
 
 			let i = !!(this.in_i.value)
 			let d = !!(this.in_d.value)
@@ -553,7 +553,7 @@ const Op_Counter = register(
 			if (u) {
 				this.value = 15
 			}
-			
+
 			this.out_u.value = u
 			this.out_b1.value = b0
 			this.out_b2.value = b1
@@ -562,21 +562,21 @@ const Op_Counter = register(
 			this.out_o.value = o
 		}
 
-		doDraw(tick) {
-			super.doDraw(tick)
+		doDraw(tick, p5ctx) {
+			super.doDraw(tick, p5ctx)
 
-			push()
+			p5ctx.push()
 
-			noStroke()
-			fill(0)
-			textAlign(CENTER, BOTTOM)
-			textSize(18)
-			text(this.value, 0, 5)
-			textAlign(CENTER, TOP)
-			textSize(10)
-			text('COUNTER', 0, 5)
+			p5ctx.noStroke()
+			p5ctx.fill(0)
+			p5ctx.textAlign(p5ctx.CENTER, p5ctx.BOTTOM)
+			p5ctx.textSize(18)
+			p5ctx.text(this.value, 0, 5)
+			p5ctx.textAlign(p5ctx.CENTER, p5ctx.TOP)
+			p5ctx.textSize(10)
+			p5ctx.text('COUNTER', 0, 5)
 
-			pop()
+			p5ctx.pop()
 		}
 	}
 )
