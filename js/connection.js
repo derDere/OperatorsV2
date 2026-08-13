@@ -54,6 +54,11 @@ class Connection {
 			this.value = this.start.value
 		}
 		this.line.update(tick, p5ctx)
+		if (this.line?.mouseIsOver) {
+			if (this.start) {
+				tooltip = (this.start.value) + ''
+			}
+		}
 	}
 
 	draw(tick, p5ctx) {
