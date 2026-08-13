@@ -229,6 +229,7 @@ div.text-input div.empty {
 	width: 100%;
 	color: #060;
 	text-align: center;
+	user-select: none;
 }
 
 div.terminal-display {

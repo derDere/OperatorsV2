@@ -8,6 +8,7 @@ var lastDragMousePos = null
 var mainCanvas = null
 var screenSplit = 0.2
 var mainP5 = null
+var tooltip = ""
 
 function updateSplitter(p5ctx) {
 	let canvasSize = p5ctx.round(p5ctx.windowWidth * (1 - screenSplit))
@@ -115,6 +116,7 @@ function main_draw(p5ctx) {
 
 	p5ctx.push()
 
+	tooltip = ""
 	p5ctx.cursor('default')
 	p5ctx.clear()
 	p5ctx.noSmooth()
@@ -150,6 +152,23 @@ function main_draw(p5ctx) {
 	p5ctx.textSize(12)
 	p5ctx.textAlign(p5ctx.LEFT, p5ctx.TOP)
 	p5ctx.text("Double click to add operators.\nRight click to move.", 10, 10)
+
+	if (tooltip.trim().length > 0) {
+		p5ctx.push()
+		p5ctx.textSize(12)
+		p5ctx.textAlign(p5ctx.LEFT, p5ctx.TOP)
+		let tx = p5ctx.mouseX + 20
+		let ty = p5ctx.mouseY + 20
+		let bounds = p5ctx.textBounds(tooltip, tx, ty);
+		p5ctx.stroke('333')
+		p5ctx.fill('#ffffff80')
+		p5ctx.rect(tx - 0.5, ty - 0.5, p5ctx.round(bounds.w) + 10, p5ctx.round(bounds.h) + 10)
+
+		p5ctx.noStroke()
+		p5ctx.fill('#000')
+		p5ctx.text(tooltip, tx + 5, ty + 5)
+		p5ctx.pop()
+	}
 
 	p5ctx.pop()
 }
