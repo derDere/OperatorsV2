@@ -230,3 +230,48 @@ div.text-input div.empty {
 	color: #060;
 	text-align: center;
 }
+
+div.terminal-display {
+	display: block;
+	position: relative;
+	background: #000;
+	color: #afa;
+	border: 3px solid #aaa;
+	border-radius: 6px;
+}
+
+span.terminal-display-cell {
+	font-family: 'Courier New', Courier, monospace;
+	font-size: 15px;
+	display: block;
+	position: absolute;
+	background: #020;
+	color: #afa;
+	overflow: hidden;
+	width: 10px;
+	height: 15px;
+	border-radius: 3px;
+	text-align: center;
+}
+
+span.terminal-display-cell.cursor {
+	background: #070;
+	color: #fff;
+	animation: cursorblick 1s steps(4) infinite;
+	border-radius: 0;
+}
+
+@keyframes cursorblick {
+  0% {
+    background-color: #070; /* Startfarbe (z.B. Rot) */
+  }
+  49% {
+    background-color: #070; /* Startfarbe (z.B. Rot) */
+  }
+  50% {
+    background-color: #020; /* Blinkfarbe (z.B. Schwarz) */
+  }
+  100% {
+    background-color: #020; /* Blinkfarbe (z.B. Schwarz) */
+  }
+}

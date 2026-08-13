@@ -90,6 +90,7 @@ class Operator extends Movable { ///////////////////////////////////////////////
 		super(x, y, DEFAULT_SIZE, BOUNDS_TYPE_RECT)
 
 		this.isSelected = false
+		this.io_color = mainP5.color(0)
 
 		this.width += 20
 		this.inputs = []
@@ -192,7 +193,7 @@ class Operator extends Movable { ///////////////////////////////////////////////
 			p5ctx.rect(0, 0, this.width + 5, this.height + 5)
 			p5ctx.pop()
 		}
-		p5ctx.fill(0)
+		p5ctx.fill(this.io_color)
 		p5ctx.noStroke()
 		p5ctx.textAlign(p5ctx.LEFT, p5ctx.CENTER)
 		p5ctx.textSize(9)
