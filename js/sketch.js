@@ -75,6 +75,11 @@ function keyPressed(e) {
 		if (!!connectionHover) {
 			connectionHover.kill()
 		}
+		else if (selectedOperators.length > 0) {
+			for (let op of [...selectedOperators]) {
+				op.kill()
+			}
+		}
 	}
 	if (e.key == 'Shift') {
 		shiftPressed = true
