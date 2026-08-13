@@ -254,6 +254,9 @@ const Op_Clock = register(
 	}
 )
 
+const TEXT_INPUT_DEFAULT_WIDTH = 165
+const TEXT_INPUT_MIN_WIDTH = 80
+//const TEXT_INPUT_DEFAULT_PART_LEN = 12
 const Op_TextInput = register(
 	"Text Input",
 	"Provides a way to read bytes entered by the user",
@@ -264,9 +267,11 @@ const Op_TextInput = register(
 
 			this.stackDisplayEle = null
 			this.textInputEle = null
+			this.elementWidth = TEXT_INPUT_DEFAULT_WIDTH
 
 			this.stack = []
 
+			this.entered = false
 			this.powered = false
 			this.lastF = false
 
@@ -276,7 +281,23 @@ const Op_TextInput = register(
 
 			this.out_b = this.newOutput("B")
 			this.out_t = this.newOutput("T")
+			this.out_n = this.newOutput("N")
+			this.out_w = this.newOutput("W")
 			this.out_e = this.newOutput("E")
+		}
+
+		getConfig() {
+			return {
+				...super.getConfig(),
+				eleWidth: mainP5.max(this.elementWidth, TEXT_INPUT_MIN_WIDTH)
+			}
+		}
+
+		setConfig(conf, loaded=false) {
+			super.setConfig(conf, loaded)
+			if ('eleWidth' in conf) {
+				this.elementWidth = mainP5.max(conf.eleWidth, TEXT_INPUT_MIN_WIDTH)
+			}
 		}
 
 		_getStackChars() {
@@ -284,13 +305,15 @@ const Op_TextInput = register(
 			for (let cc of this.stack) {
 				content += String.fromCharCode(cc);
 			}
-			const PART_LEN = 12
-			if (content.length > ((PART_LEN * 2) + 3)) {
+			/* Old way of compressing! the new way is CSS
+			let charLenM = ((TEXT_INPUT_DEFAULT_PART_LEN * 2) + 3) / (TEXT_INPUT_DEFAULT_WIDTH - 6)
+			const partLen = mainP5.floor((mainP5.floor(charLenM * this.elementWidth) - 3) / 2)
+			if (content.length > ((partLen * 2) + 3)) {
 				let tmp = content
-				content = tmp.substr(0, PART_LEN)
+				content = tmp.substr(0, partLen)
 				content += '...'
-				content += tmp.substr(tmp.length - PART_LEN, PART_LEN)
-			}
+				content += tmp.substr(tmp.length - partLen, partLen)
+			}*/
 			return content
 		}
 
@@ -307,12 +330,14 @@ const Op_TextInput = register(
 				this.textInputEle.type = 'text'
 				this.textInputEle.placeholder = ">_"
 				this.textInputEle.addEventListener('input', this._textInput.bind(this))
+				this.textInputEle.addEventListener('keydown', this._keyDown.bind(this))
 			}
 			ele.appendChild(this.textInputEle)
 			return ele
 		}
 
 		updateElement() {
+			this.ele.style.width = this.elementWidth + 'px'
 			let content = this._getStackChars()
 			if (content.length <= 0) {
 				this.stackDisplayEle.className = "empty"
@@ -322,6 +347,13 @@ const Op_TextInput = register(
 				this.stackDisplayEle.className = ""
 				this.stackDisplayEle.innerText = content
 			}
+		}
+
+		_keyDown(event) {
+			if (event.key === 'Enter') {
+        event.preventDefault(); // Verhindert das Absenden des Formulars
+        this.entered = true
+    	}
 		}
 
 		_textInput() {
@@ -354,6 +386,7 @@ const Op_TextInput = register(
 			let p = !!(this.in_p.value)
 			let f = !!(this.in_f.value)
 			let c = !!(this.in_c.value)
+			let w = this.textInputEle?.value?.length > 0
 
 			if (c) {
 				this.stack = []
@@ -378,8 +411,13 @@ const Op_TextInput = register(
 			}
 			this.lastF = f
 
+			let newLine = this.entered
+			this.entered = false
+
 			this.out_b.value = b
 			this.out_t.value = t
+			this.out_n.value = newLine
+			this.out_w.value = w
 			this.out_e.value = e
 		}
 
