@@ -2,6 +2,7 @@ const AllPlaceables = []
 var TableOfEle;
 
 function encodeHtml(html) {
+	if (!html) return ""
   let encodedStr = html.replace(/[\u00A0-\u9999<>\&]/g, function(i) {
 		return '&#'+i.charCodeAt(0)+';'
 	})
@@ -23,6 +24,7 @@ class Placeable extends Operator {
 		this._rowSpan = 1
 		this._lastEle = ""
 		this._lastCellId = ""
+		this.ele = null
 
 		AllPlaceables.push(this)
 
@@ -97,13 +99,29 @@ class Placeable extends Operator {
 		updateTableOfElements()
 	}
 
-	getEle(callback) { // cb is a string with a js function name that can be placed inside of a onChanged input event if the Placeable wants to receive user input
-		// The result of this function should be a html string containing a single main element
-		return '<div class="place-none">None</div>'
+	doUpdate(tick, p5ctx) {
+		super.doUpdate(tick, p5ctx)
+		if (this.ele) {
+			this.updateElement(this.ele)
+		}
 	}
 
-	eleChanged(newValue) {
-		// Gets called from the element if the element is an input and th callback was properly integrated
+	updateElement(ele) {
+		/* virtual */
+	}
+
+	createElement() {
+		let ele = document.createElement('div')
+		ele.className = 'place-none'
+		ele.innerText = 'None'
+		return ele
+	}
+
+	getEle() {
+		if (!this.ele) {
+			this.ele = this.createElement()
+		}
+		return this.ele
 	}
 }
 
@@ -193,6 +211,14 @@ function updateTableOfElements() {
 function updatePlacableElements() {
 	for (let p of AllPlaceables) {
 		let cellId = 'toe-cell-' + p.col + '-' + p.row
+		let ele = p.getEle()
+		let parent = ele.parentElement
+		let parentId = parent?.id
+		if (parentId != cellId) {
+			let cell = document.getElementById(cellId)
+			cell.appendChild(ele)
+		}
+		/*
 		if (p._lastCellId.length > 0 && p._lastCellId != cellId) {
 			let oldCell = document.getElementById(p._lastCellId)
 			if (!!oldCell) {
@@ -209,6 +235,7 @@ function updatePlacableElements() {
 			let ele = cell.children[0]
 			ele.dataset.cid = p.id
 		}
+		*/
 	}
 }
 
@@ -235,22 +262,4 @@ function findFreeSpace() {
 		}
 	}
 	return [0, maxR]
-}
-
-function placeableEleChanged(ele) {
-	let cid = ele.dataset.cid
-	let placeable = ControlMap[cid]
-
-	if (!ele) return
-	if (!placeable) return
-
-	let newVal
-	if ((ele.type === 'checkbox') || (ele.type === 'radio')) {
-		newVal = ele.checked
-	}
-	else {
-		newVal = ele.value
-	}
-
-	placeable.eleChanged(newVal)
 }

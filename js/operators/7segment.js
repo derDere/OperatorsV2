@@ -35,10 +35,8 @@ const Op_7sDisplay = register(
 			this.s7_d = false
 		}
 
-		getEle(callback) {
-			let r = '<div class="seven-segment-display">'
-
-			r += '<div class="segment segment-top disabled"></div>'
+		_getInnerHtml() {
+			let r = '<div class="segment segment-top disabled"></div>'
 			r += '<div class="segment segment-top-left disabled"></div>'
 			r += '<div class="segment segment-top-right disabled"></div>'
 			r += '<div class="segment segment-middle disabled"></div>'
@@ -56,8 +54,18 @@ const Op_7sDisplay = register(
 			if (this.s7_b) r += '<div class="segment segment-bottom"></div>'
 			if (this.s7_d) r += '<div class="segment segment-dot"></div>'
 
-			r += '</div>'
 			return r
+		}
+
+		createElement() {
+			let ele = document.createElement('div')
+			ele.className = 'seven-segment-display'
+			ele.innerHTML = this._getInnerHtml()
+			return ele
+		}
+		
+		updateElement() {
+			this.ele.innerHTML = this._getInnerHtml()
 		}
 
 		doUpdate(tick, p5ctx) {

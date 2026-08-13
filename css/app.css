@@ -1,3 +1,8 @@
+@font-face {
+	font-family: 'digital-7';
+	src: url('/digital-7.ttf');
+}
+
 table.toe {
 	margin: 25px;
 	border: 1px solid #EEE;
@@ -175,4 +180,40 @@ div.seven-segment-display div.segment-dot {
 	left: 55px;
 	width: 8px;
 	height: 8px;
+}
+
+div.text-input {
+	font-family: 'Courier New', Courier, monospace;
+}
+
+div.text-input div,
+div.text-input input {
+	text-align: left;
+	font-family: 'Courier New', Courier, monospace;
+	font-size: 14px;
+	margin: 0;
+	width: 165px;
+	padding: 3px;
+	border: 3px solid #aaa;
+	border-radius: 5px;
+	background: #020;
+	color: #afa;
+}
+
+div.text-input div {
+	font-size: 10px;
+	border-bottom: 0 none;
+	border-radius: 6px 6px 0 0;
+}
+
+div.text-input input {
+	font-size: 14px;
+	border-top: 0 none;
+	border-radius: 0 0 6px 6px;
+	outline: none;
+}
+
+div.text-input div.empty {
+	color: #060;
+	text-align: center;
 }

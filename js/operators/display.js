@@ -11,13 +11,14 @@ const Op_Lamp = register(
 			this.in = this.newInput("I")
 		}
 
-		getEle(callback) {
-			if (this.state) {
-				return '<div class="lamp-on"></div>'
-			}
-			else {
-				return '<div class="lamp-off"></div>'
-			}
+		createElement() {
+			let ele = document.createElement('div')
+			ele.className = this.state ? 'lamp-on' : 'lamp-off'
+			return ele
+		}
+
+		updateElement() {
+			this.ele.className = this.state ? 'lamp-on' : 'lamp-off'
 		}
 
 		doUpdate(tick, p5ctx) {
