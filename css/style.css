@@ -6,6 +6,27 @@ body {
 	font-family: Arial, Helvetica, sans-serif;
 }
 
+/* Für Firefox */
+* {
+  scrollbar-width: thin;
+}
+
+/* Für Chrome, Edge und Safari */
+*::-webkit-scrollbar {
+  width: 6px;  /* Vertikale Scrollbar dünn machen */
+  height: 6px; /* Horizontale Scrollbar dünn machen */
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.3); /* Farbe des Schiebers */
+  border-radius: 10px; /* Abgerundete Ecken */
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent; /* Hintergrund der Schiene */
+}
+
+
 #maincanvas canvas {
 	display: block;
 
@@ -75,7 +96,7 @@ body {
 
 #newOperatorSelection {
 	padding: 20px 20px 60px 20px;
-	max-width: 440px;
+	max-width: 450px;
 	max-height: 400px;
 	overflow: auto;
 }
