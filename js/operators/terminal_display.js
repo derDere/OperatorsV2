@@ -1,4 +1,4 @@
-const RANDOM_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!\"§$%&/()=?*';:-1234567890+#-.,<>|@"
+const RANDOM_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!\"/()=?*';:-1234567890+#-.,<>|@"
 const TERMINAL_CELL_W = 10
 const TERMINAL_CELL_H = 15
 const TERMINAL_CELL_M = 1
@@ -31,6 +31,7 @@ const Op_TerminalDisplay = register(
       this.data = []
       this.display = []
 
+      this.fillRandomOnClear = true
       this.showCursor = true
       this._term_w = 20
       this._term_h = 8
@@ -38,14 +39,16 @@ const Op_TerminalDisplay = register(
       this._term_y = 0
       this.inChar = " "
       this.atChar = " "
-      this.lastT = false
+      this.lastW = false
+      this.lastS = false
       this.lastG = false
 
       this._updateDataDisplaySize()
       this._randomFill()
 
       this.in_b = this.newInput("B")
-      this.in_t = this.newInput("T")
+      this.in_w = this.newInput("W")
+      this.in_s = this.newInput("S")
       this.in_x = this.newInput("X")
       this.in_y = this.newInput("Y")
       this.in_g = this.newInput("G")
@@ -154,7 +157,8 @@ const Op_TerminalDisplay = register(
         ...super.getConfig(),
         "Terminal Width": this.termW,
         "Terminal Height": this.termH,
-        "Show Cursor" : this.showCursor
+        "Show Cursor": this.showCursor,
+        "Fill random on Clear": this.fillRandomOnClear
       }
     }
 
@@ -168,6 +172,9 @@ const Op_TerminalDisplay = register(
       }
       if ('Show Cursor' in conf) {
         this.showCursor = conf['Show Cursor']
+      }
+      if ('Fill random on Clear' in conf) {
+        this.fillRandomOnClear = conf['Fill random on Clear']
       }
     }
 
@@ -198,10 +205,12 @@ const Op_TerminalDisplay = register(
       this.charElements = {}
     }
 
-    addChar(c) {
+    addChar(c, moveCursor = true) {
       this.data[this._term_y][this._term_x] = c
-      this._term_x += 1
-      this._fixXY()
+      if (moveCursor) {
+        this._term_x += 1
+        this._fixXY()
+      }
     }
 
     _fixXY() {
@@ -224,7 +233,8 @@ const Op_TerminalDisplay = register(
       let startC = this.atChar
 
       let b = (this.in_b.value) & 255
-      let t = !!(this.in_t.value)
+      let w = !!(this.in_w.value)
+      let s = !!(this.in_s.value)
       let x = (this.in_x.value) & 255
       let y = (this.in_y.value) & 255
       let g = !!(this.in_g.value)
@@ -249,10 +259,14 @@ const Op_TerminalDisplay = register(
       if (c) {
         this._term_x = 0
         this._term_y = 0
+        if (this.fillRandomOnClear) {
+          this._randomFill()
+        }
       }
 
       let cc = String.fromCharCode(b)
-      if (this.lastT != t && t) {
+
+      if (this.lastW != w && w) {
         if (b == 0) {
           this._term_x += 1
           this._fixXY()
@@ -260,7 +274,14 @@ const Op_TerminalDisplay = register(
           this.addChar(cc)
         }
       }
-      this.lastT = t
+      this.lastW = w
+
+      if (this.lastS != s && s) {
+        if (b != 0) {
+          this.addChar(cc, false)
+        }
+      }
+      this.lastS = s
 
       if (this.lastG != g && g) {
         this._term_x = x
@@ -268,7 +289,7 @@ const Op_TerminalDisplay = register(
         this._fixXY()
       }
       this.lastG = g
-      
+
       this.inChar = cc
       this.atChar = this.data[this._term_y][this._term_x]
 
