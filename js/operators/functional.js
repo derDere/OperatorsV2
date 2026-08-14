@@ -57,3 +57,31 @@ const Op_Equals = register(
 		}
 	}
 )
+
+const Op_Add = register(
+	"Add",
+	"O = B1 + B2",
+	class extends base_Functional {
+		constructor(x = 0, y = 0) {
+			super(x, y)
+
+			this.func = (a, b) => (a + b) & 255
+			this.outp = (a, b) => !!(a + b)
+			this.icon = "+"
+		}
+	}
+)
+
+const Op_Sub = register(
+	"Sub",
+	"O = B1 - B2",
+	class extends base_Functional {
+		constructor(x = 0, y = 0) {
+			super(x, y)
+
+			this.func = (a, b) => (a - b) & 255
+			this.outp = (a, b) => !!(a - b)
+			this.icon = "-"
+		}
+	}
+)
