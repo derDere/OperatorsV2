@@ -489,8 +489,8 @@ const Op_byte_to_8bit = register(
 	}
 )
 
-const Op_Counter = register(
-	"Counter",
+const Op_Counter4 = register(
+	"Counter4",
 	"Counts up a 4bit value if triggered",
 	class extends Operator {
 
@@ -559,6 +559,89 @@ const Op_Counter = register(
 			this.out_b2.value = b1
 			this.out_b3.value = b2
 			this.out_b4.value = b3
+			this.out_o.value = o
+		}
+
+		doDraw(tick, p5ctx) {
+			super.doDraw(tick, p5ctx)
+
+			p5ctx.push()
+
+			p5ctx.noStroke()
+			p5ctx.fill(0)
+			p5ctx.textAlign(p5ctx.CENTER, p5ctx.BOTTOM)
+			p5ctx.textSize(18)
+			p5ctx.text(this.value, 0, 5)
+			p5ctx.textAlign(p5ctx.CENTER, p5ctx.TOP)
+			p5ctx.textSize(10)
+			p5ctx.text('COUNTER', 0, 5)
+
+			p5ctx.pop()
+		}
+	}
+)
+
+const Op_Counter8 = register(
+	"Counter8",
+	"Counts up a byte value if triggered",
+	class extends Operator {
+
+		constructor(x = 0, y = 0) {
+			super(x, y)
+
+			this.value = 0
+			this.lastI = false
+			this.lastD = false
+
+			this.in_i = this.newInput("I")
+			this.in_d = this.newInput("D")
+			this.in_r = this.newInput("R")
+
+			this.out_u = this.newOutput("U")
+
+			this.out_b = this.newOutput("B")
+
+			this.out_o = this.newOutput("O")
+		}
+
+		doUpdate(tick, p5ctx) {
+			super.doUpdate(tick, p5ctx)
+
+			let i = !!(this.in_i.value)
+			let d = !!(this.in_d.value)
+			let r = !!(this.in_r.value)
+
+			if (i != this.lastI) {
+				if (i) {
+					this.value += 1
+				}
+			}
+			else if (d != this.lastD) {
+				if (d) {
+					this.value -= 1
+				}
+			}
+
+			if (r) {
+				this.value = 0
+			}
+
+			this.lastI = i
+			this.lastD = d
+
+			let b = (this.value) & 255
+			let o = this.value >= 255
+			let u = this.value < 0
+
+			if (o) {
+				this.value = 0
+			}
+			if (u) {
+				this.value = 255
+			}
+
+			this.out_u.value = u
+			this.out_b.value = b
 			this.out_o.value = o
 		}
 
