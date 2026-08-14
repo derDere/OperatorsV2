@@ -157,6 +157,16 @@ function main_draw(p5ctx) {
 		updateControls(tick, p5ctx)
 	}
 
+	p5ctx.push()
+	p5ctx.noFill()
+	p5ctx.stroke('#5554')
+	p5ctx.strokeWeight(1)
+	let xOC = ((p5ctx.width + 1) % 2) / 2
+	let yOC = ((p5ctx.height + 1) % 2) / 2
+	p5ctx.line(-dragOffset.x - p5ctx.width, -10 - yOC, -dragOffset.x + p5ctx.width, -10 - yOC)
+	p5ctx.line(-10 - xOC, -dragOffset.y - p5ctx.height, -10 - xOC, -dragOffset.y + p5ctx.height)
+	p5ctx.pop()
+
 	drawSelection(p5ctx)
 
 	drawConnections(tick, p5ctx)
