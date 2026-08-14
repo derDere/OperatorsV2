@@ -92,6 +92,8 @@ class Operator extends Movable { ///////////////////////////////////////////////
 	constructor(x = 0, y = 0) {
 		super(x, y, DEFAULT_SIZE, BOUNDS_TYPE_RECT)
 
+		this.isSelectable = true
+
 		this.isSelected = false
 		this.io_color = mainP5.color(0)
 
@@ -199,6 +201,8 @@ class Operator extends Movable { ///////////////////////////////////////////////
 
 	doDraw(tick, p5ctx) {
 		p5ctx.push()
+		
+		// Draw Selectionm
 		if (this.isSelected) {
 			p5ctx.push()
 			p5ctx.stroke('#0080ff40')
@@ -207,6 +211,22 @@ class Operator extends Movable { ///////////////////////////////////////////////
 			p5ctx.rect(0, 0, this.width + 5, this.height + 5)
 			p5ctx.pop()
 		}
+
+		// Draw Propertie Mark
+		if (lastOperator == this) {
+			p5ctx.noStroke()
+			p5ctx.fill('#aaa8')
+			let ap = this.actualPos
+			let acX = (this.width / 2)
+			let acY = -(this.height / 2)
+			p5ctx.triangle(
+				acX, acY,
+				acX - 15, acY,
+				acX, acY + 15
+			)
+		}
+
+		// Draw IOs
 		p5ctx.fill(this.io_color)
 		p5ctx.noStroke()
 		p5ctx.textAlign(p5ctx.LEFT, p5ctx.CENTER)

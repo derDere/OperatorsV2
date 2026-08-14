@@ -51,20 +51,36 @@ function windowResized(p5ctx) {
 }
 
 function mousePressed(event, p5ctx) {
-	if (
-		(!hoverControl) &&
+	const NotOnControl = (!hoverControl)
+	const MouseInBounds = (
 		(p5ctx.mouseX >= 0) &&
 		(p5ctx.mouseX < p5ctx.width) &&
 		(p5ctx.mouseY >= 0) &&
-		(p5ctx.mouseY < p5ctx.height) &&
-		(p5ctx.mouseButton.right)
+		(p5ctx.mouseY < p5ctx.height)
+	)
+
+	if (
+		NotOnControl &&
+		MouseInBounds &&
+		p5ctx.mouseButton.right
 	) {
 		canvasIsDragged = true
+	}
+
+	if (
+		NotOnControl &&
+		MouseInBounds &&
+		p5ctx.mouseButton.left
+	) {
+		selectedOperators = []
+		updateProps(null)
+		startSelection(event, p5ctx)
 	}
 }
 
 function mouseReleased() {
 	canvasIsDragged = false
+	stopSelection(mainP5)
 }
 
 var shiftPressed = false
@@ -134,10 +150,14 @@ function main_draw(p5ctx) {
 
 	mousePos = p5ctx.createVector(p5ctx.mouseX - (p5ctx.width / 2) - dragOffset.x, p5ctx.mouseY - (p5ctx.height / 2) - dragOffset.y)
 
+	updateSelection(p5ctx)
+
 	if (!newOpDialogOpen) {
 		updateConnections(tick, p5ctx)
 		updateControls(tick, p5ctx)
 	}
+
+	drawSelection(p5ctx)
 
 	drawConnections(tick, p5ctx)
 	drawControls(tick, p5ctx)
