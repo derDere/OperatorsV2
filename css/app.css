@@ -281,3 +281,41 @@ div.byte-display {
 	display: inline-block;
 	white-space: pre;
 }
+
+div.line-display {
+	display: block;
+	position: relative;
+	background: #000;
+	background: radial-gradient(ellipse at center,  #002e00 0%,#001000 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	color: #afa;
+	border: 3px solid #aaa;
+	border-radius: 6px;
+	overflow: hidden;
+}
+
+div.line-display canvas {
+	position: relative;
+	z-index: 1;
+
+	image-rendering: -moz-crisp-edges;
+	image-rendering: -webkit-crisp-edges;
+	image-rendering: pixelated;
+	image-rendering: crisp-edges;
+}
+
+div.line-display div.dot {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	top: 128px;
+	left: 128px;
+	background: #fff;
+	border: 1px solid #fff8;
+	border-radius: 50%;
+	z-index: 100;
+	filter: drop-shadow(0px 0px 2px #fff);
+}
+
+div.line-display.no-cursor div.dot {
+	display: none;
+}
