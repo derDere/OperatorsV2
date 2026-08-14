@@ -8,10 +8,10 @@ const Op_Pulse = register(
 
 			this.last = false
 
-			this.in_s = this.newInput("A")
+			this.in_s = this.newInput("I") // Input
 
-			this.out_p_u = this.newOutput("U")
-			this.out_p_d = this.newOutput("D")
+			this.out_p_u = this.newOutput("U") // Up flank
+			this.out_p_d = this.newOutput("D") // Down flank
 		}
 
 		doUpdate(tick, p5ctx) {

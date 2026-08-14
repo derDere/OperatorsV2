@@ -3,10 +3,10 @@ class base_Simple extends Operator {
 	constructor(x = 0, y = 0) {
 		super(x, y)
 
-		this.in_a = this.newInput("I1")
-		this.in_b = this.newInput("I2")
-		this.out_c = this.newOutput("O")
-		this.out_not_c = this.newOutput("!O")
+		this.in_a = this.newInput("I1") // Input 1
+		this.in_b = this.newInput("I2") // Input 2
+		this.out_c = this.newOutput("O") // Output
+		this.out_not_c = this.newOutput("!O") // Not Output
 
 		this.action = (a, b) => false
 		this.icon = ""
@@ -109,8 +109,8 @@ const Op_Pipe1 = register(
 
 			this.width = 20
 
-			this.in_i = this.newInput("")
-			this.out_o = this.newOutput("")
+			this.in_i = this.newInput("") // Input
+			this.out_o = this.newOutput("") // Output
 
 			this.height = 20
 		}
@@ -133,15 +133,15 @@ const Op_Pipe4 = register(
 
 			this.width = 20
 
-			this.in_i1 = this.newInput("")
-			this.in_i2 = this.newInput("")
-			this.in_i3 = this.newInput("")
-			this.in_i4 = this.newInput("")
+			this.in_i1 = this.newInput("") // Input 1
+			this.in_i2 = this.newInput("") // Input 2
+			this.in_i3 = this.newInput("") // Input 3
+			this.in_i4 = this.newInput("") // Input 4
 
-			this.out_o1 = this.newOutput("")
-			this.out_o2 = this.newOutput("")
-			this.out_o3 = this.newOutput("")
-			this.out_o4 = this.newOutput("")
+			this.out_o1 = this.newOutput("") // Output 1
+			this.out_o2 = this.newOutput("") // Output 2
+			this.out_o3 = this.newOutput("") // Output 3
+			this.out_o4 = this.newOutput("") // Output 4
 		}
 
 		doUpdate(tick, p5ctx) {
@@ -165,23 +165,23 @@ const Op_Pipe8 = register(
 
 			this.width = 20
 
-			this.in_i1 = this.newInput("")
-			this.in_i2 = this.newInput("")
-			this.in_i3 = this.newInput("")
-			this.in_i4 = this.newInput("")
-			this.in_i5 = this.newInput("")
-			this.in_i6 = this.newInput("")
-			this.in_i7 = this.newInput("")
-			this.in_i8 = this.newInput("")
+			this.in_i1 = this.newInput("") // Input 1
+			this.in_i2 = this.newInput("") // Input 2
+			this.in_i3 = this.newInput("") // Input 3
+			this.in_i4 = this.newInput("") // Input 4
+			this.in_i5 = this.newInput("") // Input 5
+			this.in_i6 = this.newInput("") // Input 6
+			this.in_i7 = this.newInput("") // Input 7
+			this.in_i8 = this.newInput("") // Input 8
 
-			this.out_o1 = this.newOutput("")
-			this.out_o2 = this.newOutput("")
-			this.out_o3 = this.newOutput("")
-			this.out_o4 = this.newOutput("")
-			this.out_o5 = this.newOutput("")
-			this.out_o6 = this.newOutput("")
-			this.out_o7 = this.newOutput("")
-			this.out_o8 = this.newOutput("")
+			this.out_o1 = this.newOutput("") // Output 1
+			this.out_o2 = this.newOutput("") // Output 2
+			this.out_o3 = this.newOutput("") // Output 3
+			this.out_o4 = this.newOutput("") // Output 4
+			this.out_o5 = this.newOutput("") // Output 5
+			this.out_o6 = this.newOutput("") // Output 6
+			this.out_o7 = this.newOutput("") // Output 7
+			this.out_o8 = this.newOutput("") // Output 8
 		}
 
 		doUpdate(tick, p5ctx) {
@@ -210,7 +210,7 @@ const Op_Value = register(
 			this.binary = true
 			this.value = false
 
-			this.out_v = this.newOutput("V")
+			this.out_v = this.newOutput("V") // Value
 		}
 
 		getConfig() {

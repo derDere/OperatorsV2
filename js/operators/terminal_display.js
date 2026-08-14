@@ -46,19 +46,19 @@ const Op_TerminalDisplay = register(
       this._updateDataDisplaySize()
       this._randomFill()
 
-      this.in_b = this.newInput("B")
-      this.in_w = this.newInput("W")
-      this.in_s = this.newInput("S")
-      this.in_x = this.newInput("X")
-      this.in_y = this.newInput("Y")
-      this.in_g = this.newInput("G")
-      this.in_c = this.newInput("C")
+      this.in_b = this.newInput("B") // Byte
+      this.in_w = this.newInput("W") // Write
+      this.in_s = this.newInput("S") // Set
+      this.in_x = this.newInput("X") // Cursor pos X for Goto
+      this.in_y = this.newInput("Y") // Cursor pos Y for Goto
+      this.in_g = this.newInput("G") // Goto X Y
+      this.in_c = this.newInput("C") // Clear
 
-      this.out_b = this.newOutput("B")
-      this.out_x = this.newOutput("X")
-      this.out_y = this.newOutput("Y")
-      this.out_t = this.newOutput("T")
-      this.out_e = this.newOutput("E")
+      this.out_b = this.newOutput("B") // Byte (at Cursor)
+      this.out_x = this.newOutput("X") // Current X
+      this.out_y = this.newOutput("Y") // Current Y
+      this.out_t = this.newOutput("T") // Trigger
+      this.out_e = this.newOutput("E") // Empty
     }
 
     _getEleDisplayContent() {

@@ -15,15 +15,15 @@ const Op_Stack = register(
       this.lastP = false
       this.lastC = false
 
-      this.in_v = this.newInput("V")
-			this.in_t = this.newInput("T")
-			this.in_f = this.newInput("F")
-			this.in_p = this.newInput("P")
-			this.in_c = this.newInput("C")
+      this.in_v = this.newInput("V") // Value
+			this.in_t = this.newInput("T") // Trigger
+			this.in_f = this.newInput("F") // Flush
+			this.in_p = this.newInput("P") // Pop
+			this.in_c = this.newInput("C") // Clear
 
-			this.out_b = this.newOutput("B")
-			this.out_t = this.newOutput("T")
-			this.out_e = this.newOutput("E")
+			this.out_b = this.newOutput("B") // Byte
+			this.out_t = this.newOutput("T") // Trigger
+			this.out_e = this.newOutput("E") // Empty
 		}
 
 		doUpdate(tick, p5ctx) {

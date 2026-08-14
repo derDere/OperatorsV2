@@ -8,7 +8,7 @@ const Op_Lamp = register(
 
 			this.state = false
 
-			this.in = this.newInput("I")
+			this.in = this.newInput("I") // Input
 		}
 
 		createElement() {

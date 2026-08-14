@@ -8,8 +8,8 @@ const Op_Switch = register(
 
 			this.state = false
 
-			this.out_c = this.newOutput("O")
-			this.out_not_c = this.newOutput("!O")
+			this.out_c = this.newOutput("O") // Output
+			this.out_not_c = this.newOutput("!O") // Not Output
 
 			this.onMouseClick(this.switched.bind(this))
 		}
@@ -78,8 +78,8 @@ const Op_Button = register(
 			this.pressed = false
 			this.text = "Press!"
 
-			this.out_c = this.newOutput("O")
-			this.out_not_c = this.newOutput("!O")
+			this.out_c = this.newOutput("O") // Output
+			this.out_not_c = this.newOutput("!O") // Not Output
 
 			this.onMouseClick(this.button_clicked.bind(this))
 		}
@@ -157,8 +157,8 @@ const Op_Tick = register(
 
 			this.state = false
 
-			this.out_c = this.newOutput("T")
-			this.out_not_c = this.newOutput("!T")
+			this.out_c = this.newOutput("T") // Tick
+			this.out_not_c = this.newOutput("!T") // Not Tick
 		}
 
 		doUpdate(tick, p5ctx) {
@@ -203,11 +203,11 @@ const Op_Clock = register(
 			this.state = false
 			this.b = 0
 
-			this.in_b = this.newInput("B")
-			this.in_p = this.newInput("P")
+			this.in_b = this.newInput("B") // Byte (Clock Delay)
+			this.in_p = this.newInput("P") // Power
 
-			this.out_c = this.newOutput("C")
-			this.out_nc = this.newOutput("!C")
+			this.out_c = this.newOutput("C") // Clock
+			this.out_nc = this.newOutput("!C") // Not Clock
 		}
 
 		doUpdate(tick, p5ctx) {
@@ -275,15 +275,15 @@ const Op_TextInput = register(
 			this.powered = false
 			this.lastF = false
 
-			this.in_p = this.newInput("P")
-			this.in_f = this.newInput("F")
-			this.in_c = this.newInput("C")
+			this.in_p = this.newInput("P") // Power
+			this.in_f = this.newInput("F") // Flush
+			this.in_c = this.newInput("C") // Clear
 
-			this.out_b = this.newOutput("B")
-			this.out_t = this.newOutput("T")
-			this.out_n = this.newOutput("N")
-			this.out_w = this.newOutput("W")
-			this.out_e = this.newOutput("E")
+			this.out_b = this.newOutput("B") // Byte
+			this.out_t = this.newOutput("T") // Trigger
+			this.out_n = this.newOutput("N") // New Line
+			this.out_w = this.newOutput("W") // Waiting
+			this.out_e = this.newOutput("E") // Empty
 		}
 
 		getConfig() {
