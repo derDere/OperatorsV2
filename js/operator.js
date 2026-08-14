@@ -106,6 +106,17 @@ class Operator extends Movable { ///////////////////////////////////////////////
 		this.onMouseClick(this.selectionClick.bind(this))
 	}
 
+	kill() {
+		super.kill()
+		let i = selectedOperators.indexOf(this)
+		if (i >= 0) {
+			selectedOperators.splice(i, 1)
+			if (lastOperator == this) {
+				updateProps(null)
+			}
+		}
+	}
+
 	getConfig() {
 		return {
 			_id: this.id,

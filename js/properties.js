@@ -53,7 +53,13 @@ function updateProps(operator) {
 	}
 	lastOperator = operator
 
-	let conf = operator.getConfig()
+	let conf
+	if (!!operator) {
+		conf = operator.getConfig()
+	}
+	else {
+		conf = {}
+	}
 	currentSettings = conf
 
 	for (let item of items) {

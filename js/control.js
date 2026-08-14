@@ -40,6 +40,8 @@ class Control {
 		this.children = []
 		this.name = (this.hasRectBounds ? 'Rect' : 'Circle') + 'Control' + (AllControls.length + 1)
 
+		this.killed = false
+
 		this._willClick = false
 
 		this._mouseDownEventHandler = []
@@ -93,8 +95,13 @@ class Control {
 		if (i >= 0) {
 			this._parent?.children?.splice(i, 1)
 		}
+		for (const child of this.children) {
+			child.kill()
+		}
 		this.parent = null
 		delete ControlMap[this.id]
+		this.killed = true
+		delete this
 	}
 
 	get parent() {

@@ -46,6 +46,9 @@ class Connection {
 	}
 
 	update(tick, p5ctx) {
+		if (this.start?.killed || this.end?.killed) {
+			this.kill()
+		}
 		if (
 			(!!this.start) &&
 			(!!this.end)
