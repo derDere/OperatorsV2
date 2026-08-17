@@ -1,4 +1,4 @@
-const ANALOG_PI = 128
+const ANALOG_2PI = 255
 
 
 class base_Vector1t1 extends Operator {
@@ -166,6 +166,25 @@ const Op_Vector_Mult = register(
 			this.action = (x1, y1, v) => [x1 * v, y1 * v]
 
 			this.icon = "Vector\nMult"
+		}
+	}
+)
+
+const Op_Vector_Rota = register(
+	"Vector Rotate",
+	"Rotates a vector by a given radiant value based on V where (2*PI) = " + ANALOG_2PI,
+	class extends base_Vector1at1 {
+		constructor(x = 0, y = 0) {
+			super(x, y)
+
+			this.action = (x1, y1, v) => {
+        let vec = mainP5.createVector(x1, y1)
+        let r = (v / ANALOG_2PI) * (mainP5.PI * 2)
+        vec.rotate(r)
+        return [vec.x, vec.y]
+      }
+
+			this.icon = "Vector\nRota"
 		}
 	}
 )
