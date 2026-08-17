@@ -3,12 +3,21 @@ var TableOfEle;
 
 function encodeHtml(html) {
 	if (!html) return ""
-  let encodedStr = html.replace(/[\u00A0-\u9999<>\&]/g, function(i) {
-		return '&#'+i.charCodeAt(0)+';'
+	let encodedStr = html.replace(/[\u00A0-\u9999<>\&]/g, function (i) {
+		return '&#' + i.charCodeAt(0) + ';'
 	})
 	encodedStr = encodedStr.replace(/"/g, '&quot;')
 	encodedStr = encodedStr.replace(/'/g, '&#39;')
 	return encodedStr
+}
+
+function charify(value) {
+	let c = String.fromCharCode(value)
+	let jj = c
+	jj = JSON.stringify(c)
+	jj = "'" + jj.substr(1)
+	jj = jj.substr(0, jj.length - 1) + "'c"
+	return jj
 }
 
 class Placeable extends Operator {
@@ -84,7 +93,7 @@ class Placeable extends Operator {
 	}
 
 	get colSpan() {
-		return mainP5.round(mainP5.max(this._colSpan ,1))
+		return mainP5.round(mainP5.max(this._colSpan, 1))
 	}
 	set colSpan(value) {
 		this._colSpan = mainP5.round(mainP5.max(value, 1))
@@ -158,7 +167,7 @@ function updateTableOfElements() {
 		grid.push(row)
 	}
 	let currentRows = TableOfEle.children
-	while(currentRows.length > grid.length) {
+	while (currentRows.length > grid.length) {
 		currentRows[currentRows.length - 1].remove()
 		currentRows = TableOfEle.children
 	}

@@ -11,7 +11,10 @@ const Op_Switch = register(
 			this.out_c = this.newOutput("O") // Output
 			this.out_not_c = this.newOutput("!O") // Not Output
 
-			this.onMouseClick(this.switched.bind(this))
+			this.switchCtrl = new Control(-10, 0, 10, BOUNDS_TYPE_CIRCLE, this)
+			this.switchCtrl.backgroundColor = mainP5.color(255)
+
+			this.switchCtrl.onMouseClick(this.switched.bind(this))
 		}
 
 		switched(sender) {
@@ -41,6 +44,9 @@ const Op_Switch = register(
 
 			let a = !!(this.state)
 
+			let sx = a ? 10 : -10
+			this.switchCtrl.pos.x = p5ctx.lerp(this.switchCtrl.pos.x, sx, 0.2)
+
 			let c = a
 			let nc = !c
 
@@ -52,15 +58,23 @@ const Op_Switch = register(
 			super.doDraw(tick, p5ctx)
 
 			p5ctx.push()
-
 			p5ctx.noStroke()
+
+			if (this.state) {
+				p5ctx.fill('#4CAF50')
+			}
+			else {
+				p5ctx.fill('#CCCCCC')
+			}
+			p5ctx.circle(-10, 0, 26)
+			p5ctx.circle(10, 0, 26)
+			p5ctx.rect(0, 0, 20, 26)
+
 			p5ctx.fill(0)
 			p5ctx.textAlign(p5ctx.CENTER, p5ctx.CENTER)
-			p5ctx.textSize(18)
-			p5ctx.text(this.state ? 'ON' : 'OFF', 0, 0)
 			p5ctx.textSize(10)
 			p5ctx.text('SWITCH', 0, -20)
-			p5ctx.text('Click Me', 0, 20)
+			p5ctx.text('Click Me', 0, 22)
 
 			p5ctx.pop()
 		}
@@ -81,7 +95,13 @@ const Op_Button = register(
 			this.out_c = this.newOutput("O") // Output
 			this.out_not_c = this.newOutput("!O") // Not Output
 
-			this.onMouseClick(this.button_clicked.bind(this))
+			this.btnCtrl = new Control(0, 0, 12, BOUNDS_TYPE_RECT, this)
+			this.btnCtrl.width = 44
+			this.btnCtrl.backgroundColor = mainP5.color('transparent')
+			this.btnCtrl.backgroundHoverColor = mainP5.color('#ffffff30')
+			this.btnCtrl.backgroundActiveColor = mainP5.color('#00000030')
+
+			this.btnCtrl.onMouseClick(this.button_clicked.bind(this))
 		}
 
 		getConfig() {
@@ -134,13 +154,15 @@ const Op_Button = register(
 			p5ctx.push()
 
 			p5ctx.noStroke()
+			p5ctx.fill('#E9E9ED')
+			p5ctx.rect(0, 0, this.btnCtrl.width, this.btnCtrl.height)
 			p5ctx.fill(0)
 			p5ctx.textAlign(p5ctx.CENTER, p5ctx.CENTER)
-			p5ctx.textSize(18)
-			p5ctx.text('BTN', 0, 0)
+			p5ctx.textSize(12)
+			p5ctx.text('Button', 0, 1)
 			p5ctx.textSize(10)
 			p5ctx.text(this.text, 0, -20)
-			p5ctx.text('Click Me', 0, 20)
+			p5ctx.text('Click Me', 0, 22)
 
 			p5ctx.pop()
 		}
@@ -264,6 +286,17 @@ const Op_TextInput = register(
 
 		constructor(x = 0, y = 0) {
 			super(x, y)
+
+      this.borderColor = mainP5.color('#aaa')
+      this.backgroundColor = mainP5.color('#020')
+
+      this.borderHoverColor = mainP5.color('#aaa')
+      this.backgroundHoverColor = mainP5.color('#131')
+
+      this.borderActiveColor = mainP5.color('#555')
+      this.backgroundActiveColor = mainP5.color('#000')
+
+      this.io_color = mainP5.color(220)
 
 			this.stackDisplayEle = null
 			this.textInputEle = null
@@ -427,7 +460,7 @@ const Op_TextInput = register(
 			p5ctx.push()
 
 			p5ctx.noStroke()
-			p5ctx.fill(0)
+			p5ctx.fill('#afa')
 			p5ctx.textAlign(p5ctx.CENTER, p5ctx.CENTER)
 			p5ctx.textSize(18)
 			p5ctx.text(this.stack.length, 0, 0)

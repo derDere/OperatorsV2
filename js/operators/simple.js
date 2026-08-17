@@ -244,15 +244,33 @@ const Op_Value = register(
 
 		doDraw(tick, p5ctx) {
 			super.doDraw(tick, p5ctx)
+
+			let value = this.out_v.value
+			let charDisplay = ''
+			let advDisplay = ''
+
+			if (this.binary) {
+				value = !!value
+				advDisplay = value ? "ON" : "OFF"
+			}
+			else {
+				value = value & 255
+				advDisplay = ('00' + value.toString(16).toUpperCase()).substr(-2)
+			}
+			charDisplay = charify(value)
+
 			p5ctx.push()
 			p5ctx.noStroke()
 			p5ctx.fill(0)
 			p5ctx.textAlign(p5ctx.CENTER, p5ctx.BOTTOM)
+			p5ctx.textSize(10)
+			p5ctx.text('VALUE', 0, -15)
 			p5ctx.textSize(18)
-			p5ctx.text(this.out_v.value + '', 0, 5)
+			p5ctx.text(value + '', 0, 5)
 			p5ctx.textAlign(p5ctx.CENTER, p5ctx.TOP)
 			p5ctx.textSize(10)
-			p5ctx.text('VALUE' + '', 0, 5)
+			p5ctx.text(advDisplay, 0, 5)
+			p5ctx.text(charDisplay, 0, 15)
 			p5ctx.pop()
 		}
 	}

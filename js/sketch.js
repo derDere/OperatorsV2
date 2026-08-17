@@ -30,6 +30,8 @@ function main_setup(p5ctx) {
 
 	mainCanvas = p5ctx.createCanvas(updateSplitter(p5ctx), p5ctx.windowHeight)
 
+	p5ctx.frameRate(1000000)
+
 	dragOffset = p5ctx.createVector(0, 0)
 
 	initSplitter()
