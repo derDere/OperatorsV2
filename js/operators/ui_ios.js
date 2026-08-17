@@ -472,3 +472,70 @@ const Op_TextInput = register(
 		}
 	}
 )
+
+const Op_Slider = register(
+	"Slider",
+	"A Slinder Input 0-255",
+	class extends Placeable {
+
+		constructor(x = 0, y = 0) {
+			super(x, y)
+
+			this.value = 0
+			this.val_changed = false
+
+			this.out_v = this.newOutput("V") // Value
+			this.out_t = this.newOutput("T") // trigger if value changed
+		}
+
+		changed(sender) {
+			let v = parseInt(this.ele.value)
+			if (v < 0) v = 0
+			if (v > 255) v = 255
+			v = mainP5.round(v)
+			this.val_changed = this.value != v
+			this.value = v
+			this.ele.title = this.value + ''
+		}
+
+		createElement() {
+			let ele = document.createElement('input')
+			ele.type = 'range'
+			ele.className = 'slider-io'
+			ele.addEventListener('input', this.changed.bind(this))
+			ele.min = 0
+			ele.max = 255
+			ele.step = 1
+			ele.value = this.value
+			ele.title = this.value + ''
+			return ele
+		}
+
+		doUpdate(tick, p5ctx) {
+			super.doUpdate(tick, p5ctx)
+
+			let t = this.val_changed
+			this.val_changed = false
+
+			this.out_v.value = p5ctx.round(this.value & 255)
+			this.out_t.value = t
+		}
+
+		doDraw(tick, p5ctx) {
+			super.doDraw(tick, p5ctx)
+
+			p5ctx.push()
+			p5ctx.noStroke()
+
+			p5ctx.fill(0)
+			p5ctx.textAlign(p5ctx.CENTER, p5ctx.CENTER)
+			p5ctx.textSize(18)
+			p5ctx.text(this.value, 0, 0)
+			p5ctx.textSize(10)
+			p5ctx.text('Slider', 0, -20)
+			p5ctx.text('0-255', 0, 22)
+
+			p5ctx.pop()
+		}
+	}
+)
