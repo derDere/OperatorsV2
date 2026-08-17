@@ -45,7 +45,7 @@ class base_Functional_calc extends base_Functional {
 		let b1 = (this.in_b1.value) & 255
 		let b2 = (this.in_b2.value) & 255
 
-		let r = this.func(b1, b2)
+		let r = p5ctx.round(this.func(b1, b2))
 
 		let rn = r < 0
 		let on = false
@@ -62,7 +62,7 @@ class base_Functional_calc extends base_Functional {
 			on = false
 		}
 
-		this.out_r.value = r
+		this.out_r.value = r & 255
 		this.out_rn.value = rn
 		this.out_o.value = o
 		this.out_on.value = on
