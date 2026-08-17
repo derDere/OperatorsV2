@@ -246,6 +246,19 @@ function updatePlacableElements() {
 		}
 		*/
 	}
+
+	// Check order based on Control.zIndex ... dazu muss ich mir noch was ausdenken
+	/*
+	for (let y = 0; y < maxR; y++) {
+		for (let x = 0; x < maxC; x++) {
+			let cellId = 'toe-cell-' + x + '-' + y
+			let cell = document.getElementById(cellId)
+			if (cell) {
+
+			}
+		}
+	}
+	*/
 }
 
 function findFreeSpace() {

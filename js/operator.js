@@ -123,7 +123,8 @@ class Operator extends Movable { ///////////////////////////////////////////////
 		return {
 			_id: this.id,
 			_x: this.pos.x,
-			_y: this.pos.y
+			_y: this.pos.y,
+			Order: this.zIndex
 		}
 	}
 
@@ -136,6 +137,9 @@ class Operator extends Movable { ///////////////////////////////////////////////
 		}
 		if ("_y" in conf && loaded) {
 			this.pos.y = conf._y
+		}
+		if ("Order" in conf && loaded) {
+			this.zIndex = conf.Order
 		}
 	}
 
