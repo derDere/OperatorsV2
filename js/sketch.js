@@ -90,6 +90,10 @@ var ctrlPressed = false
 
 function keyPressed(e) {
 	if (e.key == 'Delete') {
+		let currentEle = document.activeElement
+		if (currentEle && currentEle.tagName.toUpperCase() == "INPUT") {
+			return
+		}
 		if (!!connectionHover) {
 			connectionHover.kill()
 		}
