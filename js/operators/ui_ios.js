@@ -528,12 +528,29 @@ const Op_Slider = register(
 			p5ctx.noStroke()
 
 			p5ctx.fill(0)
-			p5ctx.textAlign(p5ctx.CENTER, p5ctx.CENTER)
-			p5ctx.textSize(18)
+			p5ctx.textAlign(p5ctx.CENTER, p5ctx.BOTTOM)
+			p5ctx.textSize(14)
 			p5ctx.text(this.value, 0, 0)
+			p5ctx.textAlign(p5ctx.CENTER, p5ctx.CENTER)
 			p5ctx.textSize(10)
 			p5ctx.text('Slider', 0, -20)
 			p5ctx.text('0-255', 0, 22)
+
+			p5ctx.fill(120)
+			p5ctx.rect(0, 7, 45, 2)
+
+			let sx = -45/2
+			let m = (this.value / 255)
+			sx += 45 * m
+
+			let nm = 1 - m
+			p5ctx.noStroke()
+			p5ctx.fill('#0080ff')
+			p5ctx.rect((-45 / 2) * nm, 7, 45 * m, 2)
+			
+			p5ctx.stroke('#0080ff')
+			p5ctx.fill(255)
+			p5ctx.circle(sx, 7, 6)
 
 			p5ctx.pop()
 		}
