@@ -61,7 +61,8 @@ function _dialogToggled(event) {
 }
 
 function operatorSelected(event) {
-	new this.classFnk(newOpPos.x, newOpPos.y)
+	let newOp = new this.classFnk(newOpPos.x, newOpPos.y)
+	newOp.entryName = this.name
 	newOperatorDialog.hidePopover()
 	newOpPos = null
 }

@@ -13,6 +13,10 @@ function NewId() {
 	return crypto.randomUUID()
 }
 
+function getControlById(id) {
+	return AllControls.find(c => c.id == id)
+}
+
 class Control {
 
 	toRect() {
@@ -80,6 +84,7 @@ class Control {
 	}
 
 	kill() {
+		this.killed = true
 		let i = AllControls.indexOf(this)
 		if (i >= 0) {
 			AllControls.splice(i, 1)
@@ -88,12 +93,11 @@ class Control {
 		if (i >= 0) {
 			this._parent?.children?.splice(i, 1)
 		}
-		for (const child of this.children) {
+		for (const child of [...this.children]) {
 			child.kill()
 		}
 		this.parent = null
 		delete ControlMap[this.id]
-		this.killed = true
 		delete this
 	}
 
