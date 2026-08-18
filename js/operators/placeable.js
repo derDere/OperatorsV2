@@ -230,24 +230,6 @@ function updatePlacableElements() {
 			let cell = document.getElementById(cellId)
 			cell.appendChild(ele)
 		}
-		/*
-		if (p._lastCellId.length > 0 && p._lastCellId != cellId) {
-			let oldCell = document.getElementById(p._lastCellId)
-			if (!!oldCell) {
-				oldCell.innerHTML = ""
-			}
-			p._lastEle = ""
-		}
-		p._lastCellId = cellId
-		let cell = document.getElementById(cellId)
-		let newEle = p.getEle('placeableEleChanged(this);')
-		if (p._lastEle != newEle) {
-			p._lastEle = newEle
-			cell.innerHTML = newEle
-			let ele = cell.children[0]
-			ele.dataset.cid = p.id
-		}
-		*/
 	}
 
 	// Check order based on Control.zIndex
