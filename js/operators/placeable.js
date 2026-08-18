@@ -111,6 +111,7 @@ class Placeable extends Operator {
 	doUpdate(tick, p5ctx) {
 		super.doUpdate(tick, p5ctx)
 		if (this.ele) {
+			this.ele.dataset.zIndex = this.zIndex
 			this.updateElement(this.ele)
 		}
 	}
@@ -129,6 +130,8 @@ class Placeable extends Operator {
 	getEle() {
 		if (!this.ele) {
 			this.ele = this.createElement()
+			this.ele.dataset.ctrlId = this.id
+			this.ele.dataset.zIndex = this.zIndex
 		}
 		return this.ele
 	}
@@ -247,18 +250,22 @@ function updatePlacableElements() {
 		*/
 	}
 
-	// Check order based on Control.zIndex ... dazu muss ich mir noch was ausdenken
-	/*
-	for (let y = 0; y < maxR; y++) {
-		for (let x = 0; x < maxC; x++) {
-			let cellId = 'toe-cell-' + x + '-' + y
-			let cell = document.getElementById(cellId)
-			if (cell) {
-
+	// Check order based on Control.zIndex
+	let cells = TableOfEle.getElementsByTagName("td")
+	for (const cell of cells) {
+		let childEles = [...cell.children]
+		if (childEles.length > 0) {
+			childEles.sort((a, b) => (parseInt(a.dataset.zIndex) | 0) - (parseInt(b.dataset.zIndex) | 0))
+			let orderCheckStr = childEles.map(e => e.dataset.ctrlId).join()
+			let oldOrderCheckStr = cell.dataset.orderCheck
+			if (oldOrderCheckStr != orderCheckStr) {
+				for (const child of childEles) {
+					cell.appendChild(child)
+				}
+				cell.dataset.orderCheck = orderCheckStr
 			}
 		}
 	}
-	*/
 }
 
 function findFreeSpace() {

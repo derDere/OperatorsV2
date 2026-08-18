@@ -138,7 +138,7 @@ class Operator extends Movable { ///////////////////////////////////////////////
 		if ("_y" in conf && loaded) {
 			this.pos.y = conf._y
 		}
-		if ("Order" in conf && loaded) {
+		if ("Order" in conf) {
 			this.zIndex = conf.Order
 		}
 	}

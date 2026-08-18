@@ -73,14 +73,7 @@ class Control {
 			this._parent.children.push(this)
 		}
 
-		/*  OLD wont work with the DatBlocker
-		let zIndex = 0
-		if (AllControls.length > 0) {
-			zIndex = AllControls[AllControls.length - 1].zIndex + 1
-		}
-		this.zIndex = zIndex
-		*/
-		this.zIndex = 1
+		this.zIndex = 100
 
 		AllControls.push(this)
 		ControlMap[this.id] = this
