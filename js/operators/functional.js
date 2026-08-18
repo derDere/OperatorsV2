@@ -340,3 +340,88 @@ const Op_Tan = register(
 		}
 	}
 )
+
+
+const Op_Rnd = register(
+	"Random",
+	"O = rand(0- 255)",
+	class extends Operator {
+		constructor(x = 0, y = 0) {
+			super(x, y)
+
+			this.out_r = this.newOutput("R") // Random
+
+			this.icon = "RND"
+		}
+
+		doUpdate(tick, p5ctx) {
+			super.doUpdate(tick, p5ctx)
+
+			let r = mainP5.random(0, 255)
+
+			this.out_r.value = r & 255
+		}
+
+		doDraw(tick, p5ctx) {
+			super.doDraw(tick, p5ctx)
+
+			p5ctx.push()
+
+			p5ctx.noStroke()
+			p5ctx.fill(0)
+			p5ctx.textAlign(p5ctx.CENTER, p5ctx.CENTER)
+			p5ctx.textSize(18)
+			p5ctx.text(this.icon, 0, 0)
+
+			p5ctx.pop()
+		}
+	}
+)
+
+const Op_Noise = register(
+	"Noise",
+	"O = Noise(a / s, b / s, c / s) * 255",
+	class extends Operator {
+		constructor(x = 0, y = 0) {
+			super(x, y)
+			
+			this.in_a = this.newInput("A") // A Val
+			this.in_b = this.newInput("B") // B Val
+			this.in_c = this.newInput("C") // C Bal
+			this.in_s = this.newInput("S") // Scale
+
+			this.out_r = this.newOutput("N") // Noise
+
+			this.icon = "NOI"
+		}
+
+		doUpdate(tick, p5ctx) {
+			super.doUpdate(tick, p5ctx)
+			
+			let a = (this.in_a.value) & 255
+			let b = (this.in_b.value) & 255
+			let c = (this.in_c.value) & 255
+			let s = (this.in_s.value) & 255	
+
+			if (s < 1) s = 1
+
+			let r = mainP5.noise(a/s, b/s, c/s) * 255
+
+			this.out_r.value = r & 255
+		}
+
+		doDraw(tick, p5ctx) {
+			super.doDraw(tick, p5ctx)
+
+			p5ctx.push()
+
+			p5ctx.noStroke()
+			p5ctx.fill(0)
+			p5ctx.textAlign(p5ctx.CENTER, p5ctx.CENTER)
+			p5ctx.textSize(18)
+			p5ctx.text(this.icon, 0, 0)
+
+			p5ctx.pop()
+		}
+	}
+)
