@@ -1,5 +1,6 @@
 const AllPlaceables = []
 var TableOfEle;
+var CellOwners = {}
 
 function encodeHtml(html) {
 	if (!html) return ""
@@ -73,6 +74,8 @@ class Placeable extends Operator {
 		if (i >= 0) {
 			AllPlaceables.splice(i, 1)
 		}
+		this.ele?.remove()
+		this.ele = null
 		updateTableOfElements()
 	}
 
@@ -148,54 +151,77 @@ function createTableOfElements() {
 	updatePlacableElements()
 }
 
-function updateTableOfElements() {
-	if (!TableOfEle) return
+function getCellId(x, y) {
+	return 'toe-cell-' + x + '-' + y
+}
+
+function computeTableLayout() {
+	let anchors = []
+	let anchorById = {}
+	for (let p of AllPlaceables) {
+		let cellId = getCellId(p.col, p.row)
+		let anchor = anchorById[cellId]
+		if (!anchor) {
+			anchor = { x: p.col, y: p.row, colSpan: 1, rowSpan: 1, cellId: cellId }
+			anchorById[cellId] = anchor
+			anchors.push(anchor)
+		}
+		anchor.colSpan = mainP5.max(anchor.colSpan, p.colSpan)
+		anchor.rowSpan = mainP5.max(anchor.rowSpan, p.rowSpan)
+	}
 
 	let maxC = 0
 	let maxR = 0
-	for (let p of AllPlaceables) {
-		if ((p.col + p.colSpan) > maxC) {
-			maxC = mainP5.max(mainP5.round(p.col), 0) + mainP5.max(mainP5.round(p.colSpan), 1)
-		}
-		if ((p.row + p.rowSpan) > maxR) {
-			maxR = mainP5.max(mainP5.round(p.row), 0) + mainP5.max(mainP5.round(p.rowSpan), 1)
-		}
+	for (let a of anchors) {
+		maxC = mainP5.max(maxC, a.x + a.colSpan)
+		maxR = mainP5.max(maxR, a.y + a.rowSpan)
 	}
-	let grid = []
-	for (let y = 0; y < maxR; y++) {
-		let row = []
-		for (let x = 0; x < maxC; x++) {
-			row.push(1)
+
+	anchors.sort((a, b) => (a.y - b.y) || (a.x - b.x))
+
+	let owners = {}
+	let cells = []
+	for (let a of anchors) {
+		if (a.cellId in owners) {
+			continue
 		}
-		grid.push(row)
-	}
-	let currentRows = TableOfEle.children
-	while (currentRows.length > grid.length) {
-		currentRows[currentRows.length - 1].remove()
-		currentRows = TableOfEle.children
-	}
-	if (currentRows.length > 0) {
-		let cellLen = currentRows[0].children.length
-		while (cellLen > grid[0].length) {
-			for (let row of currentRows) {
-				let cells = row.children
-				cells[cells.length - 1].remove()
-			}
-			cellLen = currentRows[0].children.length
-		}
-	}
-	for (let p of AllPlaceables) {
-		let px = p.col
-		let py = p.row
-		for (let y = 0; y < p.rowSpan; y++) {
-			for (let x = 0; x < p.colSpan; x++) {
-				if (x != 0 && y != 0) {
-					grid[x][y] = 0
+		let colSpan = mainP5.min(a.colSpan, maxC - a.x)
+		let rowSpan = mainP5.min(a.rowSpan, maxR - a.y)
+		for (let y = a.y; y < a.y + rowSpan; y++) {
+			for (let x = a.x; x < a.x + colSpan; x++) {
+				if (getCellId(x, y) in owners) {
+					if (y == a.y) {
+						colSpan = x - a.x
+					} else {
+						rowSpan = y - a.y
+					}
+					break
 				}
 			}
 		}
+		for (let y = a.y; y < a.y + rowSpan; y++) {
+			for (let x = a.x; x < a.x + colSpan; x++) {
+				owners[getCellId(x, y)] = a.cellId
+			}
+		}
+		cells.push({ x: a.x, y: a.y, colSpan: colSpan, rowSpan: rowSpan, cellId: a.cellId })
 	}
-	for (let y = 0; y < maxR; y++) {
+
+	return { maxC: maxC, maxR: maxR, cells: cells, owners: owners }
+}
+
+function updateTableOfElements() {
+	if (!TableOfEle) return
+
+	let layout = computeTableLayout()
+	CellOwners = layout.owners
+
+	let spanById = {}
+	for (let c of layout.cells) {
+		spanById[c.cellId] = c
+	}
+
+	for (let y = 0; y < layout.maxR; y++) {
 		let rowId = 'toe-row-' + y
 		let row = document.getElementById(rowId)
 		if (!row) {
@@ -203,8 +229,13 @@ function updateTableOfElements() {
 			row.id = rowId
 			TableOfEle.appendChild(row)
 		}
-		for (let x = 0; x < maxC; x++) {
-			let cellId = 'toe-cell-' + x + '-' + y
+		let wantedCells = []
+		for (let x = 0; x < layout.maxC; x++) {
+			let cellId = getCellId(x, y)
+			let owner = CellOwners[cellId]
+			if (owner && owner != cellId) {
+				continue
+			}
 			let cell = document.getElementById(cellId)
 			if (!cell) {
 				cell = document.createElement('td')
@@ -214,21 +245,45 @@ function updateTableOfElements() {
 				cell.dataset.y = y
 				cell.align = 'center'
 				cell.valign = 'middle'
+			}
+			let span = spanById[cellId]
+			cell.colSpan = span ? span.colSpan : 1
+			cell.rowSpan = span ? span.rowSpan : 1
+			wantedCells.push(cell)
+		}
+		let cellCheckStr = wantedCells.map(c => c.id).join()
+		if (row.dataset.cellCheck != cellCheckStr) {
+			for (const old of [...row.children]) {
+				if (wantedCells.indexOf(old) < 0) {
+					old.remove()
+				}
+			}
+			for (const cell of wantedCells) {
 				row.appendChild(cell)
 			}
+			row.dataset.cellCheck = cellCheckStr
 		}
+	}
+
+	let currentRows = TableOfEle.children
+	while (currentRows.length > layout.maxR) {
+		currentRows[currentRows.length - 1].remove()
+		currentRows = TableOfEle.children
 	}
 }
 
 function updatePlacableElements() {
 	for (let p of AllPlaceables) {
-		let cellId = 'toe-cell-' + p.col + '-' + p.row
+		let posId = getCellId(p.col, p.row)
+		let cellId = CellOwners[posId] || posId
 		let ele = p.getEle()
 		let parent = ele.parentElement
 		let parentId = parent?.id
 		if (parentId != cellId) {
 			let cell = document.getElementById(cellId)
-			cell.appendChild(ele)
+			if (cell) {
+				cell.appendChild(ele)
+			}
 		}
 	}
 
@@ -251,26 +306,13 @@ function updatePlacableElements() {
 }
 
 function findFreeSpace() {
-	let maxC = 0
-	let maxR = 0
-	let blocked = {}
-	for (let p of AllPlaceables) {
-		if ((p.col + p.colSpan) > maxC) {
-			maxC = p.col + p.colSpan
-		}
-		if ((p.row + p.rowSpan) > maxR) {
-			maxR = p.row + p.rowSpan
-		}
-		let cellId = 'toe-cell-' + p.col + '-' + p.row
-		blocked[cellId] = true
-	}
-	for (let y = 0; y < maxR; y++) {
-		for (let x = 0; x < maxC; x++) {
-			let cellId = 'toe-cell-' + x + '-' + y
-			if (!(cellId in blocked)) {
+	let layout = computeTableLayout()
+	for (let y = 0; y < layout.maxR; y++) {
+		for (let x = 0; x < layout.maxC; x++) {
+			if (!(getCellId(x, y) in layout.owners)) {
 				return [x, y]
 			}
 		}
 	}
-	return [0, maxR]
+	return [0, layout.maxR]
 }
