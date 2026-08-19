@@ -3070,7 +3070,7 @@ function buildEditPlan(object, tree, node, seen, path) {
       if (name in object) {
         keys.push(name);
       } else {
-        console.warn('dat.GUI.edit: "' + path + name + '" steht in den Definitionen, fehlt aber im Objekt.');
+        //console.warn('dat.GUI.edit: "' + path + name + '" steht in den Definitionen, fehlt aber im Objekt.');
       }
     }
   }
