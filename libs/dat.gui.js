@@ -23,6 +23,19 @@
  *     `gui.onOpenClose(fn)` sowie die am Hauptelement aufsteigenden
  *     DOM-Ereignisse 'dat-open' und 'dat-close' mit
  *     `event.detail = { gui, closed }`.
+ *   - Groessen-Ereignis: `gui.onSizeChange(fn)`, auch als `gui.onResize(fn)`
+ *     erreichbar, sowie das DOM-Ereignis 'dat-resize'. Es meldet jede
+ *     Aenderung des sichtbaren Bereichs - Auf- und Zuklappen, Hinzufuegen und
+ *     Entfernen von Eigenschaften, Breitenaenderung, Fenstergroesse, Position,
+ *     MARGIN, Ein- und Ausblenden. Das Ereignisobjekt nennt die Ursache als
+ *     Wahrheitswerte `opened`, `closed`, `widthChanged`, `added` und
+ *     `removed` - bei jedem anderen Auslöser sind alle falsch - und liefert
+ *     unter `top`, `left`, `width`, `height` den sichtbaren Bereich in
+ *     Fensterkoordinaten, den Klapp-Button eingeschlossen.
+ *   - Abmessungen jederzeit abfragbar: `gui.bounds` liefert den sichtbaren
+ *     Bereich samt Klapp-Button, `gui.listBounds` den der Steuerelement-Liste
+ *     ohne ihn. Beide als `{ top, left, width, height }` in
+ *     Fensterkoordinaten.
  *
  * Copyright 2011 Data Arts Team, Google Creative Lab
  *
@@ -1844,6 +1857,87 @@ function updateStateClasses(gui) {
     dom.removeClass(element, GUI.CLASS_STATE_EMPTY);
   }
 }
+// Ursachen einer Groessenaenderung. Ist keine vorgemerkt, kommt die Aenderung
+// von aussen und alle Wahrheitswerte des Ereignisses sind falsch.
+var CAUSE_OPENED = 'opened';
+var CAUSE_CLOSED = 'closed';
+var CAUSE_WIDTH = 'widthChanged';
+var CAUSE_ADDED = 'added';
+var CAUSE_REMOVED = 'removed';
+var pendingSizeCause = null;
+// Merkt die Ursache der Groessenaenderung vor, die `change` ausloest.
+function withSizeCause(cause, change) {
+  var previous = pendingSizeCause;
+  pendingSizeCause = cause;
+  try {
+    return change();
+  } finally {
+    pendingSizeCause = previous;
+  }
+}
+// Sichtbarer Bereich eines GUIs in Fensterkoordinaten. Der Klapp-Button liegt
+// je nach Kante ausserhalb des Elements und gehoert mit dazu.
+function visibleBounds(gui) {
+  var box = gui.domElement.getBoundingClientRect();
+  var top = box.top;
+  var left = box.left;
+  var right = box.right;
+  var bottom = box.bottom;
+  if (gui.__closeButton) {
+    var button = gui.__closeButton.getBoundingClientRect();
+    top = Math.min(top, button.top);
+    left = Math.min(left, button.left);
+    right = Math.max(right, button.right);
+    bottom = Math.max(bottom, button.bottom);
+  }
+  return { top: top, left: left, width: right - left, height: bottom - top };
+}
+// Sichtbarer Bereich der Steuerelement-Liste in Fensterkoordinaten, also der
+// GUI-Bereich ohne den Klapp-Button.
+function visibleListBounds(gui) {
+  var box = gui.__ul.getBoundingClientRect();
+  return { top: box.top, left: box.left, width: box.width, height: box.height };
+}
+// Vergleicht den sichtbaren Bereich eines GUIs und seiner Ordner mit dem
+// zuletzt gemeldeten und meldet jede Abweichung.
+function emitSizeChange(gui) {
+  var bounds = visibleBounds(gui);
+  var last = gui.__lastBounds;
+  var changed = !last || last.top !== bounds.top || last.left !== bounds.left || last.width !== bounds.width || last.height !== bounds.height;
+  if (changed) {
+    gui.__lastBounds = bounds;
+    if (last) {
+      notifySizeChange(gui, bounds);
+    }
+  }
+  Common.each(gui.__folders, function (folder) {
+    emitSizeChange(folder);
+  });
+}
+// Reicht die neue Lage an die registrierten Rueckrufe und als aufsteigendes
+// DOM-Ereignis am Hauptelement weiter.
+function notifySizeChange(gui, bounds) {
+  var event = {
+    gui: gui,
+    opened: pendingSizeCause === CAUSE_OPENED,
+    closed: pendingSizeCause === CAUSE_CLOSED,
+    widthChanged: pendingSizeCause === CAUSE_WIDTH,
+    added: pendingSizeCause === CAUSE_ADDED,
+    removed: pendingSizeCause === CAUSE_REMOVED,
+    top: bounds.top,
+    left: bounds.left,
+    width: bounds.width,
+    height: bounds.height
+  };
+  Common.each(gui.__sizeListeners, function (listener) {
+    listener.call(gui, event);
+  });
+  gui.domElement.dispatchEvent(new CustomEvent(GUI.EVENT_RESIZE, {
+    detail: event,
+    bubbles: true,
+    cancelable: false
+  }));
+}
 // Meldet einen Klapp-Vorgang an die registrierten Rueckrufe und als
 // aufsteigendes DOM-Ereignis am Hauptelement.
 function notifyOpenClose(gui) {
@@ -1873,6 +1967,8 @@ var GUI = function GUI(pars) {
   this.__openListeners = [];
   this.__closeListeners = [];
   this.__openCloseListeners = [];
+  this.__sizeListeners = [];
+  this.__lastBounds = null;
   params = Common.defaults(params, {
     closeOnTop: false,
     autoPlace: true,
@@ -1932,6 +2028,16 @@ var GUI = function GUI(pars) {
         updateCloseButtonText(_this);
       }
     },
+    bounds: {
+      get: function get$$1() {
+        return visibleBounds(_this);
+      }
+    },
+    listBounds: {
+      get: function get$$1() {
+        return visibleListBounds(_this);
+      }
+    },
     position: {
       get: function get$$1() {
         return params.position;
@@ -1965,6 +2071,9 @@ var GUI = function GUI(pars) {
       set: function set$$1(v) {
         params.width = v;
         setWidth(_this, v);
+        withSizeCause(CAUSE_WIDTH, function () {
+          emitSizeChange(_this.getRoot());
+        });
       }
     },
     name: {
@@ -1991,7 +2100,9 @@ var GUI = function GUI(pars) {
           dom.removeClass(_this.__ul, GUI.CLASS_CLOSED);
         }
         updateStateClasses(_this);
-        this.onResize();
+        withSizeCause(v ? CAUSE_CLOSED : CAUSE_OPENED, function () {
+          _this.onResize();
+        });
         updateCloseButtonText(_this);
         if (changed) {
           notifyOpenClose(_this);
@@ -2085,12 +2196,14 @@ var GUI = function GUI(pars) {
     }
   };
   this.saveToLocalStorageIfPossible = saveToLocalStorage;
+  // Anstoss zum ersten Zeichnen: die Breite kurz um ein Pixel verstellen und
+  // den Neuaufbau des Layouts sofort erzwingen. Der Kunstgriff laeuft an der
+  // width-Eigenschaft vorbei und meldet daher keine Groessenaenderung.
   function resetWidth() {
     var root = _this.getRoot();
-    root.width += 1;
-    Common.defer(function () {
-      root.width -= 1;
-    });
+    setWidth(root, root.width + 1);
+    root.domElement.offsetWidth;
+    setWidth(root, root.width);
   }
   if (!params.parent) {
     resetWidth();
@@ -2101,6 +2214,7 @@ GUI.toggleHide = function () {
   hide = !hide;
   Common.each(hideableGuis, function (gui) {
     gui.domElement.style.display = hide ? 'none' : '';
+    emitSizeChange(gui);
   });
 };
 GUI.CLASS_AUTO_PLACE = 'a';
@@ -2119,6 +2233,7 @@ GUI.CLASS_STATE_EMPTY = 'dat-empty';
 GUI.CLASS_POSITION_PREFIX = 'dat-';
 GUI.EVENT_OPEN = 'dat-open';
 GUI.EVENT_CLOSE = 'dat-close';
+GUI.EVENT_RESIZE = 'dat-resize';
 GUI.POSITIONS = POSITIONS;
 GUI.DEFAULT_POSITION = DEFAULT_POSITION;
 GUI.DEFAULT_MARGIN = DEFAULT_MARGIN;
@@ -2164,6 +2279,9 @@ Common.extend(GUI.prototype,
     this.__controllers.splice(this.__controllers.indexOf(controller), 1);
     updateStateClasses(this);
     var _this = this;
+    withSizeCause(CAUSE_REMOVED, function () {
+      emitSizeChange(_this.getRoot());
+    });
     Common.defer(function () {
       _this.onResize();
     });
@@ -2219,6 +2337,9 @@ Common.extend(GUI.prototype,
     Common.each(folder.__folders, function (subfolder) {
       folder.removeFolder(subfolder);
     });
+    withSizeCause(CAUSE_REMOVED, function () {
+      emitSizeChange(_this.getRoot());
+    });
     Common.defer(function () {
       _this.onResize();
     });
@@ -2241,13 +2362,22 @@ Common.extend(GUI.prototype,
     this.__openCloseListeners.push(fnc);
     return this;
   },
+  onSizeChange: function onSizeChange(fnc) {
+    this.__sizeListeners.push(fnc);
+    return this;
+  },
   hide: function hide() {
     this.domElement.style.display = 'none';
+    emitSizeChange(this.getRoot());
   },
   show: function show() {
     this.domElement.style.display = '';
+    emitSizeChange(this.getRoot());
   },
-  onResize: function onResize() {
+  onResize: function onResize(fnc) {
+    if (Common.isFunction(fnc)) {
+      return this.onSizeChange(fnc);
+    }
     var root = this.getRoot();
     if (root.scrollable) {
       var available = availableHeight(root);
@@ -2273,6 +2403,7 @@ Common.extend(GUI.prototype,
     if (root.__closeButton) {
       root.__closeButton.style.width = root.width + 'px';
     }
+    emitSizeChange(root);
   },
   onResizeDebounced: Common.debounce(function () {
     this.onResize();
@@ -2297,6 +2428,7 @@ Common.extend(GUI.prototype,
     if (this.autoPlace) {
       setWidth(this, this.width);
     }
+    this.onResize();
   },
   getRoot: function getRoot() {
     var gui = this;
@@ -2397,7 +2529,9 @@ function addRow(gui, newDom, liBefore) {
   } else {
     gui.__ul.appendChild(li);
   }
-  gui.onResize();
+  withSizeCause(CAUSE_ADDED, function () {
+    gui.onResize();
+  });
   return li;
 }
 function removeListeners(gui) {

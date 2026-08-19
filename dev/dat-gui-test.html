@@ -83,9 +83,22 @@
 		body.mark-empty .dg.main.dat-closed {
 			outline: 1px dashed #1ed36f;
 		}
+
+		/* Folgt dem Groessen-Ereignis: liegt genau ueber dem GUI. */
+		#overlay {
+			position: fixed;
+			box-sizing: border-box;
+			display: none;
+			border: 2px solid #e61d5f;
+			background: rgba(230, 29, 95, .15);
+			pointer-events: none;
+			z-index: 9999;
+		}
 	</style>
 </head>
 <body>
+	<div id="overlay"></div>
+
 	<div id="panel">
 		<h1>dat.gui Fork: Titel, Statusklassen, Positionen, Klapp-Ereignisse</h1>
 
@@ -147,6 +160,13 @@
 		</fieldset>
 
 		<fieldset>
+			<legend>Groessen-Ereignis von "Properties"</legend>
+			<label><input type="checkbox" id="overlayToggle" onchange="updateOverlay()"> Rahmen ueber das GUI legen</label>
+			<label><input type="checkbox" id="overlayList" onchange="updateOverlay()"> nur die Liste (ohne Klapp-Button)</label>
+			<div id="boundsReadout"></div>
+		</fieldset>
+
+		<fieldset>
 			<legend>Ereignisse</legend>
 			<div id="log"></div>
 		</fieldset>
@@ -189,8 +209,41 @@
 			gui.domElement.addEventListener('dat-close', function (e) {
 				log('DOM dat-close -> ' + name + ' detail.closed=' + e.detail.closed);
 			});
+			gui.onSizeChange(function (e) {
+				log('onSizeChange -> ' + name + ' ' + causeOf(e) +
+					' [' + Math.round(e.left) + ',' + Math.round(e.top) + ' ' +
+					Math.round(e.width) + 'x' + Math.round(e.height) + ']');
+			});
 			guis[name] = gui;
 			return gui;
+		}
+
+		// Nennt den gesetzten Wahrheitswert des Ereignisses.
+		function causeOf(e) {
+			var causes = ['opened', 'closed', 'widthChanged', 'added', 'removed'].filter(function (key) {
+				return e[key];
+			});
+			return causes.length ? causes.join('+') : '(kein Auslöser gesetzt)';
+		}
+
+		// Legt einen Rahmen ueber das GUI, gefuettert aus dem Groessen-Ereignis.
+		function updateOverlay(bounds) {
+			var box = document.getElementById('overlay');
+			var on = document.getElementById('overlayToggle').checked;
+			var listOnly = document.getElementById('overlayList').checked;
+			box.style.display = on ? 'block' : 'none';
+			var area = listOnly ? guis.a.listBounds : (bounds || guis.a.bounds);
+			box.style.left = area.left + 'px';
+			box.style.top = area.top + 'px';
+			box.style.width = area.width + 'px';
+			box.style.height = area.height + 'px';
+			document.getElementById('boundsReadout').textContent =
+				'bounds: ' + describe(guis.a.bounds) + ' | listBounds: ' + describe(guis.a.listBounds);
+		}
+
+		function describe(area) {
+			return Math.round(area.left) + ',' + Math.round(area.top) + ' ' +
+				Math.round(area.width) + 'x' + Math.round(area.height);
 		}
 
 		// Oben rechts: GUI mit Titel, Reglern und Ordner.
@@ -332,7 +385,13 @@
 				: '';
 		}
 
+		// Der Rahmen folgt jeder Groessenaenderung des ersten GUIs.
+		a.onSizeChange(function (e) {
+			updateOverlay(e);
+		});
+
 		refresh();
+		updateOverlay();
 	</script>
 </body>
 </html>
