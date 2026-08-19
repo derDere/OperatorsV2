@@ -1,6 +1,28 @@
 /**
- * dat-gui JavaScript Controller Library
- * https://github.com/dataarts/dat.gui
+ * dat-gui JavaScript Controller Library - Fork fuer OperatorsV2
+ *
+ * Eigenstaendige, im Projekt gepflegte Abwandlung von dat.gui 0.7.x
+ * (https://github.com/dataarts/dat.gui). Der Funktionsumfang der
+ * Ursprungsbibliothek bleibt erhalten und ist um folgende Punkte erweitert:
+ *
+ *   - title: frei waehlbare Beschriftung des Auf-/Zuklappen-Buttons, gesetzt
+ *     als Parameter `new dat.GUI({ title: 'Eigenschaften' })` oder als
+ *     Eigenschaft `gui.title = 'Eigenschaften'`.
+ *   - Statusklassen am Hauptelement (`gui.domElement`): `dat-opened` bzw.
+ *     `dat-closed` je nach Klappzustand, `dat-empty` solange das GUI weder
+ *     Steuerelemente noch Ordner enthaelt.
+ *   - position: eine von sechs Bildschirmpositionen - 'top-right' (Standard),
+ *     'top-left', 'bottom-right', 'bottom-left', 'top-center', 'bottom-center'.
+ *     GUIs derselben Position liegen nebeneinander und ruecken zusammen, wenn
+ *     eines davon breiter oder schmaler wird. Bei den unteren Positionen sitzt
+ *     der Klapp-Button am oberen Rand des GUIs.
+ *   - dat.GUI.MARGIN: Abstand in Pixeln zwischen GUIs derselben Position, zum
+ *     Fensterrand und als Freiraum, den ein zu hohes GUI zur gegenueber-
+ *     liegenden Fensterkante laesst. Jederzeit setzbar, wirkt sofort.
+ *   - Klapp-Ereignisse: `gui.onOpen(fn)`, `gui.onClose(fn)` und
+ *     `gui.onOpenClose(fn)` sowie die am Hauptelement aufsteigenden
+ *     DOM-Ereignisse 'dat-open' und 'dat-close' mit
+ *     `event.detail = { gui, closed }`.
  *
  * Copyright 2011 Data Arts Team, Google Creative Lab
  *
@@ -1673,6 +1695,12 @@ var CenteredDiv = function () {
 var styleSheet = ___$insertStyle(".dg ul{list-style:none;margin:0;padding:0;width:100%;clear:both}.dg.ac{position:fixed;top:0;left:0;right:0;height:0;z-index:0}.dg:not(.ac) .main{overflow:hidden}.dg.main{-webkit-transition:opacity .1s linear;-o-transition:opacity .1s linear;-moz-transition:opacity .1s linear;transition:opacity .1s linear}.dg.main.taller-than-window{overflow-y:auto}.dg.main.taller-than-window .close-button{opacity:1;margin-top:-1px;border-top:1px solid #2c2c2c}.dg.main ul.closed .close-button{opacity:1 !important}.dg.main:hover .close-button,.dg.main .close-button.drag{opacity:1}.dg.main .close-button{-webkit-transition:opacity .1s linear;-o-transition:opacity .1s linear;-moz-transition:opacity .1s linear;transition:opacity .1s linear;border:0;line-height:19px;height:20px;cursor:pointer;text-align:center;background-color:#000}.dg.main .close-button.close-top{position:relative}.dg.main .close-button.close-bottom{position:absolute}.dg.main .close-button:hover{background-color:#111}.dg.a{float:right;margin-right:15px;overflow-y:visible}.dg.a.has-save>ul.close-top{margin-top:0}.dg.a.has-save>ul.close-bottom{margin-top:27px}.dg.a.has-save>ul.closed{margin-top:0}.dg.a .save-row{top:0;z-index:1002}.dg.a .save-row.close-top{position:relative}.dg.a .save-row.close-bottom{position:fixed}.dg li{-webkit-transition:height .1s ease-out;-o-transition:height .1s ease-out;-moz-transition:height .1s ease-out;transition:height .1s ease-out;-webkit-transition:overflow .1s linear;-o-transition:overflow .1s linear;-moz-transition:overflow .1s linear;transition:overflow .1s linear}.dg li:not(.folder){cursor:auto;height:27px;line-height:27px;padding:0 4px 0 5px}.dg li.folder{padding:0;border-left:4px solid rgba(0,0,0,0)}.dg li.title{cursor:pointer;margin-left:-4px}.dg .closed li:not(.title),.dg .closed ul li,.dg .closed ul li>*{height:0;overflow:hidden;border:0}.dg .cr{clear:both;padding-left:3px;height:27px;overflow:hidden}.dg .property-name{cursor:default;float:left;clear:left;width:40%;overflow:hidden;text-overflow:ellipsis}.dg .cr.function .property-name{width:100%}.dg .c{float:left;width:60%;position:relative}.dg .c input[type=text]{border:0;margin-top:4px;padding:3px;width:100%;float:right}.dg .has-slider input[type=text]{width:30%;margin-left:0}.dg .slider{float:left;width:66%;margin-left:-5px;margin-right:0;height:19px;margin-top:4px}.dg .slider-fg{height:100%}.dg .c input[type=checkbox]{margin-top:7px}.dg .c select{margin-top:5px}.dg .cr.function,.dg .cr.function .property-name,.dg .cr.function *,.dg .cr.boolean,.dg .cr.boolean *{cursor:pointer}.dg .cr.color{overflow:visible}.dg .selector{display:none;position:absolute;margin-left:-9px;margin-top:23px;z-index:10}.dg .c:hover .selector,.dg .selector.drag{display:block}.dg li.save-row{padding:0}.dg li.save-row .button{display:inline-block;padding:0px 6px}.dg.dialogue{background-color:#222;width:460px;padding:15px;font-size:13px;line-height:15px}#dg-new-constructor{padding:10px;color:#222;font-family:Monaco, monospace;font-size:10px;border:0;resize:none;box-shadow:inset 1px 1px 1px #888;word-wrap:break-word;margin:12px 0;display:block;width:440px;overflow-y:scroll;height:100px;position:relative}#dg-local-explain{display:none;font-size:11px;line-height:17px;border-radius:3px;background-color:#333;padding:8px;margin-top:10px}#dg-local-explain code{font-size:10px}#dat-gui-save-locally{display:none}.dg{color:#eee;font:11px 'Lucida Grande', sans-serif;text-shadow:0 -1px 0 #111}.dg.main::-webkit-scrollbar{width:5px;background:#1a1a1a}.dg.main::-webkit-scrollbar-corner{height:0;display:none}.dg.main::-webkit-scrollbar-thumb{border-radius:5px;background:#676767}.dg li:not(.folder){background:#1a1a1a;border-bottom:1px solid #2c2c2c}.dg li.save-row{line-height:25px;background:#dad5cb;border:0}.dg li.save-row select{margin-left:5px;width:108px}.dg li.save-row .button{margin-left:5px;margin-top:1px;border-radius:2px;font-size:9px;line-height:7px;padding:4px 4px 5px 4px;background:#c5bdad;color:#fff;text-shadow:0 1px 0 #b0a58f;box-shadow:0 -1px 0 #b0a58f;cursor:pointer}.dg li.save-row .button.gears{background:#c5bdad url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAANCAYAAAB/9ZQ7AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAQJJREFUeNpiYKAU/P//PwGIC/ApCABiBSAW+I8AClAcgKxQ4T9hoMAEUrxx2QSGN6+egDX+/vWT4e7N82AMYoPAx/evwWoYoSYbACX2s7KxCxzcsezDh3evFoDEBYTEEqycggWAzA9AuUSQQgeYPa9fPv6/YWm/Acx5IPb7ty/fw+QZblw67vDs8R0YHyQhgObx+yAJkBqmG5dPPDh1aPOGR/eugW0G4vlIoTIfyFcA+QekhhHJhPdQxbiAIguMBTQZrPD7108M6roWYDFQiIAAv6Aow/1bFwXgis+f2LUAynwoIaNcz8XNx3Dl7MEJUDGQpx9gtQ8YCueB+D26OECAAQDadt7e46D42QAAAABJRU5ErkJggg==) 2px 1px no-repeat;height:7px;width:8px}.dg li.save-row .button:hover{background-color:#bab19e;box-shadow:0 -1px 0 #b0a58f}.dg li.folder{border-bottom:0}.dg li.title{padding-left:16px;background:#000 url(data:image/gif;base64,R0lGODlhBQAFAJEAAP////Pz8////////yH5BAEAAAIALAAAAAAFAAUAAAIIlI+hKgFxoCgAOw==) 6px 10px no-repeat;cursor:pointer;border-bottom:1px solid rgba(255,255,255,0.2)}.dg .closed li.title{background-image:url(data:image/gif;base64,R0lGODlhBQAFAJEAAP////Pz8////////yH5BAEAAAIALAAAAAAFAAUAAAIIlGIWqMCbWAEAOw==)}.dg .cr.boolean{border-left:3px solid #806787}.dg .cr.color{border-left:3px solid}.dg .cr.function{border-left:3px solid #e61d5f}.dg .cr.number{border-left:3px solid #2FA1D6}.dg .cr.number input[type=text]{color:#2FA1D6}.dg .cr.string{border-left:3px solid #1ed36f}.dg .cr.string input[type=text]{color:#1ed36f}.dg .cr.function:hover,.dg .cr.boolean:hover{background:#111}.dg .c input[type=text]{background:#303030;outline:none}.dg .c input[type=text]:hover{background:#3c3c3c}.dg .c input[type=text]:focus{background:#494949;color:#fff}.dg .c .slider{background:#303030;cursor:ew-resize}.dg .c .slider-fg{background:#2FA1D6;max-width:100%}.dg .c .slider:hover{background:#3c3c3c}.dg .c .slider:hover .slider-fg{background:#44abda}\n");
 
 css.inject(styleSheet);
+
+/* Stile der Fork-Erweiterungen: Positions-Container und Nebeneinander-Layout.
+   Der Container je Bildschirmposition ist eine Flexbox; dadurch ruecken die
+   GUIs einer Position bei jeder Breitenaenderung automatisch nach. */
+___$insertStyle(".dg.ac{display:flex}.dg.ac>.dg.a{flex:0 0 auto;position:relative;margin-right:0}.dg.ac.dat-top{top:0;bottom:auto;align-items:flex-start}.dg.ac.dat-bottom{top:auto;bottom:0;align-items:flex-end}.dg.ac.dat-right{flex-direction:row-reverse;justify-content:flex-start}.dg.ac.dat-left{flex-direction:row;justify-content:flex-start}.dg.ac.dat-center{flex-direction:row;justify-content:center}.dg.main.taller-than-window{overflow:visible}.dg.main.taller-than-window>ul{overflow-y:auto;overflow-x:hidden}.dg.main.taller-than-window>ul::-webkit-scrollbar{width:5px;background:rgba(0,0,0,0.2)}.dg.main.taller-than-window>ul::-webkit-scrollbar-corner{height:0;display:none}.dg.main.taller-than-window>ul::-webkit-scrollbar-thumb{border-radius:5px;background:rgba(128,128,128,0.8)}");
+
 var CSS_NAMESPACE = 'dg';
 var HIDE_KEY_CODE = 72;
 var CLOSE_BUTTON_HEIGHT = 20;
@@ -1685,10 +1713,151 @@ var SUPPORTS_LOCAL_STORAGE = function () {
   }
 }();
 var SAVE_DIALOGUE = void 0;
-var autoPlaceVirgin = true;
-var autoPlaceContainer = void 0;
+var POSITIONS = ['top-right', 'top-left', 'bottom-right', 'bottom-left', 'top-center', 'bottom-center'];
+var DEFAULT_POSITION = 'top-right';
+var DEFAULT_MARGIN = 15;
+var margin = DEFAULT_MARGIN;
+var autoPlaceContainers = {};
+var placedGuis = [];
 var hide = false;
 var hideableGuis = [];
+// Senkrechte Haelfte einer Bildschirmposition: 'top' oder 'bottom'.
+function verticalOf(position) {
+  return position.split('-')[0];
+}
+// Waagrechte Haelfte einer Bildschirmposition: 'left', 'right' oder 'center'.
+function horizontalOf(position) {
+  return position.split('-')[1];
+}
+// Prueft eine Positionsangabe und erlaubt dabei Gross-/Kleinschreibung sowie
+// Unterstriche und Leerzeichen als Trenner.
+function normalizePosition(position) {
+  if (Common.isUndefined(position) || position === null) {
+    return DEFAULT_POSITION;
+  }
+  var normalized = String(position).toLowerCase().replace(/[\s_]+/g, '-');
+  if (POSITIONS.indexOf(normalized) === -1) {
+    throw new Error('Unknown GUI position "' + position + '". Available positions: ' + POSITIONS.join(', '));
+  }
+  return normalized;
+}
+// Liefert den Container einer Bildschirmposition und legt ihn beim ersten
+// Zugriff an. Alle GUIs einer Position teilen sich diesen Container.
+function getAutoPlaceContainer(position) {
+  if (Common.isUndefined(autoPlaceContainers[position])) {
+    var container = document.createElement('div');
+    dom.addClass(container, CSS_NAMESPACE);
+    dom.addClass(container, GUI.CLASS_AUTO_PLACE_CONTAINER);
+    dom.addClass(container, GUI.CLASS_POSITION_PREFIX + position);
+    dom.addClass(container, GUI.CLASS_POSITION_PREFIX + verticalOf(position));
+    dom.addClass(container, GUI.CLASS_POSITION_PREFIX + horizontalOf(position));
+    document.body.appendChild(container);
+    autoPlaceContainers[position] = container;
+    applyContainerMargin(container, position);
+  }
+  return autoPlaceContainers[position];
+}
+// Abstand eines Positions-Containers: zwischen den GUIs und zum Fensterrand,
+// an dem die Gruppe klebt.
+function applyContainerMargin(container, position) {
+  var horizontal = horizontalOf(position);
+  container.style.gap = margin + 'px';
+  container.style.paddingLeft = horizontal === 'left' ? margin + 'px' : '0';
+  container.style.paddingRight = horizontal === 'right' ? margin + 'px' : '0';
+}
+// Uebertraegt einen geaenderten Abstand auf alle Container und laesst die
+// betroffenen GUIs ihre Hoehe neu bestimmen.
+function applyMargin() {
+  Common.each(autoPlaceContainers, function (container, position) {
+    applyContainerMargin(container, position);
+  });
+  Common.each(placedGuis, function (gui) {
+    gui.onResize();
+  });
+}
+// Haengt ein automatisch platziertes Haupt-GUI in den Container seiner
+// Bildschirmposition um.
+function placeGui(gui) {
+  if (!gui.autoPlace || gui.parent) {
+    return;
+  }
+  var container = getAutoPlaceContainer(gui.position);
+  if (gui.domElement.parentElement !== container) {
+    container.appendChild(gui.domElement);
+  }
+  if (placedGuis.indexOf(gui) === -1) {
+    placedGuis.push(gui);
+  }
+  updateCloseButtonPlacement(gui);
+  updateResizeHandlePlacement(gui);
+  gui.onResize();
+}
+// Der Klapp-Button liegt an der Kante, die von der Fensterkante wegzeigt: bei
+// unten verankerten GUIs oben, sonst nach Wunsch des closeOnTop-Parameters.
+function closeButtonOnTop(gui) {
+  return gui.closeOnTop || verticalOf(gui.position) === 'bottom';
+}
+// Setzt den Klapp-Button an die passende Kante des GUIs.
+function updateCloseButtonPlacement(gui) {
+  if (!gui.__closeButton) {
+    return;
+  }
+  if (closeButtonOnTop(gui)) {
+    dom.removeClass(gui.__closeButton, GUI.CLASS_CLOSE_BOTTOM);
+    dom.addClass(gui.__closeButton, GUI.CLASS_CLOSE_TOP);
+    gui.domElement.insertBefore(gui.__closeButton, gui.domElement.firstChild);
+  } else {
+    dom.removeClass(gui.__closeButton, GUI.CLASS_CLOSE_TOP);
+    dom.addClass(gui.__closeButton, GUI.CLASS_CLOSE_BOTTOM);
+    gui.domElement.appendChild(gui.__closeButton);
+  }
+}
+// Beschriftet den Auf-/Zuklappen-Button. Ein gesetzter Titel hat Vorrang vor
+// dem Standardtext des Klappzustands.
+function updateCloseButtonText(gui) {
+  if (!gui.__closeButton) {
+    return;
+  }
+  if (!Common.isUndefined(gui.title) && gui.title !== null && gui.title !== '') {
+    gui.__closeButton.innerHTML = gui.title;
+  } else {
+    gui.__closeButton.innerHTML = gui.closed ? GUI.TEXT_OPEN : GUI.TEXT_CLOSED;
+  }
+}
+// Ein GUI gilt als leer, solange es weder Steuerelemente noch Ordner enthaelt.
+function isEmpty(gui) {
+  return gui.__controllers.length === 0 && Object.keys(gui.__folders).length === 0;
+}
+// Spiegelt Klappzustand und Inhalt des GUIs als Klassen am Hauptelement.
+function updateStateClasses(gui) {
+  var element = gui.domElement;
+  if (gui.closed) {
+    dom.removeClass(element, GUI.CLASS_STATE_OPENED);
+    dom.addClass(element, GUI.CLASS_STATE_CLOSED);
+  } else {
+    dom.removeClass(element, GUI.CLASS_STATE_CLOSED);
+    dom.addClass(element, GUI.CLASS_STATE_OPENED);
+  }
+  if (isEmpty(gui)) {
+    dom.addClass(element, GUI.CLASS_STATE_EMPTY);
+  } else {
+    dom.removeClass(element, GUI.CLASS_STATE_EMPTY);
+  }
+}
+// Meldet einen Klapp-Vorgang an die registrierten Rueckrufe und als
+// aufsteigendes DOM-Ereignis am Hauptelement.
+function notifyOpenClose(gui) {
+  var opened = !gui.closed;
+  var listeners = (opened ? gui.__openListeners : gui.__closeListeners).concat(gui.__openCloseListeners);
+  Common.each(listeners, function (listener) {
+    listener.call(gui, gui);
+  });
+  gui.domElement.dispatchEvent(new CustomEvent(opened ? GUI.EVENT_OPEN : GUI.EVENT_CLOSE, {
+    detail: { gui: gui, closed: gui.closed },
+    bubbles: true,
+    cancelable: false
+  }));
+}
 var GUI = function GUI(pars) {
   var _this = this;
   var params = pars || {};
@@ -1701,11 +1870,16 @@ var GUI = function GUI(pars) {
   this.__rememberedObjects = [];
   this.__rememberedObjectIndecesToControllers = [];
   this.__listening = [];
+  this.__openListeners = [];
+  this.__closeListeners = [];
+  this.__openCloseListeners = [];
   params = Common.defaults(params, {
     closeOnTop: false,
     autoPlace: true,
+    position: DEFAULT_POSITION,
     width: GUI.DEFAULT_WIDTH
   });
+  params.position = normalizePosition(params.position);
   params = Common.defaults(params, {
     resizable: params.autoPlace,
     hideable: params.autoPlace
@@ -1747,6 +1921,24 @@ var GUI = function GUI(pars) {
     closeOnTop: {
       get: function get$$1() {
         return params.closeOnTop;
+      }
+    },
+    title: {
+      get: function get$$1() {
+        return params.title;
+      },
+      set: function set$$1(v) {
+        params.title = v;
+        updateCloseButtonText(_this);
+      }
+    },
+    position: {
+      get: function get$$1() {
+        return params.position;
+      },
+      set: function set$$1(v) {
+        params.position = normalizePosition(v);
+        placeGui(_this);
       }
     },
     preset: {
@@ -1791,15 +1983,18 @@ var GUI = function GUI(pars) {
         return params.closed;
       },
       set: function set$$1(v) {
+        var changed = !!params.closed !== !!v;
         params.closed = v;
         if (params.closed) {
           dom.addClass(_this.__ul, GUI.CLASS_CLOSED);
         } else {
           dom.removeClass(_this.__ul, GUI.CLASS_CLOSED);
         }
+        updateStateClasses(_this);
         this.onResize();
-        if (_this.__closeButton) {
-          _this.__closeButton.innerHTML = v ? GUI.TEXT_OPEN : GUI.TEXT_CLOSED;
+        updateCloseButtonText(_this);
+        if (changed) {
+          notifyOpenClose(_this);
         }
       }
     },
@@ -1839,15 +2034,9 @@ var GUI = function GUI(pars) {
       }
     }
     this.__closeButton = document.createElement('div');
-    this.__closeButton.innerHTML = GUI.TEXT_CLOSED;
+    updateCloseButtonText(this);
     dom.addClass(this.__closeButton, GUI.CLASS_CLOSE_BUTTON);
-    if (params.closeOnTop) {
-      dom.addClass(this.__closeButton, GUI.CLASS_CLOSE_TOP);
-      this.domElement.insertBefore(this.__closeButton, this.domElement.childNodes[0]);
-    } else {
-      dom.addClass(this.__closeButton, GUI.CLASS_CLOSE_BOTTOM);
-      this.domElement.appendChild(this.__closeButton);
-    }
+    updateCloseButtonPlacement(this);
     dom.bind(this.__closeButton, 'click', function () {
       _this.closed = !_this.closed;
     });
@@ -1872,15 +2061,8 @@ var GUI = function GUI(pars) {
   }
   if (params.autoPlace) {
     if (Common.isUndefined(params.parent)) {
-      if (autoPlaceVirgin) {
-        autoPlaceContainer = document.createElement('div');
-        dom.addClass(autoPlaceContainer, CSS_NAMESPACE);
-        dom.addClass(autoPlaceContainer, GUI.CLASS_AUTO_PLACE_CONTAINER);
-        document.body.appendChild(autoPlaceContainer);
-        autoPlaceVirgin = false;
-      }
-      autoPlaceContainer.appendChild(this.domElement);
       dom.addClass(this.domElement, GUI.CLASS_AUTO_PLACE);
+      placeGui(this);
     }
     if (!this.parent) {
       setWidth(_this, params.width);
@@ -1913,6 +2095,7 @@ var GUI = function GUI(pars) {
   if (!params.parent) {
     resetWidth();
   }
+  updateStateClasses(this);
 };
 GUI.toggleHide = function () {
   hide = !hide;
@@ -1930,6 +2113,31 @@ GUI.CLASS_CLOSE_BUTTON = 'close-button';
 GUI.CLASS_CLOSE_TOP = 'close-top';
 GUI.CLASS_CLOSE_BOTTOM = 'close-bottom';
 GUI.CLASS_DRAG = 'drag';
+GUI.CLASS_STATE_OPENED = 'dat-opened';
+GUI.CLASS_STATE_CLOSED = 'dat-closed';
+GUI.CLASS_STATE_EMPTY = 'dat-empty';
+GUI.CLASS_POSITION_PREFIX = 'dat-';
+GUI.EVENT_OPEN = 'dat-open';
+GUI.EVENT_CLOSE = 'dat-close';
+GUI.POSITIONS = POSITIONS;
+GUI.DEFAULT_POSITION = DEFAULT_POSITION;
+GUI.DEFAULT_MARGIN = DEFAULT_MARGIN;
+// Abstand zwischen GUIs derselben Position, zum Fensterrand und als Freiraum
+// eines zu hohen GUIs zur gegenueberliegenden Fensterkante.
+Object.defineProperty(GUI, 'MARGIN', {
+  enumerable: true,
+  get: function get$$1() {
+    return margin;
+  },
+  set: function set$$1(v) {
+    var value = Number(v);
+    if (!isFinite(value) || value < 0) {
+      throw new Error('GUI.MARGIN needs a pixel count of 0 or more, got "' + v + '".');
+    }
+    margin = value;
+    applyMargin();
+  }
+});
 GUI.DEFAULT_WIDTH = 245;
 GUI.TEXT_CLOSED = 'Close Controls';
 GUI.TEXT_OPEN = 'Open Controls';
@@ -1954,6 +2162,7 @@ Common.extend(GUI.prototype,
   remove: function remove(controller) {
     this.__ul.removeChild(controller.__li);
     this.__controllers.splice(this.__controllers.indexOf(controller), 1);
+    updateStateClasses(this);
     var _this = this;
     Common.defer(function () {
       _this.onResize();
@@ -1963,8 +2172,12 @@ Common.extend(GUI.prototype,
     if (this.parent) {
       throw new Error('Only the root GUI should be removed with .destroy(). ' + 'For subfolders, use gui.removeFolder(folder) instead.');
     }
-    if (this.autoPlace) {
-      autoPlaceContainer.removeChild(this.domElement);
+    if (this.autoPlace && this.domElement.parentElement) {
+      this.domElement.parentElement.removeChild(this.domElement);
+    }
+    var placedIndex = placedGuis.indexOf(this);
+    if (placedIndex !== -1) {
+      placedGuis.splice(placedIndex, 1);
     }
     var _this = this;
     Common.each(this.__folders, function (subfolder) {
@@ -1989,11 +2202,13 @@ Common.extend(GUI.prototype,
     this.__folders[name] = gui;
     var li = addRow(this, gui.domElement);
     dom.addClass(li, 'folder');
+    updateStateClasses(this);
     return gui;
   },
   removeFolder: function removeFolder(folder) {
     this.__ul.removeChild(folder.domElement.parentElement);
     delete this.__folders[folder.name];
+    updateStateClasses(this);
     if (this.load &&
     this.load.folders &&
     this.load.folders[folder.name]) {
@@ -2014,6 +2229,18 @@ Common.extend(GUI.prototype,
   close: function close() {
     this.closed = true;
   },
+  onOpen: function onOpen(fnc) {
+    this.__openListeners.push(fnc);
+    return this;
+  },
+  onClose: function onClose(fnc) {
+    this.__closeListeners.push(fnc);
+    return this;
+  },
+  onOpenClose: function onOpenClose(fnc) {
+    this.__openCloseListeners.push(fnc);
+    return this;
+  },
   hide: function hide() {
     this.domElement.style.display = 'none';
   },
@@ -2023,16 +2250,16 @@ Common.extend(GUI.prototype,
   onResize: function onResize() {
     var root = this.getRoot();
     if (root.scrollable) {
-      var top = dom.getOffset(root.__ul).top;
+      var available = availableHeight(root);
       var h = 0;
       Common.each(root.__ul.childNodes, function (node) {
         if (!(root.autoPlace && node === root.__save_row)) {
           h += dom.getHeight(node);
         }
       });
-      if (window.innerHeight - top - CLOSE_BUTTON_HEIGHT < h) {
+      if (available < h) {
         dom.addClass(root.domElement, GUI.CLASS_TOO_TALL);
-        root.__ul.style.height = window.innerHeight - top - CLOSE_BUTTON_HEIGHT + 'px';
+        root.__ul.style.height = available + 'px';
       } else {
         dom.removeClass(root.domElement, GUI.CLASS_TOO_TALL);
         root.__ul.style.height = 'auto';
@@ -2146,6 +2373,20 @@ Common.extend(GUI.prototype,
     });
   }
 });
+// Hoehe, die der Steuerelement-Liste im Fenster zur Verfuegung steht. Samt
+// Klapp-Button bleibt ein GUI dadurch um MARGIN unter der Fensterhoehe; der
+// Freiraum liegt an der Kante gegenueber der Verankerung.
+function availableHeight(root) {
+  var reserved = CLOSE_BUTTON_HEIGHT + margin;
+  if (root.autoPlace && verticalOf(root.position) === 'bottom') {
+    return Math.max(0, window.innerHeight - reserved);
+  }
+  var listTop = dom.getOffset(root.__ul).top;
+  if (closeButtonOnTop(root)) {
+    listTop -= CLOSE_BUTTON_HEIGHT;
+  }
+  return Math.max(0, window.innerHeight - listTop - reserved);
+}
 function addRow(gui, newDom, liBefore) {
   var li = document.createElement('li');
   if (newDom) {
@@ -2330,6 +2571,7 @@ function _add(gui, object, property, params) {
   }
   augmentController(gui, li, controller);
   gui.__controllers.push(controller);
+  updateStateClasses(gui);
   return controller;
 }
 function getLocalStorageHash(gui, key) {
@@ -2437,7 +2679,7 @@ function addResizeHandle(gui) {
   });
   function drag(e) {
     e.preventDefault();
-    gui.width += pmouseX - e.clientX;
+    gui.width += (pmouseX - e.clientX) * getResizeFactor(gui);
     gui.onResize();
     pmouseX = e.clientX;
     return false;
@@ -2457,7 +2699,30 @@ function addResizeHandle(gui) {
   }
   dom.bind(gui.__resize_handle, 'mousedown', dragStart);
   dom.bind(gui.__closeButton, 'mousedown', dragStart);
+  gui.domElement.style.position = 'relative';
   gui.domElement.insertBefore(gui.__resize_handle, gui.domElement.firstElementChild);
+  updateResizeHandlePlacement(gui);
+}
+// Der Breiten-Griff liegt an der Kante, die zur Fenstermitte zeigt, und
+// beginnt auf Hoehe der Steuerelement-Liste.
+function updateResizeHandlePlacement(gui) {
+  if (!gui.__resize_handle) {
+    return;
+  }
+  gui.__resize_handle.style.left = horizontalOf(gui.position) === 'left' ? '100%' : '0';
+  gui.__resize_handle.style.top = closeButtonOnTop(gui) ? CLOSE_BUTTON_HEIGHT + 'px' : '0';
+}
+// Breitenzuwachs pro Pixel Mausbewegung nach links. Ein zentriertes GUI waechst
+// nach beiden Seiten, deshalb folgt die gezogene Kante dem doppelten Weg.
+function getResizeFactor(gui) {
+  var horizontal = horizontalOf(gui.position);
+  if (horizontal === 'left') {
+    return -1;
+  }
+  if (horizontal === 'center') {
+    return 2;
+  }
+  return 1;
 }
 function setWidth(gui, w) {
   gui.domElement.style.width = w + 'px';

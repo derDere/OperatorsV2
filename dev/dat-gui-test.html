@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+	<meta charset="utf-8">
+	<title>dat.gui Fork - Testseite</title>
+	<script src="../libs/dat.gui.js"></script>
+	<style>
+		html, body {
+			margin: 0;
+			height: 100%;
+			overflow: hidden;
+			background: #2b2b2b;
+			color: #ddd;
+			font: 12px 'Lucida Grande', sans-serif;
+		}
+
+		#panel {
+			position: absolute;
+			left: 50%;
+			top: 50%;
+			transform: translate(-50%, -50%);
+			width: 500px;
+			background: #1f1f1f;
+			border: 1px solid #444;
+			padding: 10px 14px;
+		}
+
+		h1 {
+			font-size: 13px;
+			margin: 0 0 8px;
+		}
+
+		fieldset {
+			border: 1px solid #444;
+			margin: 0 0 8px;
+			padding: 5px 8px;
+		}
+
+		legend {
+			color: #9cf;
+		}
+
+		button {
+			background: #333;
+			color: #ddd;
+			border: 1px solid #555;
+			padding: 3px 7px;
+			margin: 2px 1px;
+			cursor: pointer;
+		}
+
+		button:hover {
+			background: #444;
+		}
+
+		table {
+			border-collapse: collapse;
+			width: 100%;
+			font-size: 11px;
+		}
+
+		td, th {
+			border: 1px solid #3a3a3a;
+			padding: 1px 4px;
+			text-align: left;
+		}
+
+		#log {
+			height: 86px;
+			overflow-y: auto;
+			font-family: Consolas, monospace;
+			font-size: 11px;
+			background: #141414;
+			border: 1px solid #3a3a3a;
+			padding: 3px;
+		}
+
+		/* Beweis, dass die Statusklassen als Stil-Anknuepfung taugen. */
+		body.mark-empty .dg.main.dat-empty {
+			outline: 1px dashed #e61d5f;
+		}
+
+		body.mark-empty .dg.main.dat-closed {
+			outline: 1px dashed #1ed36f;
+		}
+	</style>
+</head>
+<body>
+	<div id="panel">
+		<h1>dat.gui Fork: Titel, Statusklassen, Positionen, Klapp-Ereignisse</h1>
+
+		<fieldset>
+			<legend>Breite von "Properties" (oben rechts) - die Nachbarn ruecken mit</legend>
+			<button onclick="changeWidth('a', 40)">breiter (+40)</button>
+			<button onclick="changeWidth('a', -40)">schmaler (-40)</button>
+			<span id="widthReadout"></span>
+		</fieldset>
+
+		<fieldset>
+			<legend>Titel von "Properties"</legend>
+			<button onclick="setTitle('Eigenschaften')">"Eigenschaften"</button>
+			<button onclick="setTitle('Sehr langer Titel im Klapp-Button')">langer Titel</button>
+			<button onclick="setTitle('')">leeren (Standardtext)</button>
+		</fieldset>
+
+		<fieldset>
+			<legend>Position: GUI "Wanderer" durchlaeuft alle sechs Plaetze</legend>
+			<button onclick="cyclePosition()">naechste Position</button>
+			<span id="positionReadout"></span>
+			<button onclick="tryBrokenPosition()">ungueltige Position</button>
+		</fieldset>
+
+		<fieldset>
+			<legend>Hoehenbegrenzung - im hohen GUI scrollen, der Titel bleibt stehen</legend>
+			<button onclick="toggleTallGui()">GUI mit 40 Zeilen unten links an/aus</button>
+			<button onclick="moveTallGui()">Seite wechseln</button>
+			<span id="tallReadout"></span>
+		</fieldset>
+
+		<fieldset>
+			<legend>dat.GUI.MARGIN - Abstand zwischen GUIs, zum Rand und als Freiraum</legend>
+			<button onclick="setMargin(0)">0</button>
+			<button onclick="setMargin(15)">15 (Standard)</button>
+			<button onclick="setMargin(40)">40</button>
+			<span id="marginReadout"></span>
+		</fieldset>
+
+		<fieldset>
+			<legend>Inhalt und dat-empty (GUI "Leer", oben rechts)</legend>
+			<button onclick="addControl()">Eigenschaft dazu</button>
+			<button onclick="removeControl()">letzte weg</button>
+			<button onclick="toggleFolder()">Ordner an/aus</button>
+			<label><input type="checkbox" onchange="document.body.classList.toggle('mark-empty', this.checked)"> leere und zugeklappte GUIs umranden</label>
+		</fieldset>
+
+		<fieldset>
+			<legend>Klappen</legend>
+			<button onclick="guis.a.open()">a.open()</button>
+			<button onclick="guis.a.close()">a.close()</button>
+			<button onclick="eachGui(function (g) { g.close(); })">alle zu</button>
+			<button onclick="eachGui(function (g) { g.open(); })">alle auf</button>
+		</fieldset>
+
+		<fieldset>
+			<legend>Zustand der Hauptelemente</legend>
+			<table id="classTable"></table>
+		</fieldset>
+
+		<fieldset>
+			<legend>Ereignisse</legend>
+			<div id="log"></div>
+		</fieldset>
+	</div>
+
+	<script>
+		var settings = {
+			amount: 0.5,
+			count: 12,
+			label: 'Text',
+			active: true,
+			color: '#2fa1d6',
+			mode: 'weich',
+			run: function () { log('run() gedrueckt'); }
+		};
+
+		var guis = {};
+		var extraItems = [];
+		var extraFolder = null;
+
+		function log(message) {
+			var line = document.createElement('div');
+			line.textContent = message;
+			var box = document.getElementById('log');
+			box.insertBefore(line, box.firstChild);
+		}
+
+		function eachGui(fnc) {
+			Object.keys(guis).forEach(function (name) { fnc(guis[name], name); });
+		}
+
+		// Haengt beide Wege der Ereignisbehandlung an: Rueckrufe und DOM-Ereignisse.
+		function watch(name, gui) {
+			gui.onOpen(function (g) { log('onOpen      -> ' + name + ' (closed=' + g.closed + ')'); });
+			gui.onClose(function (g) { log('onClose     -> ' + name + ' (closed=' + g.closed + ')'); });
+			gui.onOpenClose(refresh);
+			gui.domElement.addEventListener('dat-open', function (e) {
+				log('DOM dat-open  -> ' + name + ' detail.closed=' + e.detail.closed);
+			});
+			gui.domElement.addEventListener('dat-close', function (e) {
+				log('DOM dat-close -> ' + name + ' detail.closed=' + e.detail.closed);
+			});
+			guis[name] = gui;
+			return gui;
+		}
+
+		// Oben rechts: GUI mit Titel, Reglern und Ordner.
+		var a = watch('a', new dat.GUI({ title: 'Properties' }));
+		a.add(settings, 'amount', 0, 1);
+		a.add(settings, 'count', 0, 50, 1);
+		a.add(settings, 'label');
+		a.addColor(settings, 'color');
+		var folder = a.addFolder('Unterordner');
+		folder.add(settings, 'active');
+		folder.add(settings, 'run');
+
+		// Oben rechts, zweites GUI: liegt neben dem ersten und startet ohne Inhalt.
+		var empty = watch('leer', new dat.GUI({ title: 'Leer', width: 140 }));
+
+		// Oben links: zwei GUIs nebeneinander.
+		watch('links', new dat.GUI({ title: 'Oben links', position: 'top-left', width: 200 }))
+			.add(settings, 'count', 0, 50, 1);
+		watch('links 2', new dat.GUI({ title: 'Nachbar links', position: 'top-left', width: 160 }))
+			.add(settings, 'label');
+
+		// Oben mitte: Gruppe bleibt zentriert, Schreibweise wird normalisiert.
+		watch('mitte', new dat.GUI({ title: 'Oben mitte', position: 'top-center', width: 190 }))
+			.add(settings, 'amount', 0, 1);
+		watch('mitte 2', new dat.GUI({ title: 'Mitte-Nachbar', position: 'TOP_CENTER', width: 150 }))
+			.add(settings, 'active');
+
+		// Unten rechts, unten links, unten mitte.
+		watch('unten rechts', new dat.GUI({ title: 'Unten rechts', position: 'bottom-right', width: 210 }))
+			.add(settings, 'mode', ['hart', 'weich', 'linear']);
+		watch('unten links', new dat.GUI({ title: 'Unten links', position: 'bottom-left', width: 190 }))
+			.addColor(settings, 'color');
+		watch('unten mitte', new dat.GUI({ title: 'Unten mitte', position: 'bottom-center', width: 200 }))
+			.add(settings, 'run');
+
+		// Wandert per Knopfdruck durch alle Positionen.
+		var wanderer = watch('wanderer', new dat.GUI({ title: 'Wanderer', position: 'bottom-center', width: 140 }));
+		wanderer.add(settings, 'amount', 0, 1).name('wandert');
+
+		// Mehr Zeilen als Fensterhoehe: prueft die Hoehenbegrenzung eines nach
+		// oben wachsenden GUIs; das Entfernen prueft destroy().
+		var tall = null;
+
+		function toggleTallGui() {
+			if (tall) {
+				tall.destroy();
+				delete guis['hoch'];
+				tall = null;
+			} else {
+				tall = watch('hoch', new dat.GUI({ title: 'Viele Zeilen', position: 'bottom-left', width: 150 }));
+				for (var i = 0; i < 40; i++) {
+					tall.add({ value: i }, 'value');
+				}
+			}
+			refresh();
+		}
+
+		// Schickt das hohe GUI zwischen unterer und oberer Kante hin und her.
+		function moveTallGui() {
+			if (!tall) {
+				toggleTallGui();
+			}
+			tall.position = tall.position === 'bottom-left' ? 'top-left' : 'bottom-left';
+			refresh();
+		}
+
+		function setMargin(value) {
+			dat.GUI.MARGIN = value;
+			refresh();
+		}
+
+		function changeWidth(name, delta) {
+			guis[name].width += delta;
+			guis[name].onResize();
+			refresh();
+		}
+
+		function setTitle(title) {
+			guis.a.title = title;
+			refresh();
+		}
+
+		function cyclePosition() {
+			var all = dat.GUI.POSITIONS;
+			var next = all[(all.indexOf(guis.wanderer.position) + 1) % all.length];
+			guis.wanderer.position = next;
+			log('position    -> wanderer = ' + next);
+			refresh();
+		}
+
+		function tryBrokenPosition() {
+			try {
+				guis.wanderer.position = 'oben-hinten';
+			} catch (e) {
+				log('Fehler      -> ' + e.message);
+			}
+		}
+
+		function addControl() {
+			var key = 'prop' + extraItems.length;
+			var host = {};
+			host[key] = Math.round(Math.random() * 100);
+			extraItems.push(empty.add(host, key));
+			refresh();
+		}
+
+		function removeControl() {
+			if (extraItems.length) {
+				empty.remove(extraItems.pop());
+			}
+			refresh();
+		}
+
+		function toggleFolder() {
+			if (extraFolder) {
+				empty.removeFolder(extraFolder);
+				extraFolder = null;
+			} else {
+				extraFolder = empty.addFolder('Ordner');
+				extraFolder.add(settings, 'active');
+			}
+			refresh();
+		}
+
+		// Zeigt fuer jedes GUI Position, Titel und die Klassen des Hauptelements.
+		function refresh() {
+			var rows = ['<tr><th>GUI</th><th>position</th><th>title</th><th>Klassen am Hauptelement</th></tr>'];
+			eachGui(function (gui, name) {
+				rows.push('<tr><td>' + name + '</td><td>' + gui.position + '</td><td>' +
+					(gui.title || '-') + '</td><td>' + gui.domElement.className + '</td></tr>');
+			});
+			document.getElementById('classTable').innerHTML = rows.join('');
+			document.getElementById('widthReadout').textContent = 'width = ' + guis.a.width + 'px';
+			document.getElementById('positionReadout').textContent = 'position = ' + guis.wanderer.position;
+			document.getElementById('marginReadout').textContent = 'dat.GUI.MARGIN = ' + dat.GUI.MARGIN + 'px';
+			document.getElementById('tallReadout').textContent = tall
+				? tall.position + ', Hoehe = ' + Math.round(tall.domElement.getBoundingClientRect().height) +
+					'px von ' + window.innerHeight + 'px'
+				: '';
+		}
+
+		refresh();
+	</script>
+</body>
+</html>
