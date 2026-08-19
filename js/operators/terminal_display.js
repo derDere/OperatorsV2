@@ -163,7 +163,7 @@ const Op_TerminalDisplay = register(
     }
 
     setConfig(conf, loaded = false) {
-      super.setConfig(conf, loaded = false)
+      super.setConfig(conf, loaded)
       if ('Terminal Width' in conf) {
         this.termW = conf['Terminal Width']
       }

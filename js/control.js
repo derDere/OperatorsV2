@@ -14,7 +14,11 @@ function NewId() {
 }
 
 function getControlById(id) {
-	return AllControls.find(c => c.id == id)
+	let control = AllControls.find(c => c.id == id)
+	if (!control) {
+		console.error("ID: '" + id + "' did not match any controls!")
+	}
+	return control
 }
 
 class Control {

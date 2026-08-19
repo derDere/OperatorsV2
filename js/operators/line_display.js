@@ -120,7 +120,7 @@ const Op_LineDisplay = register(
     }
 
     setConfig(conf, loaded = false) {
-      super.setConfig(conf, loaded = false)
+      super.setConfig(conf, loaded)
       if ('Screen Width' in conf) {
         this.screenW = conf['Screen Width']
       }

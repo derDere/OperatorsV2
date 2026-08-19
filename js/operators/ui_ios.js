@@ -112,7 +112,7 @@ const Op_Button = register(
 		}
 
 		setConfig(conf, loaded = false) {
-			super.setConfig(conf, loaded = false)
+			super.setConfig(conf, loaded)
 			if ('text' in conf) {
 				this.text = conf.text
 			}
