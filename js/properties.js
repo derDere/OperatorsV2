@@ -63,6 +63,19 @@ function valueChangedEventHandler(a, b, c, d) {
 	lastOperator.setConfig(currentSettings)
 }
 
+const PropertyDefinitions = {
+	"col": "Column:number[0,1000,1]",
+	"row": "Row:number[0,1000,1]",
+	"colSpan": "Column Span:number[1,1000,1]",
+	"rowSpan": "Row Span:number[1,1000,1]",
+	"Order": "Order:number[1,100000,1]",
+	"Screen Width": "slider[25,1024,1]",
+	"Screen Height": "slider[25,1024,1]",
+	"Terminal Width": "slider[1,100,1]",
+	"Terminal Height": "slider[1,100,1]",
+	"eleWidth": "Input Width:slider[20,1000,1]",
+}
+
 function updateProps(operator) {
 	if (lastOperator == operator) {
 		return
@@ -78,7 +91,12 @@ function updateProps(operator) {
 	}
 	currentSettings = conf
 
-	dgui.edit(conf)
+	let newFields = dgui.edit(conf, PropertyDefinitions)
+
+	for (const prop in newFields) {
+		const field = newFields[prop];
+		field.onChange(valueChangedEventHandler)
+	}
 
 	if (dgui.domElement.classList.contains('dat-empty')) {
 		dgui.close()
