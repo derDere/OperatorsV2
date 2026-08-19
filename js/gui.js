@@ -71,10 +71,6 @@ function initNewOperatorDialog() {
 	newOperatorDialog.addEventListener('toggle', _dialogToggled)
 }
 
-function _selectionMouseEnter(event) {
-	mainP5.print(event)
-}
-
 function _dialogToggled(event) {
 	newOpDialogOpen = event.newState === 'open'
 	if (!newOpDialogOpen) {

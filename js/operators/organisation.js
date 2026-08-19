@@ -105,10 +105,21 @@ const Op_Comment = register(
   }
 )
 
+const bookmarkAnchors = {}
+var datAnchors = null
+var datAnchorsBlocker = null
+
+function initDatAnchors() {
+  datAnchors = new dat.GUI()
+  datAnchors.title = "📘 Bookmarks"
+  datAnchors.position = "bottom-right"
+  datAnchorsBlocker = new DatBlocker(datAnchors)
+}
+
 const Op_Anchor = register(
   "Anchor",
   "Organisation",
-  "Place this anywere on your canvas to mark the location and find those same coordinate again.",
+  "Place this anywere on your canvas to bookmark the location and find those same coordinate again.",
   class extends Operator {
 
     constructor(x = 0, y = 0) {
@@ -124,7 +135,39 @@ const Op_Anchor = register(
       this.backgroundActiveColor = mainP5.color('#00000030')
 
       this.size = 14
-      this.title = "New Anchor (" + x + ", " + -y + ")"
+      let [dx, dy] = this.getDragPos()
+      this.title = "New Anchor (" + dx + ", " + -dy + ")"
+      this.anchorKey = this.title
+
+      this.updateDatAnchors()
+    }
+
+    kill() {
+      super.kill()
+      delete bookmarkAnchors[this.anchorKey]
+      datAnchors.edit(bookmarkAnchors)
+    }
+
+    updateDatAnchors() {
+      if (this.anchorKey in bookmarkAnchors) {
+        delete bookmarkAnchors[this.anchorKey]
+      }
+      let key = this.title
+      let count = 0
+      while(key in bookmarkAnchors) {
+        key = this.title + ` (${++count})`
+      }
+      this.anchorKey = key
+      bookmarkAnchors[this.anchorKey] = this.goto.bind(this)
+      if (!!datAnchors) {
+        datAnchors.edit(bookmarkAnchors)
+      }
+    }
+
+    goto() {
+      let [x, y] = this.getDragPos()
+      dragOffset.x = x
+      dragOffset.y = y
     }
 
     getConfig() {
@@ -139,6 +182,7 @@ const Op_Anchor = register(
       super.setConfig(conf, loaded)
       if ('Title' in conf) {
         this.title = conf.Title
+        this.updateDatAnchors()
       }
       if ('Font Size' in conf) {
         this.size = conf["Font Size"]

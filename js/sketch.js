@@ -38,6 +38,7 @@ function main_setup(p5ctx) {
 	initNewOperatorDialog()
 	createTableOfElements()
 	initMenu()
+	initDatAnchors()
 }
 
 function doubleClicked(event, p5ctx) {
