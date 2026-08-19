@@ -283,7 +283,7 @@ div.byte-display {
 }
 
 div.line-display {
-	display: block;
+	display: inline-block;
 	position: relative;
 	background: #000;
 	background: radial-gradient(ellipse at center,  #002e00 0%,#001000 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
