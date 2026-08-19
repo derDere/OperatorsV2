@@ -20,30 +20,52 @@ function initNewOperatorDialog() {
 	toolTip = document.getElementById('dialog-info-box')
 	toolTipTitle = document.getElementById('dialog-info-box-title')
 	toolTipBody = document.getElementById('dialog-info-box-body')
+
+	let categories = {}
+
 	for (let entryKey in OperatorRegistry) {
 		let entry = OperatorRegistry[entryKey]
-		let option = document.createElement('span')
-		option.className = "new-entry-option"
-		option.dataset.entryName = entry.name
-		let ctx = new p5(p => {
-			let e = new entry.classFnk(0, 0)
-			p.setup = () => {
-				let can = ctx.createCanvas(ctx.max(e.width + 20, 50), ctx.max(e.height + 10, 50))
-				can.parent(option)
-			}
-			p.draw = () => {
-				ctx.background('transparent')
-				ctx.translate(ctx.width / 2 - 10, ctx.height / 2)
-				e.borderWeight = ctx.max(e.height / 60, 1)
-				e.draw(0, ctx)
-				ctx.noLoop()
-				e.kill()
-			}
-		})
-		option.addEventListener('mouseover', showToolTip.bind(entry))
-		option.addEventListener('mouseleave', hideToolTip.bind(entry))
-		option.addEventListener('click', operatorSelected.bind(entry))
-		newOperatorSelection.appendChild(option)
+		if (!(entry.category in categories)) {
+			categories[entry.category] = []
+		}
+		cat = categories[entry.category].push(entryKey)
+		categories[entry.category].sort()
+	}
+
+	let categoryKeys = Object.keys(categories)
+	categoryKeys.sort()
+
+	for (const category of categoryKeys) {
+		let catEle = document.createElement('div')
+		catEle.className = "new-entry-category"
+		catEle.innerText = category
+		newOperatorSelection.appendChild(catEle)
+
+		for (let entryKey of categories[category]) {
+			let entry = OperatorRegistry[entryKey]
+			let option = document.createElement('span')
+			option.className = "new-entry-option"
+			option.dataset.entryName = entry.name
+			let ctx = new p5(p => {
+				let e = new entry.classFnk(0, 0)
+				p.setup = () => {
+					let can = ctx.createCanvas(ctx.max(e.width + 20, 50), ctx.max(e.height + 10, 50))
+					can.parent(option)
+				}
+				p.draw = () => {
+					ctx.background('transparent')
+					ctx.translate(ctx.width / 2 - 10, ctx.height / 2)
+					e.borderWeight = ctx.max(e.height / 60, 1)
+					e.draw(0, ctx)
+					ctx.noLoop()
+					e.kill()
+				}
+			})
+			option.addEventListener('mouseover', showToolTip.bind(entry))
+			option.addEventListener('mouseleave', hideToolTip.bind(entry))
+			option.addEventListener('click', operatorSelected.bind(entry))
+			newOperatorSelection.appendChild(option)
+		}
 	}
 
 	newOperatorDialog.addEventListener('toggle', _dialogToggled)
