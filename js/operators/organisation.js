@@ -124,7 +124,7 @@ const Op_Anchor = register(
       this.backgroundActiveColor = mainP5.color('#00000030')
 
       this.size = 14
-      this.title = "New Anchor (" + x + ", " + y + ")"
+      this.title = "New Anchor (" + x + ", " + -y + ")"
     }
 
     getConfig() {

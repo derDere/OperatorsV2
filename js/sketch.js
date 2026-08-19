@@ -194,6 +194,9 @@ function main_draw(p5ctx) {
 	p5ctx.textSize(12)
 	p5ctx.textAlign(p5ctx.LEFT, p5ctx.TOP)
 	p5ctx.text("Double click to add operators.\nRight click to move.", 10, 10)
+	
+	p5ctx.textAlign(p5ctx.CENTER, p5ctx.BOTTOM)
+	p5ctx.text(`${-dragOffset.x}, ${dragOffset.y}`, p5ctx.width / 2, p5ctx.height - 5)
 
 	if (tooltip.trim().length > 0) {
 		p5ctx.push()
