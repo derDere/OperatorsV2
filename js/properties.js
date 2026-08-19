@@ -74,6 +74,7 @@ const PropertyDefinitions = {
 	"Terminal Width": "slider[1,100,1]",
 	"Terminal Height": "slider[1,100,1]",
 	"eleWidth": "Input Width:slider[20,1000,1]",
+	"color": "Color:color",
 }
 
 function updateProps(operator) {

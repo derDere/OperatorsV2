@@ -7,19 +7,55 @@ const Op_Lamp = register(
 		constructor(x = 0, y = 0) {
 			super(x, y)
 
+			this.lampDiv1 = null
+			this.lampDiv2 = null
+
+			this.color = "#ff0000"
+
 			this.state = false
 
 			this.in = this.newInput("I") // Input
 		}
 
+		getConfig() {
+			return {
+				...super.getConfig(),
+				color: this.color
+			}
+		}
+
+		setConfig(conf, loaded = false) {
+			super.setConfig(conf, loaded)
+			if ('color' in conf) {
+				this.color = conf.color
+			}
+		}
+
 		createElement() {
 			let ele = document.createElement('div')
-			ele.className = this.state ? 'lamp-on' : 'lamp-off'
+			ele.className = "lamp " + (this.state ? 'lamp-on' : 'lamp-off')
+
+			this.lampDiv1 = document.createElement('div')
+			this.lampDiv1.className = "bulb"
+			this.lampDiv1.style.background = this.color
+			ele.appendChild(this.lampDiv1)
+
+			this.lampDiv2 = document.createElement('div')
+			this.lampDiv2.className = "bulb second"
+			this.lampDiv2.style.background = this.color
+			ele.appendChild(this.lampDiv2)
+
+			let glow = document.createElement('div')
+			glow.className = "glow"
+			ele.appendChild(glow)
+
 			return ele
 		}
 
 		updateElement() {
-			this.ele.className = this.state ? 'lamp-on' : 'lamp-off'
+			this.ele.className = "lamp " + (this.state ? 'lamp-on' : 'lamp-off')
+			this.lampDiv1.style.background = this.color
+			this.lampDiv2.style.background = this.color
 		}
 
 		doUpdate(tick, p5ctx) {
@@ -35,7 +71,7 @@ const Op_Lamp = register(
 
 			p5ctx.stroke(0)
 			if (this.state) {
-				p5ctx.fill(255, 0, 0)
+				p5ctx.fill(this.color)
 			} else {
 				p5ctx.fill(100)
 			}

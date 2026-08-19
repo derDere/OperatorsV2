@@ -19,8 +19,7 @@ table.toe td {
 	opacity: 0.3;
 }
 
-.lamp-on,
-.lamp-off {
+.lamp {
 	width: 30px;
 	height: 30px;
 	border: 2px solid #000;
@@ -28,25 +27,33 @@ table.toe td {
 	box-sizing: border-box;
 	border-radius: 50%;
 	position: relative;
+	background: #aaa;
+	background: radial-gradient(circle at 35% 35%, #aaa 0%, #333 100%);
 }
 
-.lamp-on {
-	background: radial-gradient(circle at 35% 35%, #ff9999 0%, #ff0000 60%, #990000 100%);
-	border-color: #7a0000;
-	box-shadow:
-		inset -2px -2px 5px rgba(0, 0, 0, 0.5),
-		0 2px 4px rgba(0, 0, 0, 0.4),
-		0 0 15px #ff0000,
-		0 0 25px rgba(255, 0, 0, 0.6);
+.lamp .bulb,
+.lamp .glow {
+	position: absolute;
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	height: 100%;
+	border-radius: 50%;
+	z-index: 1;
 }
 
-.lamp-off {
-	background: radial-gradient(circle at 35% 35%, #888 0%, #444 70%, #222 100%);
-	border-color: #1a1a1a;
-	box-shadow:
-		inset -2px -2px 4px rgba(0, 0, 0, 0.6),
-		inset 2px 2px 4px rgba(255, 255, 255, 0.1),
-		0 2px 4px rgba(0, 0, 0, 0.4);
+.lamp .bulb.second {
+	filter: blur(8px);
+}
+
+.lamp .glow {
+	z-index: 2;
+	background: radial-gradient(circle at 35% 35%, #ffffffAA 0%, #fff0 60%, #0009 100%), radial-gradient(circle at 50% 50%, #ffffff80 0%, #fff0 100%);
+}
+
+.lamp-off .bulb,
+.lamp-off .glow {
+	display: none;
 }
 
 .lamp-on::after,
