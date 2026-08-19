@@ -102,6 +102,7 @@ class base_Vector2t1 extends base_Vector1t1 {
 
 const Op_Vector_Add = register(
 	"Vector Add",
+	"Vector",
 	"(CX, CY) = (AX, AY) + (BX, BY)",
 	class extends base_Vector2t1 {
 		constructor(x = 0, y = 0) {
@@ -116,6 +117,7 @@ const Op_Vector_Add = register(
 
 const Op_Vector_Sub = register(
 	"Vector Subtract",
+	"Vector",
 	"(CX, CY) = (AX, AY) - (BX, BY)",
 	class extends base_Vector2t1 {
 		constructor(x = 0, y = 0) {
@@ -130,6 +132,7 @@ const Op_Vector_Sub = register(
 
 const Op_Vector_Mod = register(
 	"Vector Modulo",
+	"Vector",
 	"(CX, CY) = (AX, AY) mod (BX, BY)",
 	class extends base_Vector2t1 {
 		constructor(x = 0, y = 0) {
@@ -144,6 +147,7 @@ const Op_Vector_Mod = register(
 
 const Op_Vector_Scale = register(
 	"Vector Scale",
+	"Vector",
 	"(CX, CY) = (AX, AY) * (V / 255)",
 	class extends base_Vector1at1 {
 		constructor(x = 0, y = 0) {
@@ -158,6 +162,7 @@ const Op_Vector_Scale = register(
 
 const Op_Vector_Mult = register(
 	"Vector Multiply",
+	"Vector",
 	"(CX, CY) = (AX, AY) * V",
 	class extends base_Vector1at1 {
 		constructor(x = 0, y = 0) {
@@ -172,6 +177,7 @@ const Op_Vector_Mult = register(
 
 const Op_Vector_Rota = register(
 	"Vector Rotate",
+	"Vector",
 	"Rotates a vector by a given radiant value based on V where (2*PI) = " + ANALOG_2PI,
 	class extends base_Vector1at1 {
 		constructor(x = 0, y = 0) {

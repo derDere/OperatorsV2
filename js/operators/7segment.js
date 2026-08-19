@@ -8,6 +8,7 @@ const S7_BOTTOM_NO = { 0: 1, 2: 1, 3: 1, 5: 1, 6: 1, 8: 1, 9: 1, 11: 1, 12: 1, 1
 
 const Op_7sDisplay = register(
 	"7 Segment Display",
+	"Display",
 	"Displays 7 inputs as a numeric display",
 	class extends Placeable {
 
@@ -117,6 +118,7 @@ const Op_7sDisplay = register(
 
 const Op_4bit_to_7sSeg = register(
 	"4bit to 7 Segment decoder",
+	"Converter",
 	"Decodes a 4 bit value to a 7 segment display",
 	class extends Operator {
 

@@ -5,6 +5,7 @@ const TERMINAL_CELL_M = 1
 
 const Op_TerminalDisplay = register(
   "Terminal Display",
+  "Display",
   "Displays a ASCII Terminal",
   class extends Placeable {
 

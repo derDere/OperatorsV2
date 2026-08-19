@@ -154,6 +154,7 @@ class base_Functional_comparer extends base_Functional {
 
 const Op_Add = register(
 	"Add",
+	"Math",
 	"O = B1 + B2",
 	class extends base_Functional_calc {
 		constructor(x = 0, y = 0) {
@@ -168,6 +169,7 @@ const Op_Add = register(
 
 const Op_Sub = register(
 	"Subtract",
+	"Math",
 	"O = B1 - B2",
 	class extends base_Functional_calc {
 		constructor(x = 0, y = 0) {
@@ -182,6 +184,7 @@ const Op_Sub = register(
 
 const Op_Mult = register(
 	"Multiply",
+	"Math",
 	"O = B1 * B2",
 	class extends base_Functional_calc {
 		constructor(x = 0, y = 0) {
@@ -196,6 +199,7 @@ const Op_Mult = register(
 
 const Op_Scale = register(
 	"Scale",
+	"Math",
 	"O = B1 * (B2 / 255)",
 	class extends base_Functional_calc {
 		constructor(x = 0, y = 0) {
@@ -210,6 +214,7 @@ const Op_Scale = register(
 
 const Op_Divide = register(
 	"Divide",
+	"Math",
 	"O = B1 / B2",
 	class extends base_Functional_calc {
 		constructor(x = 0, y = 0) {
@@ -224,6 +229,7 @@ const Op_Divide = register(
 
 const Op_Sin = register(
 	"Sinus",
+	"Math",
 	"O = Sin(B1) * 255 where (PI*2 = 255)",
 	class extends base_Functional_solo {
 		constructor(x = 0, y = 0) {
@@ -242,6 +248,7 @@ const Op_Sin = register(
 
 const Op_Cos = register(
 	"Cosinus",
+	"Math",
 	"O = Cos(B1) * 255 where (PI*2 = 255)",
 	class extends base_Functional_solo {
 		constructor(x = 0, y = 0) {
@@ -260,6 +267,7 @@ const Op_Cos = register(
 
 const Op_Equals = register(
 	"Equals",
+	"Math",
 	"O = B1 == B2",
 	class extends base_Functional_comparer {
 		constructor(x = 0, y = 0) {
@@ -278,6 +286,7 @@ const Op_Equals = register(
 
 const Op_Tan = register(
 	"Tangents",
+	"Math",
 	"T = Tan(B1) * 255 if co=0 else (1/Tan(B1)) * 255 where (PI*2 = 255)",
 	class extends Operator {
 		constructor(x = 0, y = 0) {
@@ -344,6 +353,7 @@ const Op_Tan = register(
 
 const Op_Rnd = register(
 	"Random",
+	"Math",
 	"O = rand(0- 255)",
 	class extends Operator {
 		constructor(x = 0, y = 0) {
@@ -380,6 +390,7 @@ const Op_Rnd = register(
 
 const Op_Noise = register(
 	"Noise",
+	"Math",
 	"O = Noise(a / s, b / s, c / s) * 255",
 	class extends Operator {
 		constructor(x = 0, y = 0) {

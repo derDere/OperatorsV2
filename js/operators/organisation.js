@@ -1,5 +1,6 @@
 const Op_Comment = register(
   "Comment",
+  "Organisation",
   "A way to place a Note or a Comment",
   class extends Operator {
 

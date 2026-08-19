@@ -2,6 +2,7 @@
 
 const Op_LineDisplay = register(
   "Line Display",
+  "Display",
   "Displays a Lines on a screen",
   class extends Placeable {
 

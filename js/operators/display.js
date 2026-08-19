@@ -1,5 +1,6 @@
 const Op_Lamp = register(
 	"Lamp",
+	"Display",
 	"Displays a state of ON or OFF",
 	class extends Placeable {
 
@@ -61,6 +62,7 @@ const Op_Lamp = register(
 
 const Op_Byte = register(
 	"Byte",
+	"Display",
 	"Displays a Byte in a choosen way",
 	class extends Placeable {
 

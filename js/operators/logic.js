@@ -1,5 +1,6 @@
 const Op_Pulse = register(
 	"Pulse",
+	"Logic",
 	"Gives a 1 Tick pulse on state change",
 	class extends Operator {
 
@@ -55,6 +56,7 @@ const Op_Pulse = register(
 
 const Op_RsFlipFlop = register(
 	"RS FlipFlop",
+	"Logic",
 	"Sets or Resets a state permanently via inputs",
 	class extends Operator {
 
@@ -108,6 +110,7 @@ const Op_RsFlipFlop = register(
 
 const Op_TFlipFlop = register(
 	"T FlipFlop",
+	"Logic",
 	"Toggles a state permanently via inputs",
 	class extends Operator {
 
@@ -161,6 +164,7 @@ const Op_TFlipFlop = register(
 
 const Op_Memory1 = register(
 	"Memory (1 bit)",
+	"Memory",
 	"Stores 1 bit of memory when triggered",
 	class extends Operator {
 
@@ -216,6 +220,7 @@ const Op_Memory1 = register(
 
 const Op_Memory8 = register(
 	"Memory (1 byte)",
+	"Memory",
 	"Stores 1 byte of memory when triggered",
 	class extends Operator {
 
@@ -269,6 +274,7 @@ const Op_Memory8 = register(
 
 const Op_4bit_to_byte = register(
 	"4bit to byte decoder",
+	"Converter",
 	"Decodes 4bit into a byte signal",
 	class extends Operator {
 
@@ -319,6 +325,7 @@ const Op_4bit_to_byte = register(
 
 const Op_8bit_to_byte = register(
 	"8bit to byte decoder",
+	"Converter",
 	"Decodes 8bit into a byte signal",
 	class extends Operator {
 
@@ -381,6 +388,7 @@ const Op_8bit_to_byte = register(
 
 const Op_byte_to_4bit = register(
 	"Byte to 4bit decoder",
+	"Converter",
 	"Decodes a byte into 4bit",
 	class extends Operator {
 
@@ -430,6 +438,7 @@ const Op_byte_to_4bit = register(
 
 const Op_byte_to_8bit = register(
 	"Byte to 8bit decoder",
+	"Converter",
 	"Decodes a byte into 8bit",
 	class extends Operator {
 
@@ -491,6 +500,7 @@ const Op_byte_to_8bit = register(
 
 const Op_Counter4 = register(
 	"Counter4",
+	"Memory",
 	"Counts up a 4bit value if triggered",
 	class extends Operator {
 
@@ -583,6 +593,7 @@ const Op_Counter4 = register(
 
 const Op_Counter8 = register(
 	"Counter8",
+	"Memory",
 	"Counts up a byte value if triggered",
 	class extends Operator {
 

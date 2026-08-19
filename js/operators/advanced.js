@@ -1,5 +1,6 @@
 const Op_Stack = register(
 	"Stack",
+	"Memory",
 	"Stacks byte values if triggered or pops, flushes, or clears them",
 	class extends Operator {
 

@@ -1,5 +1,6 @@
 const Op_Switch = register(
 	"Switch",
+	"Input",
 	"Toggle it on or off",
 	class extends Placeable {
 
@@ -83,6 +84,7 @@ const Op_Switch = register(
 
 const Op_Button = register(
 	"Button",
+	"Input",
 	"Click to send a 1 tick pulse",
 	class extends Placeable {
 
@@ -171,6 +173,7 @@ const Op_Button = register(
 
 const Op_Tick = register(
 	"Tick",
+	"Signal",
 	"Switches state every frame",
 	class extends Operator {
 
@@ -215,6 +218,7 @@ const Op_Tick = register(
 
 const Op_Clock = register(
 	"Clock",
+	"Signal",
 	"Switches Output every X Ticks if powered",
 	class extends Operator {
 
@@ -281,6 +285,7 @@ const TEXT_INPUT_MIN_WIDTH = 80
 //const TEXT_INPUT_DEFAULT_PART_LEN = 12
 const Op_TextInput = register(
 	"Text Input",
+	"Input",
 	"Provides a way to read bytes entered by the user",
 	class extends Placeable {
 
@@ -475,6 +480,7 @@ const Op_TextInput = register(
 
 const Op_Slider = register(
 	"Slider",
+	"Input",
 	"A Slinder Input 0-255",
 	class extends Placeable {
 

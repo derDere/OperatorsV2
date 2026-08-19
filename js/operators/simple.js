@@ -42,6 +42,7 @@ class base_Simple extends Operator {
 
 const Op_And = register(
 	"And",
+	"Logic",
 	"C = A && B",
 	class extends base_Simple {
 		constructor(x = 0, y = 0) {
@@ -55,6 +56,7 @@ const Op_And = register(
 
 const Op_Or = register(
 	"Or",
+	"Logic",
 	"C = A || B",
 	class extends base_Simple {
 		constructor(x = 0, y = 0) {
@@ -68,6 +70,7 @@ const Op_Or = register(
 
 const Op_Xor = register(
 	"Xor",
+	"Logic",
 	"C = A xor B",
 	class extends base_Simple {
 		constructor(x = 0, y = 0) {
@@ -81,6 +84,7 @@ const Op_Xor = register(
 
 const Op_Not = register(
 	"Not",
+	"Logic",
 	"C = A not B",
 	class extends base_Simple {
 		constructor(x = 0, y = 0) {
@@ -101,6 +105,7 @@ const Op_Not = register(
 
 const Op_Pipe1 = register(
 	"Pipe 1",
+	"Utility",
 	"Pipes 1 value throu",
 	class extends Operator {
 
@@ -125,6 +130,7 @@ const Op_Pipe1 = register(
 
 const Op_Pipe4 = register(
 	"Pipe 4",
+	"Utility",
 	"Pipes 4 values throu",
 	class extends Operator {
 
@@ -157,6 +163,7 @@ const Op_Pipe4 = register(
 
 const Op_Pipe8 = register(
 	"Pipe 8",
+	"Utility",
 	"Pipes 8 values throu",
 	class extends Operator {
 
@@ -201,6 +208,7 @@ const Op_Pipe8 = register(
 
 const Op_Value = register(
 	"Value",
+	"Input",
 	"Provides any value",
 	class extends Operator {
 

@@ -80,8 +80,9 @@ class IOControl extends Control { //////////////////////////////////////////////
 }
 
 class OperatorEntry {
-	constructor(name, description, classFnk) {
+	constructor(name, category, description, classFnk) {
 		this.name = name
+		this.category = category
 		this.description = description
 		this.classFnk = classFnk
 	}
@@ -91,8 +92,8 @@ class OperatorEntry {
 	}
 }
 
-function register(name, description, classFnk) {
-	let entry = new OperatorEntry(name, description, classFnk)
+function register(name, category, description, classFnk) {
+	let entry = new OperatorEntry(name, category, description, classFnk)
 	OperatorRegistry[entry.name] = entry
 	return classFnk
 }
