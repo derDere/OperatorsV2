@@ -10,6 +10,10 @@
     background-color: #ddd;
 }
 
+.dg.main.dat-empty .close-button {
+    opacity: 0.3;
+}
+
 .dg {
     color: #555;
     text-shadow: none !important;

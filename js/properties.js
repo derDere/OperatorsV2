@@ -6,13 +6,16 @@ var items = []
 var datBlockControl = null
 
 class DatBlocker extends Control {
-	constructor() {
+	constructor(dgui) {
 		super()
+		this.dgui = dgui
 	  this.name = 'DatGuiBlocker'
 	  this.id = 'DatGuiBlocker'
-	  this.width = dgui.width
+	  this.width = this.dgui.width
 	  this.height = 500
 	  this.zIndex = 2000000000
+
+		this.isDatBlocker = true
 
 		const TRANSPARENT = mainP5.color('transparent')
 		const GRAY_BORDER = mainP5.color('#999')
@@ -26,12 +29,24 @@ class DatBlocker extends Control {
 
 	doUpdate(tick, p5ctx) {
 		super.doUpdate(tick, p5ctx)
-		let datHeight = dgui.domElement.getBoundingClientRect().height
-		this.width = dgui.width + 1
-		this.height = datHeight + 21
-		this.zIndex = 2000000000
-		let x = (p5ctx.width / 2) - (this.width / 2) - dragOffset.x - 14
-		let y = (-p5ctx.height / 2) + (this.height / 2) - dragOffset.y
+
+		let canvasBounds = p5ctx.canvas.getBoundingClientRect()
+		let guiBounds = this.dgui.bounds
+
+		this.width = guiBounds.width + 2
+		this.height = guiBounds.height + 2
+
+		let x = p5ctx.floor(-(p5ctx.width / 2) + (this.width / 2))
+		let y = p5ctx.floor(-(p5ctx.height / 2) + (this.height / 2))
+
+		x -= dragOffset.x
+		y -= dragOffset.y
+
+		x -= 0.5
+
+		x += (guiBounds.left - canvasBounds.left)
+		y += (guiBounds.top - canvasBounds.top)
+
 		this.pos.x = x
 		this.pos.y = y
 	}
@@ -39,8 +54,9 @@ class DatBlocker extends Control {
 
 function initProps() {
 	dgui = new dat.GUI()
+  dgui.title = "🛠️ Properties"
 
-	datBlockControl = new DatBlocker()
+	datBlockControl = new DatBlocker(dgui)
 }
 
 function valueChangedEventHandler(a, b, c, d) {
@@ -62,28 +78,12 @@ function updateProps(operator) {
 	}
 	currentSettings = conf
 
-	for (let item of items) {
-		dgui.remove(item)
-	}
+	dgui.edit(conf)
 
-	items = []
-
-	let propCount = 0
-
-	for (let key in conf) {
-		if (key.startsWith('_')) {
-			continue
-		}
-		let item = dgui.add(conf, key)
-		item.onChange(valueChangedEventHandler)
-		items.push(item)
-		propCount += 1
-	}
-
-	if (propCount > 0) {
-		dgui.open()
+	if (dgui.domElement.classList.contains('dat-empty')) {
+		dgui.close()
 	}
 	else {
-		dgui.close()
+		dgui.open()
 	}
 }

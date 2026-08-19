@@ -37,6 +37,7 @@ function main_setup(p5ctx) {
 	initSplitter()
 	initNewOperatorDialog()
 	createTableOfElements()
+	initMenu()
 }
 
 function doubleClicked(event, p5ctx) {
