@@ -220,7 +220,7 @@ const Op_Divide = register(
 		constructor(x = 0, y = 0) {
 			super(x, y)
 
-			this.func = (a, b) => (a / b)
+			this.func = (a, b) => (a / b) | 0
 
 			this.icon = "/"
 		}
