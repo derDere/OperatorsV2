@@ -3,10 +3,15 @@ var TableOfEle;
 var CellOwners = {}
 
 function encodeHtml(html) {
-	if (!html) return ""
-	let encodedStr = html.replace(/[\u00A0-\u9999<>\&]/g, function (i) {
-		return '&#' + i.charCodeAt(0) + ';'
-	})
+	if (!html) {
+		return ""
+	}
+	let encodedStr = html.replace(
+		/[\u00A0-\u9999<>\&]/g,
+		function (i) {
+			return '&#' + i.charCodeAt(0) + ';'
+		}
+	)
 	encodedStr = encodedStr.replace(/"/g, '&quot;')
 	encodedStr = encodedStr.replace(/'/g, '&#39;')
 	return encodedStr
