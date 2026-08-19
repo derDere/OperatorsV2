@@ -403,13 +403,16 @@ function loadJsonToAll(jj) {
 	for (const conc of data.conAll) {
 		let sid = conc.s
 		let eid = conc.e
-		let start = getControlById(conc.s)
-		let end = getControlById(conc.e)
+		let startIO = getControlById(conc.s)
+		let endIO = getControlById(conc.e)
 
-		if (!start) continue
-		if (!end) continue
+		console.log(sid, startIO)
+		console.log(eid, endIO)
 
-		new Connection(start, end)
+		if (!startIO) continue
+		if (!endIO) continue
+
+		new Connection(startIO, endIO)
 	}
 }
 
