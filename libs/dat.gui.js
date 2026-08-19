@@ -36,6 +36,81 @@
  *     Bereich samt Klapp-Button, `gui.listBounds` den der Steuerelement-Liste
  *     ohne ihn. Beide als `{ top, left, width, height }` in
  *     Fensterkoordinaten.
+ *   - `gui.edit(object[, definitions])`: zeigt ein ganzes Objekt auf einmal an.
+ *     Siehe den folgenden Abschnitt.
+ *
+ * gui.edit(object[, definitions])
+ * -------------------------------
+ * Zeigt jede eigene Eigenschaft von `object` als Zeile an und liefert die
+ * erzeugten Steuerelemente zurueck. Jeder Aufruf raeumt das GUI vorher leer,
+ * sodass nichts vom vorherigen Objekt stehen bleibt.
+ *
+ *   var ctrls = gui.edit(person, {
+ *     name:      { type: 'text', label: 'Full Name' },
+ *     age:       'Alter:number[0,100,1]',
+ *     weight:    { type: 'slider[10,300,0.5]', suffix: ' kg', folder: 'Biology' },
+ *     mode:      { type: 'select', options: { Klein: 1, Gross: 2 } },
+ *     transform: { label: 'Transformation', fields: { x: 'X:slider[0,1,0.01]' } },
+ *     'transform.y': 'Transformation.Y:slider[0,1,0.01]'
+ *   });
+ *   ctrls.age.onChange(save);
+ *   ctrls.transform.x.onChange(save);
+ *
+ * Welche Eigenschaften erscheinen
+ *   Alle eigenen Eigenschaften in der Reihenfolge des Objekts. Namen mit
+ *   fuehrendem '_' gelten als privat und bleiben aus, solange keine Definition
+ *   sie nennt - eine Definition zeigt sie also bewusst doch. Werte, die sich
+ *   ohne Typangabe nicht darstellen lassen (null, undefined, Arrays), bleiben
+ *   ebenfalls aus; mit Typangabe erscheinen auch sie. Ein Objekt als Wert wird
+ *   zu einem gleichnamigen Unterordner, in den `edit` hineingeht.
+ *
+ * Definitionen kurz oder ausfuehrlich
+ *   Jeder Eintrag ist entweder ein Objekt oder die Kurzschreibweise
+ *   'Beschriftung:typ[min,max,step]'. Ohne Doppelpunkt ist die ganze
+ *   Zeichenkette der Typ ('number[1,100]'), bei leerer rechter Seite bleibt
+ *   nur die Beschriftung ('Full Name:'). Auch der Schluessel `type` eines
+ *   Definitions-Objekts nimmt die Klammerform an ('slider[10,300,0.5]').
+ *   Ebenso gleichwertig sind verschachtelte `fields`-Objekte und Schluessel in
+ *   Punkt-Schreibweise ('transform.x'); eine Beschriftung mit ebenso vielen
+ *   Punkt-Abschnitten benennt dabei jede Ebene mit.
+ *
+ * Typen
+ *   'text'                    Textfeld
+ *   'number[min,max,step]'    Zahlenfeld, alle drei Angaben freiwillig
+ *   'slider[min,max,step]'    Schieberegler, min und max sind Pflicht
+ *   'checkbox', 'bool', 'boolean'   Ankreuzfeld
+ *   'color'                   Farbwaehler
+ *   'select'                  Auswahlliste, braucht `options`
+ *   'button', 'function'      Knopf, der die Funktion aufruft
+ *   Ohne Typangabe entscheidet der Wert. Mit Typangabe gewinnt die Definition
+ *   und der Wert wird passend umgewandelt (aus `true` wird `1`).
+ *
+ * Schluessel einer Definition
+ *   type            Typ samt Klammerwerten, siehe oben
+ *   label           Beschriftung der Zeile statt des Eigenschaftsnamens
+ *   folder          Ordner, in den die Zeile wandert; '/' schachtelt
+ *   prefix, suffix  Zusatz vor bzw. hinter dem Wert. Er wird nur angezeigt und
+ *                   gehoert nicht zum Wert. Leerzeichen gehoeren in die
+ *                   Angabe selbst (' kg'). Wirkt bei 'text', 'number',
+ *                   'slider' und 'select'.
+ *   options         Auswahl fuer 'select', als Array oder als Objekt
+ *                   { Beschriftung: Wert }
+ *   min, max, step  Grenzen und Schrittweite; sie gehen der Klammerform vor
+ *   hidden          true laesst die Eigenschaft aus
+ *   listen          true zieht die Anzeige laufend am Objektwert nach
+ *   tooltip         Hinweistext der Zeile
+ *   onChange, onFinishChange   Rueckrufe, direkt am Steuerelement angemeldet
+ *   fields          Definitionen der Eigenschaften eines Unterobjekts
+ *
+ * Reihenfolge
+ *   Zeilen ohne Ordner stehen oben in der Reihenfolge des Objekts, darunter
+ *   die Ordner alphabetisch nach ihrem Namen.
+ *
+ * Rueckgabe
+ *   Ein Objekt in der Form des bearbeiteten Objekts: `ctrls.age` ist das
+ *   Steuerelement der Eigenschaft `age`, `ctrls.transform.x` das der
+ *   Eigenschaft `x` des Unterobjekts `transform`. Zeilen, die nur ueber
+ *   `folder` einsortiert wurden, bleiben auf ihrer Ebene stehen.
  *
  * Copyright 2011 Data Arts Team, Google Creative Lab
  *
@@ -1714,6 +1789,11 @@ css.inject(styleSheet);
    GUIs einer Position bei jeder Breitenaenderung automatisch nach. */
 ___$insertStyle(".dg.ac{display:flex}.dg.ac>.dg.a{flex:0 0 auto;position:relative;margin-right:0}.dg.ac.dat-top{top:0;bottom:auto;align-items:flex-start}.dg.ac.dat-bottom{top:auto;bottom:0;align-items:flex-end}.dg.ac.dat-right{flex-direction:row-reverse;justify-content:flex-start}.dg.ac.dat-left{flex-direction:row;justify-content:flex-start}.dg.ac.dat-center{flex-direction:row;justify-content:center}.dg.main.taller-than-window{overflow:visible}.dg.main.taller-than-window>ul{overflow-y:auto;overflow-x:hidden}.dg.main.taller-than-window>ul::-webkit-scrollbar{width:5px;background:rgba(0,0,0,0.2)}.dg.main.taller-than-window>ul::-webkit-scrollbar-corner{height:0;display:none}.dg.main.taller-than-window>ul::-webkit-scrollbar-thumb{border-radius:5px;background:rgba(128,128,128,0.8)}");
 
+/* Stile fuer die Zusaetze vor und hinter einem Wert. Bei Text-, Zahlen- und
+   Reglerfeldern liegen sie ueber dem Eingabefeld, das mit Innenabstaenden
+   Platz fuer sie frei haelt; bei Auswahllisten stehen sie daneben. */
+___$insertStyle(".dg .dat-affix{position:absolute;pointer-events:none;white-space:pre;overflow:hidden;opacity:.65}.dg .dat-affix-input{box-sizing:border-box}.dg .dat-affix-flow{display:flex;align-items:center}.dg .dat-affix-flow>.dat-affix{position:static;flex:0 0 auto;line-height:normal}.dg .dat-affix-flow select{flex:1 1 auto;min-width:0}.dg .dat-empty-option{color:#888}");
+
 var CSS_NAMESPACE = 'dg';
 var HIDE_KEY_CODE = 72;
 var CLOSE_BUTTON_HEIGHT = 20;
@@ -1865,6 +1945,9 @@ var CAUSE_WIDTH = 'widthChanged';
 var CAUSE_ADDED = 'added';
 var CAUSE_REMOVED = 'removed';
 var pendingSizeCause = null;
+// Solange groesser als null, sammeln sich Groessenaenderungen an, statt einzeln
+// gemeldet zu werden. Ein Umbau aus vielen Schritten meldet sich so als einer.
+var sizeEventsSuppressed = 0;
 // Merkt die Ursache der Groessenaenderung vor, die `change` ausloest.
 function withSizeCause(cause, change) {
   var previous = pendingSizeCause;
@@ -1901,6 +1984,9 @@ function visibleListBounds(gui) {
 // Vergleicht den sichtbaren Bereich eines GUIs und seiner Ordner mit dem
 // zuletzt gemeldeten und meldet jede Abweichung.
 function emitSizeChange(gui) {
+  if (sizeEventsSuppressed > 0) {
+    return;
+  }
   var bounds = visibleBounds(gui);
   var last = gui.__lastBounds;
   var changed = !last || last.top !== bounds.top || last.left !== bounds.left || last.width !== bounds.width || last.height !== bounds.height;
@@ -2274,6 +2360,25 @@ Common.extend(GUI.prototype,
       color: true
     });
   },
+  edit: function edit(object, definitions) {
+    if (!isPlainObjectValue(object)) {
+      throw new Error('dat.GUI.edit: erwartet ein Objekt, bekommen hat es "' + object + '".');
+    }
+    var gui = this;
+    var controllers = {};
+    sizeEventsSuppressed++;
+    try {
+      clearGui(gui);
+      var plan = createPlanNode();
+      buildEditPlan(object, buildDefinitionTree(definitions, ''), plan, [object], '');
+      renderEditPlan(gui, plan, controllers);
+    } finally {
+      sizeEventsSuppressed--;
+    }
+    gui.onResize();
+    Common.defer(layoutAffixes);
+    return controllers;
+  },
   remove: function remove(controller) {
     this.__ul.removeChild(controller.__li);
     this.__controllers.splice(this.__controllers.indexOf(controller), 1);
@@ -2403,6 +2508,7 @@ Common.extend(GUI.prototype,
     if (root.__closeButton) {
       root.__closeButton.style.width = root.width + 'px';
     }
+    layoutAffixes();
     emitSizeChange(root);
   },
   onResizeDebounced: Common.debounce(function () {
@@ -2679,7 +2785,9 @@ function _add(gui, object, property, params) {
     throw new Error('Object "' + object + '" has no property "' + property + '"');
   }
   var controller = void 0;
-  if (params.color) {
+  if (params.controller) {
+    controller = params.controller;
+  } else if (params.color) {
     controller = new ColorController(object, property);
   } else {
     var factoryArgs = [object, property].concat(params.factoryArgs);
@@ -2708,6 +2816,612 @@ function _add(gui, object, property, params) {
   updateStateClasses(gui);
   return controller;
 }
+// ===========================================================================
+// gui.edit(): ganze Objekte am Stueck anzeigen
+// ===========================================================================
+
+// Erlaubte Typ-Namen samt Kurzformen; der Schluessel ist kleingeschrieben.
+var FIELD_TYPES = {
+  text: 'text',
+  number: 'number',
+  slider: 'slider',
+  checkbox: 'checkbox',
+  bool: 'checkbox',
+  boolean: 'checkbox',
+  color: 'color',
+  select: 'select',
+  button: 'button',
+  'function': 'button'
+};
+// Schluessel, die eine Feld-Definition kennt. Jeder andere meldet eine Warnung.
+var FIELD_KEYS = ['type', 'label', 'folder', 'prefix', 'suffix', 'options', 'min', 'max', 'step', 'hidden', 'listen', 'tooltip', 'onChange', 'onFinishChange', 'fields'];
+// Beschriftung des zusaetzlichen Eintrags einer Auswahlliste ohne Wert.
+var EMPTY_OPTION_LABEL = 'not selected';
+// Typangabe 'slider[0,100,0.5]'; Name und Klammer sind jeweils fuer sich freiwillig.
+var TYPE_SPEC_PATTERN = /^([A-Za-z]+)?\s*(?:\[([^\]]*)\])?$/;
+// Innenabstand eines Eingabefeldes laut Stylesheet, Grundlage fuer die Zusaetze.
+var AFFIX_INSET = 3;
+// So schmal darf ein Regler hoechstens werden, wenn Zusaetze Platz brauchen.
+var SLIDER_MIN_WIDTH = 40;
+// Alle angezeigten Zusaetze, damit sie sich nach einer Breitenaenderung neu
+// ausrichten lassen.
+var affixEntries = [];
+
+// Ist der Wert ein Objekt, in das hinein sortiert werden kann?
+function isPlainObjectValue(value) {
+  if (value === null || (typeof value === 'undefined' ? 'undefined' : _typeof(value)) !== 'object') {
+    return false;
+  }
+  if (Common.isArray(value) || value instanceof Date || value instanceof RegExp) {
+    return false;
+  }
+  if (typeof Node !== 'undefined' && value instanceof Node) {
+    return false;
+  }
+  return true;
+}
+
+// Laesst sich der Wert ohne Typangabe von selbst darstellen?
+function isDisplayableValue(value) {
+  return Common.isString(value) || Common.isNumber(value) || Common.isBoolean(value) || Common.isFunction(value);
+}
+
+// Typ, den ein Wert ohne Definition bekommt.
+function detectFieldType(value) {
+  if (Common.isBoolean(value)) {
+    return 'checkbox';
+  }
+  if (Common.isNumber(value)) {
+    return 'number';
+  }
+  if (Common.isFunction(value)) {
+    return 'button';
+  }
+  return 'text';
+}
+
+// Zerlegt 'slider[0,100,0.5]' in Typ und Zahlen aus der Klammer.
+function parseTypeSpec(spec, path) {
+  var text = Common.isString(spec) ? spec.trim() : '';
+  if (text === '') {
+    return { type: null, args: [] };
+  }
+  var match = text.match(TYPE_SPEC_PATTERN);
+  if (!match) {
+    throw new Error('dat.GUI.edit: "' + spec + '" ist bei "' + path + '" keine gueltige Typangabe.');
+  }
+  var name = match[1] ? match[1].toLowerCase() : null;
+  if (name !== null && !Object.prototype.hasOwnProperty.call(FIELD_TYPES, name)) {
+    throw new Error('dat.GUI.edit: unbekannter Typ "' + match[1] + '" bei "' + path + '".');
+  }
+  var args = [];
+  if (match[2] !== undefined && match[2].trim() !== '') {
+    var parts = match[2].split(',');
+    for (var i = 0; i < parts.length; i++) {
+      var number = parseFloat(parts[i]);
+      if (Common.isNaN(number)) {
+        throw new Error('dat.GUI.edit: "' + parts[i] + '" ist bei "' + path + '" keine Zahl.');
+      }
+      args.push(number);
+    }
+  }
+  return { type: name === null ? null : FIELD_TYPES[name], args: args };
+}
+
+// Zerlegt die Kurzschreibweise 'Beschriftung:typ[args]'.
+function parseFieldShorthand(text, path) {
+  var raw = String(text);
+  var colon = raw.indexOf(':');
+  var label = null;
+  var spec = raw;
+  if (colon !== -1) {
+    label = raw.slice(0, colon).trim();
+    spec = raw.slice(colon + 1);
+    if (label === '') {
+      label = null;
+    }
+  }
+  var parsed = parseTypeSpec(spec, path);
+  return { label: label, type: parsed.type, args: parsed.args };
+}
+
+// Bringt eine Definition - Kurzschreibweise oder Objekt - auf eine
+// einheitliche Form. Fehlende Angaben bleiben leer und gelten als Standard.
+function normalizeFieldDefinition(raw, path) {
+  var def = {
+    label: null, type: null, folder: null, prefix: null, suffix: null,
+    options: null, min: undefined, max: undefined, step: undefined,
+    hidden: false, listen: false, tooltip: null,
+    onChange: null, onFinishChange: null, fields: null
+  };
+  if (raw === null || raw === undefined) {
+    return def;
+  }
+  var shorthand = void 0;
+  if (Common.isString(raw)) {
+    shorthand = parseFieldShorthand(raw, path);
+  } else if (isPlainObjectValue(raw)) {
+    for (var key in raw) {
+      if (Object.prototype.hasOwnProperty.call(raw, key) && FIELD_KEYS.indexOf(key) === -1) {
+        console.warn('dat.GUI.edit: unbekannter Definitions-Schluessel "' + key + '" bei "' + path + '".');
+      }
+    }
+    shorthand = parseFieldShorthand(Common.isString(raw.type) ? raw.type : '', path);
+    if (raw.label !== undefined) { def.label = raw.label; }
+    if (raw.folder !== undefined) { def.folder = raw.folder; }
+    if (raw.prefix !== undefined) { def.prefix = raw.prefix; }
+    if (raw.suffix !== undefined) { def.suffix = raw.suffix; }
+    if (raw.options !== undefined) { def.options = raw.options; }
+    if (raw.min !== undefined) { def.min = raw.min; }
+    if (raw.max !== undefined) { def.max = raw.max; }
+    if (raw.step !== undefined) { def.step = raw.step; }
+    if (raw.hidden !== undefined) { def.hidden = !!raw.hidden; }
+    if (raw.listen !== undefined) { def.listen = !!raw.listen; }
+    if (raw.tooltip !== undefined) { def.tooltip = raw.tooltip; }
+    if (raw.onChange !== undefined) { def.onChange = raw.onChange; }
+    if (raw.onFinishChange !== undefined) { def.onFinishChange = raw.onFinishChange; }
+    if (raw.fields !== undefined) { def.fields = buildDefinitionTree(raw.fields, path); }
+  } else {
+    throw new Error('dat.GUI.edit: Definition von "' + path + '" muss eine Zeichenkette oder ein Objekt sein.');
+  }
+  def.type = shorthand.type;
+  if (def.label === null) {
+    def.label = shorthand.label;
+  }
+  if (def.min === undefined) { def.min = shorthand.args[0]; }
+  if (def.max === undefined) { def.max = shorthand.args[1]; }
+  if (def.step === undefined) { def.step = shorthand.args[2]; }
+  return def;
+}
+
+// Baut aus den Definitionen einen Baum, in dem Punkt-Schreibweise
+// ('transform.x') und verschachtelte 'fields'-Objekte dasselbe ergeben.
+function buildDefinitionTree(definitions, path) {
+  var tree = {};
+  if (!definitions) {
+    return tree;
+  }
+  if (!isPlainObjectValue(definitions)) {
+    throw new Error('dat.GUI.edit: die Definitionen muessen ein Objekt sein.');
+  }
+  for (var key in definitions) {
+    if (Object.prototype.hasOwnProperty.call(definitions, key)) {
+      insertDefinition(tree, key, definitions[key], path);
+    }
+  }
+  return tree;
+}
+
+// Haengt eine einzelne Definition an ihren Platz im Baum. Ein Schluessel mit
+// Punkten legt die Ebenen dazwischen an; eine Beschriftung mit ebenso vielen
+// Abschnitten benennt jede dieser Ebenen mit.
+function insertDefinition(tree, key, raw, path) {
+  var keys = key.split('.');
+  var def = normalizeFieldDefinition(raw, path + key);
+  var labels = Common.isString(def.label) ? def.label.split('.') : [];
+  var namesLevels = labels.length === keys.length;
+  var node = tree;
+  for (var i = 0; i < keys.length - 1; i++) {
+    var name = keys[i];
+    if (!node[name]) {
+      node[name] = normalizeFieldDefinition(null, path + name);
+    }
+    if (!node[name].fields) {
+      node[name].fields = {};
+    }
+    if (namesLevels && node[name].label === null) {
+      node[name].label = labels[i];
+    }
+    node = node[name].fields;
+  }
+  var last = keys[keys.length - 1];
+  if (namesLevels) {
+    def.label = labels[labels.length - 1];
+  }
+  var existing = node[last];
+  if (existing) {
+    if (def.label === null) {
+      def.label = existing.label;
+    }
+    if (def.fields === null) {
+      def.fields = existing.fields;
+    } else if (existing.fields) {
+      for (var sub in existing.fields) {
+        if (Object.prototype.hasOwnProperty.call(existing.fields, sub) && !def.fields[sub]) {
+          def.fields[sub] = existing.fields[sub];
+        }
+      }
+    }
+  }
+  node[last] = def;
+}
+
+// Ein Knoten des Bauplans: Zeilen dieser Ebene und die Ordner darunter.
+function createPlanNode() {
+  return { entries: [], folders: {}, resultKey: null };
+}
+
+// Liefert den Ordner-Knoten zu einem Pfad wie 'Biology/Body' und legt die
+// Ebenen an, die noch fehlen.
+function planFolderFor(node, folderPath) {
+  if (!folderPath) {
+    return node;
+  }
+  var parts = String(folderPath).split('/');
+  var current = node;
+  for (var i = 0; i < parts.length; i++) {
+    var name = parts[i].trim();
+    if (name === '') {
+      continue;
+    }
+    if (!current.folders[name]) {
+      current.folders[name] = createPlanNode();
+    }
+    current = current.folders[name];
+  }
+  return current;
+}
+
+// Sammelt, welche Zeilen und Ordner ein Objekt ergibt.
+function buildEditPlan(object, tree, node, seen, path) {
+  var keys = Object.keys(object);
+  for (var name in tree) {
+    if (Object.prototype.hasOwnProperty.call(tree, name) && keys.indexOf(name) === -1) {
+      if (name in object) {
+        keys.push(name);
+      } else {
+        console.warn('dat.GUI.edit: "' + path + name + '" steht in den Definitionen, fehlt aber im Objekt.');
+      }
+    }
+  }
+  for (var i = 0; i < keys.length; i++) {
+    var key = keys[i];
+    var described = Object.prototype.hasOwnProperty.call(tree, key);
+    if (key.charAt(0) === '_' && !described) {
+      continue;
+    }
+    var def = described ? tree[key] : normalizeFieldDefinition(null, path + key);
+    if (def.hidden) {
+      continue;
+    }
+    var value = object[key];
+    var target = planFolderFor(node, def.folder);
+    if (def.fields || (def.type === null && isPlainObjectValue(value))) {
+      if (!isPlainObjectValue(value)) {
+        console.warn('dat.GUI.edit: "' + path + key + '" ist kein Objekt und kann keine Untergruppe sein.');
+        continue;
+      }
+      if (seen.indexOf(value) !== -1) {
+        continue;
+      }
+      var folderName = def.label === null ? key : String(def.label);
+      var group = planFolderFor(target, folderName);
+      group.resultKey = key;
+      seen.push(value);
+      buildEditPlan(value, def.fields || {}, group, seen, path + key + '.');
+      seen.pop();
+      continue;
+    }
+    if (def.type === null && !isDisplayableValue(value)) {
+      continue;
+    }
+    target.entries.push({ key: key, def: def, object: object });
+  }
+}
+
+// Setzt den Bauplan in Zeilen und Ordner um. Zeilen zuerst, danach die Ordner
+// alphabetisch.
+function renderEditPlan(gui, node, target) {
+  var i = void 0;
+  for (i = 0; i < node.entries.length; i++) {
+    var entry = node.entries[i];
+    var controller = addField(gui, entry.object, entry.key, entry.def);
+    if (controller) {
+      target[entry.key] = controller;
+    }
+  }
+  var names = [];
+  for (var name in node.folders) {
+    if (Object.prototype.hasOwnProperty.call(node.folders, name)) {
+      names.push(name);
+    }
+  }
+  names.sort(function (a, b) {
+    return a.localeCompare(b);
+  });
+  for (i = 0; i < names.length; i++) {
+    var sub = node.folders[names[i]];
+    var folder = gui.addFolder(names[i]);
+    var sink = target;
+    if (sub.resultKey !== null) {
+      sink = {};
+      target[sub.resultKey] = sink;
+    }
+    renderEditPlan(folder, sub, sink);
+  }
+}
+
+// Nimmt alle Steuerelemente und Ordner aus einem GUI.
+function clearGui(gui) {
+  while (gui.__controllers.length > 0) {
+    gui.remove(gui.__controllers[0]);
+  }
+  var names = [];
+  for (var name in gui.__folders) {
+    if (Object.prototype.hasOwnProperty.call(gui.__folders, name)) {
+      names.push(name);
+    }
+  }
+  for (var i = 0; i < names.length; i++) {
+    gui.removeFolder(gui.__folders[names[i]]);
+  }
+}
+
+// Passt den Wert im Objekt an den geforderten Typ an, damit das Steuerelement
+// ihn anzeigen kann.
+function coerceFieldValue(object, property, type, def) {
+  var value = object[property];
+  if (type === 'text') {
+    if (!Common.isString(value)) {
+      object[property] = value === null || value === undefined ? '' : String(value);
+    }
+    return;
+  }
+  if (type === 'number' || type === 'slider') {
+    var number = void 0;
+    if (Common.isNumber(value)) {
+      number = value;
+    } else if (Common.isBoolean(value)) {
+      number = value ? 1 : 0;
+    } else {
+      number = parseFloat(value);
+    }
+    if (Common.isNaN(number) || !isFinite(number)) {
+      number = Common.isNumber(def.min) ? def.min : 0;
+    }
+    if (Common.isNumber(def.min) && number < def.min) {
+      number = def.min;
+    }
+    if (Common.isNumber(def.max) && number > def.max) {
+      number = def.max;
+    }
+    if (number !== value) {
+      object[property] = number;
+    }
+    return;
+  }
+  if (type === 'checkbox') {
+    if (!Common.isBoolean(value)) {
+      object[property] = !!value;
+    }
+    return;
+  }
+  if (type === 'color') {
+    if (interpret(value) === false) {
+      object[property] = '#ffffff';
+    }
+    return;
+  }
+  if (type === 'select' && value === undefined) {
+    object[property] = null;
+  }
+}
+
+// Macht aus der Angabe `options` eine Zuordnung Beschriftung -> Wert.
+function buildFieldOptions(def, path) {
+  var options = def.options;
+  if (options === null || options === undefined) {
+    throw new Error('dat.GUI.edit: "' + path + '" ist als Auswahlliste angegeben, hat aber keine options.');
+  }
+  var map = {};
+  if (Common.isArray(options)) {
+    for (var i = 0; i < options.length; i++) {
+      map[options[i]] = options[i];
+    }
+    return map;
+  }
+  for (var label in options) {
+    if (Object.prototype.hasOwnProperty.call(options, label)) {
+      map[label] = options[label];
+    }
+  }
+  return map;
+}
+
+// Steht der Wert in der Auswahl?
+function optionsContain(map, value) {
+  if (value === null || value === undefined) {
+    return false;
+  }
+  for (var label in map) {
+    if (Object.prototype.hasOwnProperty.call(map, label) && String(map[label]) === String(value)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+// Stellt einer Auswahlliste einen ausgegrauten Eintrag fuer 'kein Wert' voran.
+// Er steht fuer null, damit ein leeres Feld leer bleiben kann.
+function addEmptyOption(controller) {
+  var option = document.createElement('option');
+  option.innerHTML = EMPTY_OPTION_LABEL;
+  option.setAttribute('value', '');
+  dom.addClass(option, 'dat-empty-option');
+  controller.__select.insertBefore(option, controller.__select.firstChild);
+  var setValue = controller.setValue;
+  controller.setValue = function (v) {
+    return setValue.call(this, v === '' ? null : v);
+  };
+  var updateDisplay = controller.updateDisplay;
+  controller.updateDisplay = function () {
+    var value = this.getValue();
+    if (value === null || value === undefined) {
+      if (!dom.isActive(this.__select)) {
+        this.__select.value = '';
+      }
+      return this;
+    }
+    return updateDisplay.call(this);
+  };
+  controller.updateDisplay();
+}
+
+// Legt das Steuerelement einer einzelnen Eigenschaft an.
+function addField(gui, object, property, def) {
+  var path = property;
+  var type = def.type || detectFieldType(object[property]);
+  coerceFieldValue(object, property, type, def);
+  var params = {};
+  if (type === 'text') {
+    params.controller = new StringController(object, property);
+  } else if (type === 'number') {
+    params.controller = new NumberControllerBox(object, property, { min: def.min, max: def.max, step: def.step });
+  } else if (type === 'slider') {
+    if (!Common.isNumber(def.min) || !Common.isNumber(def.max)) {
+      throw new Error('dat.GUI.edit: der Schieberegler "' + path + '" braucht min und max, etwa slider[0,100].');
+    }
+    params.controller = new NumberControllerSlider(object, property, def.min, def.max, def.step);
+  } else if (type === 'checkbox') {
+    params.controller = new BooleanController(object, property);
+  } else if (type === 'color') {
+    params.color = true;
+  } else if (type === 'select') {
+    var map = buildFieldOptions(def, path);
+    params.controller = new OptionController(object, property, map);
+    params.emptyOption = !optionsContain(map, object[property]);
+  } else if (type === 'button') {
+    if (!Common.isFunction(object[property])) {
+      console.warn('dat.GUI.edit: "' + path + '" ist als Knopf angegeben, der Wert ist aber keine Funktion.');
+      return null;
+    }
+    params.controller = new FunctionController(object, property, '');
+  }
+  var controller = _add(gui, object, property, params);
+  dom.addClass(controller.__li, 'dat-field-' + type);
+  if (params.emptyOption) {
+    addEmptyOption(controller);
+  }
+  if (def.label !== null) {
+    controller.name(String(def.label));
+  }
+  if (def.tooltip) {
+    controller.__li.title = String(def.tooltip);
+  }
+  if (def.listen) {
+    controller.listen();
+  }
+  if (def.onChange) {
+    controller.onChange(def.onChange);
+  }
+  if (def.onFinishChange) {
+    controller.onFinishChange(def.onFinishChange);
+  }
+  if (def.prefix || def.suffix) {
+    applyAffixes(controller, type, def.prefix, def.suffix);
+  }
+  return controller;
+}
+
+// Erzeugt ein Element fuer einen Zusatz vor oder hinter dem Wert.
+function createAffixElement(text, className) {
+  var span = document.createElement('span');
+  span.textContent = String(text);
+  dom.addClass(span, 'dat-affix');
+  dom.addClass(span, className);
+  return span;
+}
+
+// Haengt die Zusaetze an das Steuerelement. Eingabefelder bekommen sie
+// aufgelegt, Auswahllisten daneben gestellt; alle uebrigen Typen haben keine
+// Stelle dafuer und lassen sie aus.
+function applyAffixes(controller, type, prefix, suffix) {
+  if (type === 'select') {
+    var host = controller.domElement;
+    dom.addClass(host, 'dat-affix-flow');
+    if (prefix) {
+      host.insertBefore(createAffixElement(prefix, 'dat-affix-prefix'), host.firstChild);
+    }
+    if (suffix) {
+      host.appendChild(createAffixElement(suffix, 'dat-affix-suffix'));
+    }
+    return;
+  }
+  if (type !== 'text' && type !== 'number' && type !== 'slider') {
+    return;
+  }
+  var input = controller.domElement.querySelector('input[type="text"]');
+  if (!input) {
+    return;
+  }
+  dom.addClass(input, 'dat-affix-input');
+  var entry = { input: input, row: controller.__li, slider: controller.domElement.querySelector('.slider'), prefix: null, suffix: null };
+  if (prefix) {
+    entry.prefix = createAffixElement(prefix, 'dat-affix-prefix');
+    controller.domElement.appendChild(entry.prefix);
+  }
+  if (suffix) {
+    entry.suffix = createAffixElement(suffix, 'dat-affix-suffix');
+    controller.domElement.appendChild(entry.suffix);
+  }
+  affixEntries.push(entry);
+  layoutAffix(entry);
+}
+
+// Setzt die Zusaetze buendig an die Raender des Eingabefeldes und haelt dort
+// mit Innenabstaenden Platz fuer sie frei.
+function layoutAffix(entry) {
+  var input = entry.input;
+  if (!input.offsetParent) {
+    return;
+  }
+  // In einer Reglerzeile ist das Zahlenfeld schmal. Es waechst um die Breite
+  // der Zusaetze, damit der Wert lesbar bleibt, und der Regler weicht zurueck.
+  if (entry.slider) {
+    input.style.width = '';
+    entry.slider.style.width = '';
+    var extra = (entry.prefix ? entry.prefix.offsetWidth : 0) + (entry.suffix ? entry.suffix.offsetWidth : 0);
+    var sliderWidth = Math.max(SLIDER_MIN_WIDTH, entry.slider.offsetWidth - extra);
+    var inputWidth = input.offsetWidth + entry.slider.offsetWidth - sliderWidth;
+    entry.slider.style.width = sliderWidth + 'px';
+    input.style.width = inputWidth + 'px';
+  }
+  var top = input.offsetTop;
+  var height = input.offsetHeight;
+  var left = input.offsetLeft;
+  var width = input.offsetWidth;
+  var padLeft = AFFIX_INSET;
+  var padRight = AFFIX_INSET;
+  if (entry.prefix) {
+    entry.prefix.style.top = top + 'px';
+    entry.prefix.style.height = height + 'px';
+    entry.prefix.style.lineHeight = height + 'px';
+    entry.prefix.style.left = left + AFFIX_INSET + 'px';
+    padLeft += entry.prefix.offsetWidth;
+  }
+  if (entry.suffix) {
+    entry.suffix.style.top = top + 'px';
+    entry.suffix.style.height = height + 'px';
+    entry.suffix.style.lineHeight = height + 'px';
+    entry.suffix.style.left = left + width - AFFIX_INSET - entry.suffix.offsetWidth + 'px';
+    padRight += entry.suffix.offsetWidth;
+  }
+  input.style.paddingLeft = padLeft + 'px';
+  input.style.paddingRight = padRight + 'px';
+}
+
+// Richtet alle Zusaetze neu aus und vergisst die, deren Zeile fort ist.
+function layoutAffixes() {
+  for (var i = affixEntries.length - 1; i >= 0; i--) {
+    var entry = affixEntries[i];
+    if (!entry.row.parentNode) {
+      affixEntries.splice(i, 1);
+    } else {
+      layoutAffix(entry);
+    }
+  }
+}
+
 function getLocalStorageHash(gui, key) {
   return document.location.href + '.' + key;
 }

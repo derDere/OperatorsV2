@@ -147,6 +147,17 @@
 		</fieldset>
 
 		<fieldset>
+			<legend>gui.edit() - ganze Objekte am Stueck (GUI "edit()", oben links)</legend>
+			<button onclick="showPerson()">Person mit Definitionen</button>
+			<button onclick="showPersonPlain()">Person ohne Definitionen</button>
+			<button onclick="showMachine()">anderes Objekt (raeumt vorher leer)</button>
+			<button onclick="showBrokenType()">ungueltiger Typ</button>
+			<button onclick="showBrokenSlider()">Regler ohne min/max</button>
+			<div id="editReadout"></div>
+			<div id="valueReadout"></div>
+		</fieldset>
+
+		<fieldset>
 			<legend>Klappen</legend>
 			<button onclick="guis.a.open()">a.open()</button>
 			<button onclick="guis.a.close()">a.close()</button>
@@ -279,6 +290,97 @@
 		watch('unten mitte', new dat.GUI({ title: 'Unten mitte', position: 'bottom-center', width: 200 }))
 			.add(settings, 'run');
 
+		// Oben links, drittes GUI: Vorfuehrung von gui.edit().
+		var editGui = watch('edit', new dat.GUI({ title: 'edit()', position: 'top-left', width: 260 }));
+
+		// Deckt Typen, Zusaetze, Ordner, Unterobjekte, private Namen und die
+		// Umwandlung eines Wertes durch die Definition ab.
+		var person = {
+			name: 'Ada Lovelace',
+			age: 36,
+			price: 19.99,
+			weight: 62.5,
+			progress: 0.35,
+			favouriteColor: '#c04040',
+			mode: 'weich',
+			missing: null,
+			flag: true,
+			internalId: 4711,
+			tags: ['a', 'b'],
+			_secret: 'bleibt aus',
+			_shown: 'privat, aber beschrieben',
+			greet: function () { log('greet()     -> aufgerufen'); },
+			transform: { x: 0.25, y: 0.75 },
+			nested: { deep: { value: 3 } }
+		};
+
+		var personFields = {
+			name: { type: 'text', label: 'Full Name' },
+			age: 'Alter:number[0,100,1]',
+			price: { type: 'number', step: 0.01, prefix: '$', tooltip: 'Preis in Dollar' },
+			weight: { type: 'slider[10,300,0.5]', suffix: ' kg', folder: 'Biology' },
+			progress: { type: 'slider', min: 0, max: 1, step: 0.01, suffix: ' %', folder: 'Biology/Body' },
+			favouriteColor: { type: 'color', label: 'Lieblingsfarbe' },
+			mode: { type: 'select', options: { Hart: 'hart', Weich: 'weich', Linear: 'linear' }, prefix: 'Modus: ' },
+			missing: { type: 'select', options: ['eins', 'zwei'], label: 'ohne Wert' },
+			flag: 'Bool als Regler:slider[100,200,10]',
+			internalId: { hidden: true },
+			_shown: 'Privat, doch gezeigt:text',
+			greet: { type: 'button', label: 'Gruessen' },
+			transform: { label: 'Transformation', fields: { x: 'X:slider[0,1,0.01]' } },
+			'transform.y': 'Transformation.Y:slider[0,1,0.01]'
+		};
+
+		var machine = { id: 'M-17', temperature: 88.5, running: false, notes: 'kurzer Text' };
+
+		var editControllers = null;
+
+		function showPerson() {
+			editControllers = editGui.edit(person, personFields);
+			reportEdit('edit(person, personFields)');
+		}
+
+		function showPersonPlain() {
+			editControllers = editGui.edit(person);
+			reportEdit('edit(person)');
+		}
+
+		function showMachine() {
+			editControllers = editGui.edit(machine);
+			reportEdit('edit(machine)');
+		}
+
+		function showBrokenType() {
+			try {
+				editGui.edit(machine, { temperature: 'slidr[0,1]' });
+			} catch (e) {
+				log('Fehler      -> ' + e.message);
+			}
+		}
+
+		function showBrokenSlider() {
+			try {
+				editGui.edit(machine, { temperature: 'slider' });
+			} catch (e) {
+				log('Fehler      -> ' + e.message);
+			}
+		}
+
+		// Zeigt, was edit() zurueckgegeben hat und welche Werte im Objekt stehen.
+		function reportEdit(call) {
+			var names = [];
+			Object.keys(editControllers).forEach(function (key) {
+				var entry = editControllers[key];
+				names.push(entry instanceof dat.controllers.Controller ? key : key + '{' + Object.keys(entry).join(',') + '}');
+			});
+			document.getElementById('editReadout').textContent = call + ' -> ' + names.join(', ');
+			document.getElementById('valueReadout').textContent =
+				'person.flag = ' + JSON.stringify(person.flag) +
+				' | person.missing = ' + JSON.stringify(person.missing) +
+				' | person.weight = ' + JSON.stringify(person.weight);
+			refresh();
+		}
+
 		// Wandert per Knopfdruck durch alle Positionen.
 		var wanderer = watch('wanderer', new dat.GUI({ title: 'Wanderer', position: 'bottom-center', width: 140 }));
 		wanderer.add(settings, 'amount', 0, 1).name('wandert');
@@ -389,6 +491,8 @@
 		a.onSizeChange(function (e) {
 			updateOverlay(e);
 		});
+
+		showPerson();
 
 		refresh();
 		updateOverlay();
