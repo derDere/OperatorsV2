@@ -74,6 +74,7 @@ const PropertyDefinitions = {
 	"Terminal Width": "slider[1,100,1]",
 	"Terminal Height": "slider[1,100,1]",
 	"eleWidth": "Input Width:slider[20,1000,1]",
+	"value": "Value:slider[0,255,1]",
 	"color": "Color:color",
 }
 
@@ -91,6 +92,18 @@ function updateProps(operator) {
 		conf = {}
 	}
 	currentSettings = conf
+
+	if ('Origin' in conf) {
+		let portals = {}
+		for (const id in AllPortals) {
+			const portal = AllPortals[id];
+			portals[portal.name] = portal.id
+		}
+		PropertyDefinitions['Origin'] = {
+			type: "select",
+			options: portals
+		}
+	}
 
 	let newFields = dgui.edit(conf, PropertyDefinitions)
 
