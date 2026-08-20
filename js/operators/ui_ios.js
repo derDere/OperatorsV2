@@ -18,6 +18,20 @@ const Op_Switch = register(
 			this.switchCtrl.onMouseClick(this.switched.bind(this))
 		}
 
+    getConfig() {
+			return {
+				...super.getConfig(),
+				_state: this.state
+			}
+		}
+
+		setConfig(conf, loaded = false) {
+			super.setConfig(conf, loaded)
+			if ('_state' in conf && loaded) {
+				this.state = conf._state
+			}
+		}
+
 		switched(sender) {
 			this.state = !this.state
 		}
