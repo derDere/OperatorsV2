@@ -248,6 +248,31 @@ div.terminal-display {
 	border-radius: 6px;
 }
 
+/* Eine komplette Terminal-Zeile als Text; das Zellen-Raster kommt als
+   wiederholtes SVG-Kachelmuster aus dem Hintergrund. Letter-Spacing bringt
+   die 9px breiten Courier-Zeichen auf den 11px-Zellen-Raster. */
+div.terminal-display-row {
+	font-family: 'Courier New', Courier, monospace;
+	font-size: 15px;
+	display: block;
+	position: absolute;
+	left: 0;
+	right: 2px;
+	height: 15px;
+	overflow: hidden;
+	white-space: pre;
+	letter-spacing: 2px;
+	text-indent: 0.5px;
+	color: #afa;
+	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='15'%3E%3Crect width='10' height='15' rx='3' fill='%23002200'/%3E%3C/svg%3E");
+}
+
+/* Textauswahl im Terminal in den Cursor-Farben statt Browser-Blau */
+div.terminal-display ::selection {
+	background: #070;
+	color: #fff;
+}
+
 span.terminal-display-cell {
 	font-family: 'Courier New', Courier, monospace;
 	font-size: 15px;

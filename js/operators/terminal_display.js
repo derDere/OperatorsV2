@@ -3,6 +3,12 @@
 // englischen Sprache, Sonderzeichen zuletzt.
 const DISPLAYED_CHARS = " 0123456789etaoinshrdlcumwfgypbvkjxqzETAOINSHRDLCUMWFGYPBVKJXQZ!\"/()=?*';:-+#.,<>|@"
 
+// Schneller Lookup: Zeichen -> Index in DISPLAYED_CHARS
+const DISPLAYED_INDEX = {}
+for (let i = 0; i < DISPLAYED_CHARS.length; i++) {
+  DISPLAYED_INDEX[DISPLAYED_CHARS[i]] = i
+}
+
 const TERMINAL_CELL_W = 10
 const TERMINAL_CELL_H = 15
 const TERMINAL_CELL_M = 1
@@ -31,7 +37,9 @@ const Op_TerminalDisplay = register(
 
       this.io_color = mainP5.color(220)
 
-      this.charElements = {}
+      this.rowElements = null
+      this.cursorEle = null
+      this._dirtyRows = new Set()
 
       this.data = []
       this.display = []
@@ -77,59 +85,81 @@ const Op_TerminalDisplay = register(
     }
 
     _updateDisplay() {
-      for (let y = 0; y < mainP5.min(this.display.length, this.data.length); y++) {
-        for (let x = 0; x < mainP5.min(this.display[0].length, this.data[0].length); x++) {
-          let ti = DISPLAYED_CHARS.indexOf(this.data[y][x])
-          if (ti < 0) {
-            ti = DISPLAYED_CHARS.indexOf('?')
+      let h = mainP5.min(this.display.length, this.data.length)
+      if (h <= 0) {
+        return
+      }
+      let w = mainP5.min(this.display[0].length, this.data[0].length)
+      for (let y = 0; y < h; y++) {
+        let dataRow = this.data[y]
+        let displayRow = this.display[y]
+        let changed = false
+        for (let x = 0; x < w; x++) {
+          if (dataRow[x] == displayRow[x]) {
+            continue
           }
-          let di = DISPLAYED_CHARS.indexOf(this.display[y][x])
-          if (di < 0) {
-            di = DISPLAYED_CHARS.indexOf('?')
-            this.display[y][x] = '?'
+          let tc = dataRow[x]
+          if (DISPLAYED_INDEX[tc] === undefined) {
+            tc = '?'
+            if (displayRow[x] == tc) {
+              continue
+            }
           }
-          let s = 0
-          if (ti > di) {
-            s = 1
+          // Flapscreen-Rolle: dreht nur vorwaerts, nach dem letzten Zeichen beginnt sie von vorn
+          let di = DISPLAYED_INDEX[displayRow[x]]
+          if (di === undefined) {
+            di = -1
           }
-          if (ti < di) {
-            s = -1
-          }
-          if (s != 0) {
-            this.display[y][x] = DISPLAYED_CHARS[di + s]
-          }
+          displayRow[x] = DISPLAYED_CHARS[(di + 1) % DISPLAYED_CHARS.length]
+          changed = true
+        }
+        if (changed) {
+          this._dirtyRows.add(y)
         }
       }
     }
 
     updateElement() {
-      if (Object.keys(this.charElements).length <= 0) {
+      if (!this.rowElements) {
+        this._dirtyRows.clear()
         this.ele.innerHTML = ""
-      }
-      this.ele.style.height = ((this.display.length * (TERMINAL_CELL_M + TERMINAL_CELL_H)) + TERMINAL_CELL_M) + 'px'
-      for (let y = 0; y < this.display.length; y++) {
-        this.ele.style.width = ((this.display[0].length * (TERMINAL_CELL_M + TERMINAL_CELL_W)) + TERMINAL_CELL_M) + 'px'
-        for (let x = 0; x < this.display[0].length; x++) {
-          let key = x + ',' + y
-          let char
-          if (!(key in this.charElements)) {
-            char = document.createElement("span")
-            char.className = "terminal-display-cell"
-            char.style.top = ((TERMINAL_CELL_M + TERMINAL_CELL_H) * y) + 'px'
-            char.style.left = ((TERMINAL_CELL_M + TERMINAL_CELL_W) * x) + 'px'
-            this.ele.appendChild(char)
-            this.charElements[key] = char
-          }
-          else {
-            char = this.charElements[key]
-          }
-          if (x == this._term_x && y == this._term_y && this.showCursor) {
-            char.classList.add('cursor')
-          } else if (char.classList.contains('cursor')) {
-            char.classList.remove('cursor')
-          }
-          char.innerText = this.display[y][x]
+        this.rowElements = []
+        let cols = 0
+        if (this.display.length > 0) {
+          cols = this.display[0].length
         }
+        this.ele.style.width = ((cols * (TERMINAL_CELL_M + TERMINAL_CELL_W)) + TERMINAL_CELL_M) + 'px'
+        this.ele.style.height = ((this.display.length * (TERMINAL_CELL_M + TERMINAL_CELL_H)) + TERMINAL_CELL_M) + 'px'
+        for (let y = 0; y < this.display.length; y++) {
+          let row = document.createElement("div")
+          row.className = "terminal-display-row"
+          row.style.top = ((TERMINAL_CELL_M + TERMINAL_CELL_H) * y) + 'px'
+          this.ele.appendChild(row)
+          this.rowElements.push(row)
+          this._dirtyRows.add(y)
+        }
+        this.cursorEle = document.createElement("span")
+        this.cursorEle.className = "terminal-display-cell cursor"
+        this.ele.appendChild(this.cursorEle)
+      }
+
+      // Nur Zeilen anfassen, deren Inhalt sich geaendert hat
+      for (let y of this._dirtyRows) {
+        this.rowElements[y].textContent = this.display[y].join('')
+      }
+      this._dirtyRows.clear()
+
+      // Cursor als einzelnes Overlay-Element ueber der Zeile
+      if (this.showCursor && this._term_y < this.display.length && this.display.length > 0 && this._term_x < this.display[0].length) {
+        this.cursorEle.style.display = 'block'
+        this.cursorEle.style.top = ((TERMINAL_CELL_M + TERMINAL_CELL_H) * this._term_y) + 'px'
+        this.cursorEle.style.left = ((TERMINAL_CELL_M + TERMINAL_CELL_W) * this._term_x) + 'px'
+        let c = this.display[this._term_y][this._term_x]
+        if (this.cursorEle.textContent != c) {
+          this.cursorEle.textContent = c
+        }
+      } else {
+        this.cursorEle.style.display = 'none'
       }
     }
 
@@ -139,22 +169,23 @@ const Op_TerminalDisplay = register(
           let i = mainP5.round(mainP5.random(1000000, 9999999)) % DISPLAYED_CHARS.length
           this.display[y][x] = DISPLAYED_CHARS[i]
         }
+        this._dirtyRows.add(y)
       }
     }
 
     get termW() {
-      return mainP5.round(mainP5.min(mainP5.max(this._term_w, 0)), 255)
+      return mainP5.round(mainP5.min(mainP5.max(this._term_w, 0), 255))
     }
     set termW(value) {
-      this._term_w = mainP5.round(mainP5.min(mainP5.max(value, 0)), 255)
+      this._term_w = mainP5.round(mainP5.min(mainP5.max(value, 0), 255))
       this._updateDataDisplaySize()
     }
 
     get termH() {
-      return mainP5.round(mainP5.min(mainP5.max(this._term_h, 0)), 255)
+      return mainP5.round(mainP5.min(mainP5.max(this._term_h, 0), 255))
     }
     set termH(value) {
-      this._term_h = mainP5.round(mainP5.min(mainP5.max(value, 0)), 255)
+      this._term_h = mainP5.round(mainP5.min(mainP5.max(value, 0), 255))
       this._updateDataDisplaySize()
     }
 
@@ -208,7 +239,8 @@ const Op_TerminalDisplay = register(
 
       this.data = newData
       this.display = newDisplay
-      this.charElements = {}
+      this.rowElements = null
+      this._fixXY()
     }
 
     addChar(c, moveCursor = true) {
