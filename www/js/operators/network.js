@@ -16,12 +16,12 @@ const Op_NetSender = register(
 
       this._lastT = false
 
-      // open websocket
+      this._ws = new ChannelSocket(this.channel, 'send')
 		}
 
     kill() {
       super.kill()
-      // Close websocket
+      this._ws.kill()
     }
 
     getConfig() {
@@ -35,12 +35,14 @@ const Op_NetSender = register(
 			super.setConfig(conf, loaded)
 			if ('Channel' in conf) {
 				this.channel = conf.Channel
-        // if channel change close and reopen websocket
+				this._ws.setChannel(this.channel)
 			}
 		}
 
 		doUpdate(tick, p5ctx) {
 			super.doUpdate(tick, p5ctx)
+
+      this._connected = this._ws.isConnected
 
       let b = (this.in_b.value) & 255
       let t = !!(this.in_t.value)
@@ -52,7 +54,7 @@ const Op_NetSender = register(
       this._lastT = t
 
       if (send) {
-        // send byte to websocket
+        this._ws.send(b)
       }
 		}
 
@@ -154,12 +156,13 @@ const Op_NetReceiver = register(
 
       this._lastV = 0
 
-      // open websocket
+      this._ws = new ChannelSocket(this.channel, 'listen')
+      this._ws.onValue = (v) => { this.value = v }
 		}
 
     kill() {
       super.kill()
-      // Close websocket
+      this._ws.kill()
     }
 
     getConfig() {
@@ -173,12 +176,14 @@ const Op_NetReceiver = register(
 			super.setConfig(conf, loaded)
 			if ('Channel' in conf) {
 				this.channel = conf.Channel
-        // if channel change close and reopen websocket
+				this._ws.setChannel(this.channel)
 			}
 		}
 
 		doUpdate(tick, p5ctx) {
 			super.doUpdate(tick, p5ctx)
+
+      this._connected = this._ws.isConnected
 
       let t = false
       let b = this.value
@@ -247,15 +252,10 @@ const Op_NetReceiver = register(
         11, 0
       )
 
-      p5ctx.push()
-      if (this._lastT) {
-        p5ctx.fill('#f00')
-      }
       p5ctx.ellipse(
         11, 0,
         4, 4
       )
-      p5ctx.pop()
 
       p5ctx.noFill()
 

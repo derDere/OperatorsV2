@@ -3,7 +3,7 @@
 FROM node:lts-alpine
 
 WORKDIR /app
-COPY server.js .
+COPY *.js ./
 
 ENV WWW_ROOT=/www
 EXPOSE 8080

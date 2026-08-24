@@ -2,12 +2,14 @@
 //
 // Architektur: ein einziger http.Server mit einer zentralen Verteilstelle
 // (handleRequest). Eine spätere API klinkt sich dort über ihr Pfad-Präfix ein,
-// bevor die statische Auslieferung greift; WebSockets kommen über das
-// 'upgrade'-Ereignis desselben Servers herein.
+// bevor die statische Auslieferung greift. WebSockets nimmt derselbe Server
+// über sein 'upgrade'-Ereignis an — die Funk-Kanäle dahinter implementiert
+// websocket.js.
 
 const http = require('http')
 const fs = require('fs')
 const path = require('path')
+const websocket = require('./websocket')
 
 const PORT = parseInt(process.env.PORT || '8080')
 const WWW_ROOT = path.resolve(process.env.WWW_ROOT || path.join(__dirname, '..', 'www'))
@@ -61,6 +63,8 @@ function serveStatic(req, res) {
 }
 
 const server = http.createServer(handleRequest)
+
+server.on('upgrade', websocket.handleUpgrade)
 
 server.listen(PORT, () => {
 	console.log('OperatorsV2-Server läuft auf Port ' + PORT + ', www-Ordner: ' + WWW_ROOT)

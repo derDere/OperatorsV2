@@ -13,8 +13,9 @@ Verbindungslinien verdrahtet; Werte (Booleans oder Bytes) fließen pro Frame dur
 - `www/` — das statische Frontend (die eigentliche Anwendung).
 - `server/` — schlanker Node-Webserver ohne Abhängigkeiten (nur Node-Bordmittel), der `www/`
   ausliefert. Zentrale Verteilstelle ist `handleRequest` in `server/server.js`: dort klinkt sich
-  eine spätere API über ihr Pfad-Präfix ein, WebSockets kommen über das `upgrade`-Ereignis
-  desselben `http.Server` herein.
+  eine spätere API über ihr Pfad-Präfix ein. WebSockets nimmt derselbe `http.Server` über sein
+  `upgrade`-Ereignis an — dahinter liegen die Funk-Kanäle in `server/websocket.js` (RFC 6455
+  ohne Abhängigkeiten implementiert).
 - Betrieb über Docker Compose (Service `web`, `www/` wird read-only gemountet), gesteuert
   **ausschließlich über das Makefile** — Docker Desktop muss bereits laufen: `make start`
   (legt `.env` aus `env.example` an, falls sie fehlt), `make wait`, `make open`, `make logs`,
@@ -93,6 +94,17 @@ Beides läuft über dasselbe Paar **`getConfig()` / `setConfig(conf, loaded)`** 
 (www/js/lines/): `Direkt`, `Bezier`, `SimpleBezier` (Standard), `SimpleBezierFan`, `ChipPath`. Nur
 `ChipPath` nutzt den A*-Leiterbahn-Router in www/js/router.js; dessen Verhalten wird über die
 `ROUTE_*`-Konstanten am Dateianfang eingestellt (dort ausführlich dokumentiert).
+
+### Funk-Kanäle (Network-Operatoren)
+
+Die Operatoren „Network Sender/Receiver" (www/js/operators/network.js) tauschen Bytewerte über
+WebSocket-Kanäle des Servers aus (`/ws?channel=<name>&role=listen|send`); Verbindung samt
+Auto-Reconnect und Kanalwechsel kapselt die Klasse `ChannelSocket` (www/js/ws.js). Der Server
+(`server/websocket.js`) hält je Kanal einen flüchtigen Bytewert nur im Speicher: Ein Kanal
+existiert nur, solange mindestens ein Horcher verbunden ist; Sendungen werden in einem festen
+Takt verrechnet (gleichzeitige Sender überlagern sich per bitweisem ODER); Wertänderungen gehen
+an alle Horcher; ohne Sendungen verklingt das Signal auf 0. Die Stellschrauben (`TICK_RATE`,
+`DECAY_TICKS`) stehen am Dateianfang.
 
 ### GUI-Schicht
 
