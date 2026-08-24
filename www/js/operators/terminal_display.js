@@ -1,7 +1,7 @@
 // Alle Zeichen, die der Terminal-Screen anzeigen kann. Die Reihenfolge ist der
 // Flapscreen-Durchlauf: Leerzeichen, 0-9, Buchstaben nach Häufigkeit in der
 // englischen Sprache, Sonderzeichen zuletzt.
-const DISPLAYED_CHARS = " 0123456789etaoinshrdlcumwfgypbvkjxqzETAOINSHRDLCUMWFGYPBVKJXQZ!\"/()=?*';:-+#.,<>|@"
+const DISPLAYED_CHARS = " 0123456789etaoinshrdlcumwfgypbvkjxqzETAOINSHRDLCUMWFGYPBVKJXQZ!\"/()=?*';:-+#.,<>|@[]{}_~\\$€&%§"
 
 // Schneller Lookup: Zeichen -> Index in DISPLAYED_CHARS
 const DISPLAYED_INDEX = {}
