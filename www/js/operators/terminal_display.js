@@ -312,6 +312,20 @@ const Op_TerminalDisplay = register(
         if (b == 0) {
           this._term_x += 1
           this._fixXY()
+        } else if (b == 10) {
+          // \n: Cursor an den Anfang der nächsten Zeile — schreibt nichts
+          this._term_x = 0
+          this._term_y += 1
+          this._fixXY()
+        } else if (b == 13) {
+          // \r: Cursor an den Anfang der aktuellen Zeile — schreibt nichts
+          this._term_x = 0
+        } else if (b == 9) {
+          // Tab: 4 Leerzeichen, aber höchstens bis zum Zeilenende — schreibt nie in die nächste Zeile hinein
+          let fill = mainP5.min(4, this._term_w - this._term_x)
+          for (let i = 0; i < fill; i++) {
+            this.addChar(' ')
+          }
         } else {
           this.addChar(cc)
         }
