@@ -268,7 +268,18 @@ const Op_Byte = register(
 			p5ctx.fill(0)
 			p5ctx.textAlign(p5ctx.CENTER, p5ctx.CENTER)
 			p5ctx.textSize(18)
-			p5ctx.text('0x' + this.value.toString(16).toUpperCase() + '', 0, 0)
+			if (this.showBinary) {
+				p5ctx.text('0b' + this.value.toString(2).toUpperCase() + '', 0, 0)
+			}
+			else if (this.showOctal) {
+				p5ctx.text('0o' + this.value.toString(8).toUpperCase() + '', 0, 0)
+			}
+			else if (this.showDecimal) {
+				p5ctx.text('0d' + this.value.toString(10).toUpperCase() + '', 0, 0)
+			}
+			else {
+				p5ctx.text('0x' + this.value.toString(16).toUpperCase() + '', 0, 0)
+			}
 			p5ctx.textSize(10)
 			p5ctx.text('Byte', 0, -21)
 			
