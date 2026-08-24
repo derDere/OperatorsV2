@@ -1,7 +1,7 @@
 const Op_Stack = register(
 	"Stack",
 	"Memory",
-	"Stacks byte values if triggered or pops, flushes, or clears them",
+	"Stacks byte values if triggered or pops, flushes, or clears them. Keep reads without removing, Reset restarts reading, E = empty/end",
 	class extends Operator {
 
 		constructor(x = 0, y = 0) {
@@ -11,16 +11,21 @@ const Op_Stack = register(
 
       this.output = 0
 
+      this.readPos = 0 // Lesezeiger im Keep-Modus
+
 			this.lastT = false
       this.lastF = false
       this.lastP = false
       this.lastC = false
+      this.lastR = false
 
       this.in_v = this.newInput("V") // Value
 			this.in_t = this.newInput("T") // Trigger
 			this.in_f = this.newInput("F") // Flush
 			this.in_p = this.newInput("P") // Pop
 			this.in_c = this.newInput("C") // Clear
+			this.in_k = this.newInput("K") // Keep
+			this.in_r = this.newInput("R") // Reset
 
 			this.out_b = this.newOutput("B") // Byte
 			this.out_t = this.newOutput("T") // Trigger
@@ -35,11 +40,14 @@ const Op_Stack = register(
 			let f = !!(this.in_f.value)
 			let p = !!(this.in_p.value)
 			let c = !!(this.in_c.value)
+			let k = !!(this.in_k.value)
+			let r = !!(this.in_r.value)
 
       let trigger = false
       let flush = false
       let pop = false
       let clear = false
+      let reset = false
       let outT = false
       let empty = false
 
@@ -55,11 +63,15 @@ const Op_Stack = register(
       if (c != this.lastC && c) {
         clear = true
 			}
+      if (r != this.lastR && r) {
+        reset = true
+			}
 
 			this.lastT = t
 			this.lastF = f
 			this.lastP = p
 			this.lastC = c
+			this.lastR = r
 
       if (trigger) {
         this.stack.push(v)
@@ -69,20 +81,42 @@ const Op_Stack = register(
         this.stack = []
       }
 
-      if (flush && this.stack.length > 0) {
-        this.output = this.stack[0]
-        this.stack.splice(0,1)
-        outT = true
-      }
-      else if (pop && this.stack.length > 0) {
-        this.output = this.stack.pop()
-        outT = true
-      }
-      else if (this.stack.length <= 0) {
-        this.output = 0
+      if (clear || reset) {
+        this.readPos = 0
       }
 
-      empty = (this.stack.length <= 0)
+      if (k) {
+        // Keep-Modus: Lesen entfernt nichts — ein Lesezeiger wandert über den Stapel
+        if (flush && this.readPos < this.stack.length) {
+          this.output = this.stack[this.readPos]
+          this.readPos++
+          outT = true
+        }
+        else if (pop && this.readPos < this.stack.length) {
+          this.output = this.stack[this.stack.length - 1 - this.readPos]
+          this.readPos++
+          outT = true
+        }
+        else if (this.stack.length <= 0) {
+          this.output = 0
+        }
+        empty = (this.readPos >= this.stack.length) // E = End: alles gelesen
+      }
+      else {
+        if (flush && this.stack.length > 0) {
+          this.output = this.stack[0]
+          this.stack.splice(0,1)
+          outT = true
+        }
+        else if (pop && this.stack.length > 0) {
+          this.output = this.stack.pop()
+          outT = true
+        }
+        else if (this.stack.length <= 0) {
+          this.output = 0
+        }
+        empty = (this.stack.length <= 0)
+      }
 
 			let b0 = !!(this.value & 1)
 			let b1 = !!(this.value & 2)
