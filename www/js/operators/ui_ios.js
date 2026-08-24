@@ -1,6 +1,6 @@
 const Op_Switch = register(
 	"Switch",
-	"Input",
+	"User Input",
 	"Toggle it on or off",
 	class extends Placeable {
 
@@ -98,7 +98,7 @@ const Op_Switch = register(
 
 const Op_Button = register(
 	"Button",
-	"Input",
+	"User Input",
 	"Click to send a 1 tick pulse",
 	class extends Placeable {
 
@@ -299,7 +299,7 @@ const TEXT_INPUT_MIN_WIDTH = 80
 //const TEXT_INPUT_DEFAULT_PART_LEN = 12
 const Op_TextInput = register(
 	"Text Input",
-	"Input",
+	"User Input",
 	"Provides a way to read bytes entered by the user",
 	class extends Placeable {
 
@@ -494,7 +494,7 @@ const Op_TextInput = register(
 
 const Op_Slider = register(
 	"Slider",
-	"Input",
+	"User Input",
 	"A Slinder Input 0-255",
 	class extends Placeable {
 

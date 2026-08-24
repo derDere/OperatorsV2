@@ -208,7 +208,7 @@ const Op_Pipe8 = register(
 
 const Op_Value = register(
 	"Value",
-	"Input",
+	"Fixed Input",
 	"Provides any value",
 	class extends Operator {
 
