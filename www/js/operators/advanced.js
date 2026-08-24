@@ -109,9 +109,110 @@ const Op_Stack = register(
 			p5ctx.textSize(10)
 			p5ctx.text('STACK', 0, 5)
 
-      for(let i = 0; i < this.stack.length; i++) {
-        p5ctx.text(this.stack[i], 0, -30 - (i * 10))
+			p5ctx.pop()
+		}
+	}
+)
+
+const Op_Register = register(
+	"Register",
+	"Memory",
+	"Stores bytes at addressed memory",
+	class extends Operator {
+
+		constructor(x = 0, y = 0) {
+			super(x, y)
+
+			this.mem = {}
+
+			this.count = 0
+
+			this.lastC = false
+			this.lastW = false
+			this.lastA = 0
+			this.lastB = 0
+
+      this.in_a = this.newInput("A") // Address
+			this.in_b = this.newInput("B") // Byte
+			this.in_w = this.newInput("W") // Write
+			this.in_c = this.newInput("C") // Clear
+
+			this.out_a = this.newOutput("A") // Address
+			this.out_b = this.newOutput("B") // Byte
+			this.out_t = this.newOutput("T") // Trigger
+			this.out_e = this.newOutput("E") // Empty
+		}
+
+		doUpdate(tick, p5ctx) {
+			super.doUpdate(tick, p5ctx)
+
+			let a = (this.in_a.value) & 255
+			let b = (this.in_b.value) & 255
+			let w = !!(this.in_w.value)
+			let c = !!(this.in_c.value)
+
+      let write = false
+      let clear = false
+			let trigger = false
+
+			if (w != this.lastW && w) {
+        write = true
+			}
+			this.lastW = w
+
+      if (c != this.lastC && c) {
+        clear = true
+			}
+			this.lastC = c
+			
+      if (write) {
+        this.mem[a] = b
       }
+
+      if (clear) {
+				this.mem = {}
+      }
+
+			this.count = Object.keys(this.mem).length
+
+      let empty = (this.count <= 0)
+
+			let b_out = 0
+			if (a in this.mem) {
+				b_out = this.mem[a]
+			}
+
+			a = a & 255
+			b_out = b_out & 255
+
+			if (this.lastA != a) {
+				trigger = true
+			}
+			if (this.lastB != b_out) {
+				trigger = true
+			}
+			this.lastA = a
+			this.lastB = b_out
+
+			this.out_a.value = a & 255
+			this.out_b.value = b_out & 255
+			this.out_t.value = trigger
+			this.out_e.value = empty
+		}
+
+		doDraw(tick, p5ctx) {
+			super.doDraw(tick, p5ctx)
+
+			p5ctx.push()
+
+			p5ctx.noStroke()
+			p5ctx.fill(0)
+			p5ctx.textAlign(p5ctx.CENTER, p5ctx.BOTTOM)
+			p5ctx.textSize(18)
+			p5ctx.text(this.count, 0, 5)
+			p5ctx.textAlign(p5ctx.CENTER, p5ctx.TOP)
+			p5ctx.textSize(10)
+			p5ctx.text('REG', 0, 5)
 
 			p5ctx.pop()
 		}
