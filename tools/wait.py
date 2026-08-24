@@ -67,7 +67,7 @@ def main() -> int:
         "--timeout", type=int, default=180, help="Maximale Wartezeit in Sekunden."
     )
     parser.add_argument(
-        "--interval", type=float, default=2.0, help="Abstand zwischen den Pruefungen in Sekunden."
+        "--interval", type=float, default=0.5, help="Abstand zwischen den Pruefungen in Sekunden."
     )
     args = parser.parse_args()
     return wait_until_ready(args.timeout, args.interval)
