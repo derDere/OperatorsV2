@@ -1,4 +1,8 @@
-const RANDOM_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!\"/()=?*';:-1234567890+#-.,<>|@"
+// Alle Zeichen, die der Terminal-Screen anzeigen kann. Die Reihenfolge ist der
+// Flapscreen-Durchlauf: Leerzeichen, 0-9, Buchstaben nach Häufigkeit in der
+// englischen Sprache, Sonderzeichen zuletzt.
+const DISPLAYED_CHARS = " 0123456789etaoinshrdlcumwfgypbvkjxqzETAOINSHRDLCUMWFGYPBVKJXQZ!\"/()=?*';:-+#.,<>|@"
+
 const TERMINAL_CELL_W = 10
 const TERMINAL_CELL_H = 15
 const TERMINAL_CELL_M = 1
@@ -75,21 +79,24 @@ const Op_TerminalDisplay = register(
     _updateDisplay() {
       for (let y = 0; y < mainP5.min(this.display.length, this.data.length); y++) {
         for (let x = 0; x < mainP5.min(this.display[0].length, this.data[0].length); x++) {
-          let tc = (this.data[y][x] + ' ')
-          let ta = tc.charCodeAt(0) & 255
-          let dc = (this.display[y][x] + ' ')
-          let da = dc.charCodeAt(0) & 255
+          let ti = DISPLAYED_CHARS.indexOf(this.data[y][x])
+          if (ti < 0) {
+            ti = DISPLAYED_CHARS.indexOf('?')
+          }
+          let di = DISPLAYED_CHARS.indexOf(this.display[y][x])
+          if (di < 0) {
+            di = DISPLAYED_CHARS.indexOf('?')
+            this.display[y][x] = '?'
+          }
           let s = 0
-          if (ta > da) {
+          if (ti > di) {
             s = 1
           }
-          if (ta < da) {
+          if (ti < di) {
             s = -1
           }
           if (s != 0) {
-            da += s
-            dc = String.fromCharCode(da)
-            this.display[y][x] = dc
+            this.display[y][x] = DISPLAYED_CHARS[di + s]
           }
         }
       }
@@ -129,10 +136,8 @@ const Op_TerminalDisplay = register(
     _randomFill() {
       for (let y = 0; y < this.display.length; y++) {
         for (let x = 0; x < this.display[0].length; x++) {
-          let i = mainP5.round(mainP5.random(1000000, 9999999)) % RANDOM_CHARS.length
-          let c = RANDOM_CHARS[i] + ' '
-          let cc = c.charCodeAt(0)
-          this.display[y][x] = String.fromCharCode(cc)
+          let i = mainP5.round(mainP5.random(1000000, 9999999)) % DISPLAYED_CHARS.length
+          this.display[y][x] = DISPLAYED_CHARS[i]
         }
       }
     }
@@ -207,6 +212,10 @@ const Op_TerminalDisplay = register(
     }
 
     addChar(c, moveCursor = true) {
+      // Nicht darstellbare Zeichen werden als '?' angezeigt
+      if (!DISPLAYED_CHARS.includes(c)) {
+        c = '?'
+      }
       this.data[this._term_y][this._term_x] = c
       if (moveCursor) {
         this._term_x += 1
