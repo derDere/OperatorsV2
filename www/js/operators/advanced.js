@@ -252,3 +252,107 @@ const Op_Register = register(
 		}
 	}
 )
+
+const Op_StackInput = register(
+	"Stack Input",
+	"Fixed Input",
+	"Fixed stack of bytes (hex, comma separated). Trigger reads the next value, Reset restarts reading, E = end",
+	class extends Operator {
+
+		constructor(x = 0, y = 0) {
+			super(x, y)
+
+			this.values = "00, 01, 02, 03"
+			this.stack = this._parseValues(this.values)
+
+			this.output = 0
+			this.readPos = 0 // Lesezeiger
+
+			this.lastT = false
+			this.lastR = false
+
+			this.in_t = this.newInput("T") // Trigger
+			this.in_r = this.newInput("R") // Reset
+
+			this.out_b = this.newOutput("B") // Byte
+			this.out_t = this.newOutput("T") // Trigger
+			this.out_e = this.newOutput("E") // End
+		}
+
+		// Komma-getrennte Hex-Zahlen → Bytes, Unlesbares wird ignoriert
+		_parseValues(text) {
+			return String(text).split(',')
+				.map(part => parseInt(part.trim(), 16))
+				.filter(n => !isNaN(n))
+				.map(n => n & 255)
+		}
+
+		getConfig() {
+			return {
+				...super.getConfig(),
+				Values: this.values
+			}
+		}
+
+		setConfig(conf, loaded = false) {
+			super.setConfig(conf, loaded)
+			if ('Values' in conf) {
+				this.values = conf.Values
+				this.stack = this._parseValues(this.values)
+				this.readPos = 0
+			}
+		}
+
+		doUpdate(tick, p5ctx) {
+			super.doUpdate(tick, p5ctx)
+
+			let t = !!(this.in_t.value)
+			let r = !!(this.in_r.value)
+
+			let trigger = false
+			let reset = false
+			let outT = false
+
+			if (t != this.lastT && t) {
+				trigger = true
+			}
+			if (r != this.lastR && r) {
+				reset = true
+			}
+
+			this.lastT = t
+			this.lastR = r
+
+			if (reset) {
+				this.readPos = 0
+			}
+
+			if (trigger && this.readPos < this.stack.length) {
+				this.output = this.stack[this.readPos]
+				this.readPos++
+				outT = true
+			}
+
+			this.out_b.value = this.output & 255
+			this.out_t.value = outT
+			this.out_e.value = (this.readPos >= this.stack.length)
+		}
+
+		doDraw(tick, p5ctx) {
+			super.doDraw(tick, p5ctx)
+
+			p5ctx.push()
+
+			p5ctx.noStroke()
+			p5ctx.fill(0)
+			p5ctx.textAlign(p5ctx.CENTER, p5ctx.BOTTOM)
+			p5ctx.textSize(18)
+			p5ctx.text(this.stack.length - this.readPos, 0, 5)
+			p5ctx.textAlign(p5ctx.CENTER, p5ctx.TOP)
+			p5ctx.textSize(10)
+			p5ctx.text('ROM', 0, 5)
+
+			p5ctx.pop()
+		}
+	}
+)
