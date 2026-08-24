@@ -674,3 +674,77 @@ const Op_Counter8 = register(
 		}
 	}
 )
+
+const Op_Repeater = register(
+	"Repeater",
+	"Signal",
+	"Delays the bit signal S by D ticks (FIFO). Lock freezes it and ignores the input",
+	class extends Operator {
+
+		constructor(x = 0, y = 0) {
+			super(x, y)
+
+			this.buffer = [] // FIFO: pro Tick ein Signalwert
+			this.output = false
+			this.delay = 0
+
+			this.in_d = this.newInput("D") // Delay (Byte, Ticks)
+			this.in_s = this.newInput("S") // Signal
+			this.in_l = this.newInput("L") // Lock
+
+			this.out_o = this.newOutput("O") // Output
+		}
+
+		doUpdate(tick, p5ctx) {
+			super.doUpdate(tick, p5ctx)
+
+			let d = (this.in_d.value) & 255
+			let s = !!(this.in_s.value)
+			let l = !!(this.in_l.value)
+
+			this.delay = d
+
+			if (!l) {
+				this.buffer.push(s)
+				// Sinkt der Delay, holt der Puffer in einem Tick auf — es zählt der zuletzt gepoppte Wert
+				while (this.buffer.length > d) {
+					this.output = this.buffer.shift()
+				}
+			}
+
+			this.out_o.value = this.output
+		}
+
+		doDraw(tick, p5ctx) {
+			super.doDraw(tick, p5ctx)
+
+			p5ctx.push()
+
+			p5ctx.noStroke()
+			p5ctx.fill(0)
+			p5ctx.textAlign(p5ctx.CENTER, p5ctx.TOP)
+			p5ctx.textSize(10)
+			p5ctx.text('RPT: ' + this.delay, 0, 5)
+
+			let disbuf = this.buffer
+
+			p5ctx.push()
+			p5ctx.translate((-this.width / 2) + 20, -5)
+			p5ctx.stroke(0)
+			p5ctx.noFill()
+			p5ctx.beginShape()
+			if (disbuf.length > 0) {
+				let step = (this.width - 30) / (disbuf.length + 1)
+				for (let i = 0; i < disbuf.length; i++) {
+					let y = disbuf[i] ? -5 : 5
+					p5ctx.vertex(step * i, y)
+					p5ctx.vertex(step * (i + 1), y)
+				}
+			}
+			p5ctx.endShape()
+			p5ctx.pop()
+
+			p5ctx.pop()
+		}
+	}
+)
