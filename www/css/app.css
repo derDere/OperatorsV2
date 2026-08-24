@@ -250,10 +250,13 @@ div.terminal-display {
 
 /* Eine komplette Terminal-Zeile als Text; das Zellen-Raster kommt als
    wiederholtes SVG-Kachelmuster aus dem Hintergrund. Letter-Spacing bringt
-   die 9px breiten Courier-Zeichen auf den 11px-Zellen-Raster. */
+   die 9px breiten Courier-Zeichen auf den 11px-Zellen-Raster. Line-Height 14px
+   hebt die Baseline auf 10.5px an, damit in der 15px-Zelle unten der Unterstrich
+   (liegt komplett unter der Baseline) und oben $ und # vollstaendig sichtbar sind. */
 div.terminal-display-row {
 	font-family: 'Courier New', Courier, monospace;
 	font-size: 15px;
+	line-height: 14px;
 	display: block;
 	position: absolute;
 	left: 0;
@@ -276,6 +279,7 @@ div.terminal-display ::selection {
 span.terminal-display-cell {
 	font-family: 'Courier New', Courier, monospace;
 	font-size: 15px;
+	line-height: 14px; /* gleiche Baseline wie die Terminal-Zeile darunter */
 	display: block;
 	position: absolute;
 	background: #020;
