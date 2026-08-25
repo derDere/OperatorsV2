@@ -9,7 +9,8 @@ var toolTipBody = null
 function showToolTip() {
 	toolTip.style.display = 'block'
 	toolTipTitle.innerText = this.name
-	toolTipBody.innerText = this.description
+	let desc = this.description
+	toolTipBody.innerText = desc
 }
 
 function hideToolTip() {
