@@ -341,7 +341,9 @@ class Control {
 	}
 }
 
-function updateControls(tick, p5ctx) {
+// controls: der Control-Satz, der aktualisiert wird — die Hauptfläche nimmt
+// alle, die Wiki-Demos (op_demo.js) übergeben jeweils nur ihre eigenen.
+function updateControls(tick, p5ctx, controls = AllControls) {
 	if (!lastMousePos) {
 		lastMousePos = mousePos.copy()
 	}
@@ -357,7 +359,7 @@ function updateControls(tick, p5ctx) {
 	}
 	lastMousePos = mousePos.copy()
 
-	const updateOrder = [...AllControls];
+	const updateOrder = [...controls];
 	updateOrder.sort((a, b) => a.zIndex - b.zIndex)
 
 	let capturedMouseControl = null
@@ -418,8 +420,8 @@ function updateControls(tick, p5ctx) {
 	}
 }
 
-function drawControls(tick, p5ctx) {
-	const drawOrder = [...AllControls];
+function drawControls(tick, p5ctx, controls = AllControls) {
+	const drawOrder = [...controls];
 	drawOrder.sort((a, b) => a.zIndex - b.zIndex)
 
 	for (let c of drawOrder) {

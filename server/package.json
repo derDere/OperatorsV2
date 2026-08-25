@@ -1,0 +1,12 @@
+{
+	"name": "operatorsv2-server",
+	"version": "1.0.0",
+	"private": true,
+	"description": "Webserver fuer OperatorsV2: statische Auslieferung, Funk-Kanaele (WebSocket) und Wiki (Markdown zu HTML)",
+	"engines": {
+		"node": ">=20"
+	},
+	"dependencies": {
+		"marked": "^18.0.11"
+	}
+}

@@ -1,15 +1,17 @@
 // Webserver für OperatorsV2: liefert den www-Ordner als statische Seite aus.
 //
 // Architektur: ein einziger http.Server mit einer zentralen Verteilstelle
-// (handleRequest). Eine spätere API klinkt sich dort über ihr Pfad-Präfix ein,
-// bevor die statische Auslieferung greift. WebSockets nimmt derselbe Server
-// über sein 'upgrade'-Ereignis an — die Funk-Kanäle dahinter implementiert
-// websocket.js.
+// (handleRequest). Weitere Routen klinken sich dort über ihr Pfad-Präfix ein,
+// bevor die statische Auslieferung greift — so macht es die Wiki-Route
+// (wiki.js, Präfix /wiki/), und eine spätere API macht es genauso.
+// WebSockets nimmt derselbe Server über sein 'upgrade'-Ereignis an — die
+// Funk-Kanäle dahinter implementiert websocket.js.
 
 const http = require('http')
 const fs = require('fs')
 const path = require('path')
 const websocket = require('./websocket')
+const wiki = require('./wiki')
 
 const PORT = parseInt(process.env.PORT || '8080')
 const WWW_ROOT = path.resolve(process.env.WWW_ROOT || path.join(__dirname, '..', 'www'))
@@ -26,6 +28,10 @@ const MIME_TYPES = {
 }
 
 function handleRequest(req, res) {
+	if (wiki.handles(req)) {
+		wiki.handleRequest(req, res)
+		return
+	}
 	serveStatic(req, res)
 }
 

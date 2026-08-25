@@ -11,18 +11,21 @@ Verbindungslinien verdrahtet; Werte (Booleans oder Bytes) fließen pro Frame dur
 ## Struktur & Ausführen
 
 - `www/` — das statische Frontend (die eigentliche Anwendung).
-- `server/` — schlanker Node-Webserver ohne Abhängigkeiten (nur Node-Bordmittel), der `www/`
-  ausliefert. Zentrale Verteilstelle ist `handleRequest` in `server/server.js`: dort klinkt sich
-  eine spätere API über ihr Pfad-Präfix ein. WebSockets nimmt derselbe `http.Server` über sein
-  `upgrade`-Ereignis an — dahinter liegen die Funk-Kanäle in `server/websocket.js` (RFC 6455
-  ohne Abhängigkeiten implementiert).
-- Betrieb über Docker Compose (Service `web`, `www/` wird read-only gemountet), gesteuert
-  **ausschließlich über das Makefile** — Docker Desktop muss bereits laufen: `make start`
-  (legt `.env` aus `env.example` an, falls sie fehlt), `make wait`, `make open`, `make logs`,
-  `make stop`; bloßes `make` zeigt die Befehlsübersicht.
-- Es gibt **kein Build-System, keinen Paketmanager, keine Tests, keinen Linter**.
-  `www/index.html` funktioniert auch direkt im Browser geöffnet (es werden keine Assets per
-  Skript nachgeladen).
+- `wiki/` — die Dokumentation als Markdown-Dateistruktur (siehe Abschnitt Wiki).
+- `server/` — schlanker Node-Webserver, der `www/` ausliefert. Zentrale Verteilstelle ist
+  `handleRequest` in `server/server.js`: weitere Routen klinken sich dort über ihr Pfad-Präfix
+  ein — so macht es die Wiki-Route (`server/wiki.js`, Präfix `/wiki/`), eine spätere API macht
+  es genauso. WebSockets nimmt derselbe `http.Server` über sein `upgrade`-Ereignis an — dahinter
+  liegen die Funk-Kanäle in `server/websocket.js` (RFC 6455 ohne Abhängigkeiten implementiert).
+  Einzige npm-Abhängigkeit ist `marked` (Markdown → HTML, `server/package.json`); installiert
+  wird sie beim Docker-Build per `npm ci`, für lokale Läufe per `npm --prefix server install`.
+- Betrieb über Docker Compose (Service `web`; `www/` und `wiki/` werden read-only gemountet),
+  gesteuert **ausschließlich über das Makefile** — Docker Desktop muss bereits laufen:
+  `make start` (legt `.env` aus `env.example` an, falls sie fehlt), `make wait`, `make open`,
+  `make logs`, `make stop`; bloßes `make` zeigt die Befehlsübersicht.
+- Es gibt **kein Build-System, keine Tests, keinen Linter**; das Frontend kommt ohne
+  Paketmanager aus. `www/index.html` funktioniert auch direkt im Browser geöffnet (es werden
+  keine Assets per Skript nachgeladen); `www/wiki.html` braucht den laufenden Server.
 - Unter `www/dev/` liegen eigenständige Testseiten für Teilstücke (dat.gui-Fork,
   Bezier-Beispiele), die direkt geöffnet werden.
 
@@ -105,6 +108,27 @@ existiert nur, solange mindestens ein Horcher verbunden ist; Sendungen werden in
 Takt verrechnet (gleichzeitige Sender überlagern sich per bitweisem ODER); Wertänderungen gehen
 an alle Horcher; ohne Sendungen verklingt das Signal auf 0. Die Stellschrauben (`TICK_RATE`,
 `DECAY_TICKS`) stehen am Dateianfang.
+
+### Wiki (Doku mit Live-Demos)
+
+- Inhalte liegen als Markdown unter `wiki/`; die Route `/wiki/<seite>` (`server/wiki.js`)
+  wandelt sie per `marked` in HTML-Fragmente um, andere Dateien (Bilder …) liefert sie roh aus.
+  Beim Umwandeln werden relative `.md`-Links zu Hash-Links (`#ordner/seite`) und andere relative
+  Pfade zu `/wiki/<pfad>` umgeschrieben.
+- `www/wiki.html` ist der Wrapper: `www/js/wiki.js` lädt die Fragmente anhand des URL-Hashs
+  dynamisch nach (Navigation/Zurück über `hashchange`), `www/css/wiki.css` formatiert das
+  Markdown.
+- Codeblöcke der Sprache `operatorsv2` enthalten einen gespeicherten Aufbau als JSON (Format wie
+  beim Editor-Speichern) und werden zu Live-Demos: `OperatorDemo` (`www/js/op_demo.js`) lädt das
+  JSON in ein eigenes kleines p5-Canvas, die Logik läuft echt. Unverdrahtete IOs erscheinen als
+  Bedienfelder daneben — Eingänge links (stellbar), Ausgänge rechts (nur lesend), je Pin ein
+  Wert-Quadrat in den Statusfarben (Displayname als Beschriftung, Beschreibung als Tooltip).
+  In Demo-Aufbauten übernehmen diese Quadrate die Rolle von Switch/Button/Lamp/Byte — solche
+  Operatoren gehören nur in Demos, die sie selbst zeigen.
+- wiki.html lädt die Operator-Klassen ohne sketch.js/properties.js; deren Seiten-Globals stellt
+  op_demo.js bereit. Jede Demo setzt die geteilten Globals am Frame-Anfang auf ihren Stand und
+  sichert ihn am Ende zurück; `updateControls`/`drawControls` nehmen dafür optional einen
+  eigenen Control-Satz entgegen. Demos sind nicht editierbar (kein Verschieben, kein Verdrahten).
 
 ### GUI-Schicht
 

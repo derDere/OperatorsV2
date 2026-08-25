@@ -1,3 +1,4 @@
 .temp/
 .claude/
 .env
+node_modules/

@@ -15,6 +15,7 @@ services:
     image: ${COMPOSE_PROJECT_NAME:-operatorsv2}-web
     volumes:
       - ./www:/www:ro
+      - ./wiki:/wiki:ro
     ports:
       - "${APP_PORT:-8080}:8080"
     healthcheck:
