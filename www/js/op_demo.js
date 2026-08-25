@@ -54,13 +54,21 @@ const AllOperatorDemos = []
 // oder Bytewert in den Statusfarben — rot = true (Haken), weiß = false (leer),
 // blau = Bytewert (zweistelliger Hex-Code). Bei Eingängen öffnet ein Klick
 // einen Schieberegler von -1 bis 256 (-1 = false, 256 = true, dazwischen der
-// Bytewert); ein Klick aufs Quadrat bei offenem Regler schaltet zwischen true
-// und false um. Ausgänge nutzen dasselbe Quadrat nur lesend.
+// Bytewert): Er legt sich als Rahmen auf Zeilenhöhe über die Zeile —
+// Displayname, Regler und Quadrat nebeneinander, das Quadrat bleibt exakt an
+// seinem Platz, der Rahmen klappt nach außen (vom Canvas weg) auf. Ein Klick
+// aufs Quadrat bei offenem Regler schaltet zwischen true und false um.
+// Ausgänge nutzen dasselbe Quadrat nur lesend.
 class IoValueBox {
 
 	constructor(io, readonly) {
 		this.io = io
 		this.readonly = readonly
+
+		// werden von _buildIoRow gesetzt — der offene Regler holt sich
+		// Beschriftung und Quadrat aus der Zeile in seinen Rahmen
+		this.row = null
+		this.label = null
 
 		this._lastShown = null
 		this.popup = null
@@ -122,6 +130,13 @@ class IoValueBox {
 	}
 
 	_openSlider() {
+		// Zeile friert ihre Maße ein, damit beim Herauslösen von Beschriftung
+		// und Quadrat nichts verrutscht
+		let rowRect = this.row.getBoundingClientRect()
+		let boxRect = this.ele.getBoundingClientRect()
+		this.row.style.minWidth = rowRect.width + 'px'
+		this.row.style.minHeight = rowRect.height + 'px'
+
 		this.popup = document.createElement('div')
 		this.popup.className = 'operator-demo-io-slider'
 
@@ -137,19 +152,23 @@ class IoValueBox {
 			this.io.value = (v <= -1) ? false : ((v >= 256) ? true : (v & 255))
 			this.refresh()
 		})
+
+		// Displayname, Regler und Quadrat wandern gemeinsam in den Rahmen
+		this.popup.appendChild(this.label)
 		this.popup.appendChild(this.slider)
+		this.popup.appendChild(this.ele)
 		document.body.appendChild(this.popup)
 
-		// fixed unterm Quadrat positioniert — so schneidet kein Overflow den Regler ab
-		let rect = this.ele.getBoundingClientRect()
-		let width = this.popup.getBoundingClientRect().width
-		let left = rect.left + (rect.width / 2) - (width / 2)
-		left = Math.max(8, Math.min(left, window.innerWidth - width - 8))
-		this.popup.style.left = left + 'px'
-		this.popup.style.top = (rect.bottom + 6) + 'px'
+		// Rahmen so legen, dass das Quadrat exakt an seinem Platz bleibt —
+		// der Rahmen wächst damit nach außen, vom Canvas weg
+		this.popup.style.left = '0px'
+		this.popup.style.top = '0px'
+		let inFrameRect = this.ele.getBoundingClientRect()
+		this.popup.style.left = (boxRect.left - inFrameRect.left) + 'px'
+		this.popup.style.top = (boxRect.top - inFrameRect.top) + 'px'
 
 		this._outsideHandler = (event) => {
-			if (this.ele.contains(event.target) || this.popup.contains(event.target)) {
+			if (this.popup.contains(event.target)) {
 				return
 			}
 			this.closeSlider()
@@ -165,6 +184,13 @@ class IoValueBox {
 		document.removeEventListener('pointerdown', this._outsideHandler, true)
 		window.removeEventListener('scroll', this._outsideHandler, true)
 		this._outsideHandler = null
+
+		// Beschriftung und Quadrat zurück in ihre Zeile
+		this.row.appendChild(this.label)
+		this.row.appendChild(this.ele)
+		this.row.style.minWidth = ''
+		this.row.style.minHeight = ''
+
 		this.popup.remove()
 		this.popup = null
 		this.slider = null
@@ -497,6 +523,8 @@ class OperatorDemo {
 		label.innerText = withOwnerName ? (op.entryName + ' · ' + name) : name
 
 		let box = new IoValueBox(io, readonly)
+		box.row = row
+		box.label = label
 		this.ioBoxes.push(box)
 
 		// Beschriftung außen, Quadrat am Canvas — Ausgänge spiegelbildlich zu Eingängen

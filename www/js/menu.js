@@ -5,7 +5,8 @@ var datMenuBlocker = null
 function initMenu() {
   datMenuObj = {
     "💾 Save As": _saveFile,
-    "📂 Open File": _loadFile
+    "📂 Open File": _loadFile,
+    "🌐 Wiki": _gotoWiki
   }
 
   datMenu = new dat.GUI()
@@ -13,7 +14,14 @@ function initMenu() {
   datMenuBlocker = new DatBlocker(datMenu)
 
   datMenu.edit(datMenuObj)
-  datMenu.close()
+  datMenu.open()
+}
+
+function _gotoWiki() {
+  const zielUrl = "/wiki.html"
+  const fensterName = "Operator V2 - Wiki"
+  const einstellungen = "width=1000,height=1000,menubar=no,toolbar=no,location=no,status=no,scrollbars=yes"
+  window.open(zielUrl, fensterName, einstellungen);
 }
 
 function _saveFile() {
