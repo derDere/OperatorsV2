@@ -14,7 +14,7 @@ const Op_Lamp = register(
 
 			this.state = false
 
-			this.in = this.newInput("I") // Input
+			this.in = this.newInput("I", "Input", "The lamp lights up while this is true")
 		}
 
 		getConfig() {
@@ -117,7 +117,7 @@ const Op_Byte = register(
 
 			this.value = 0
 
-			this.in = this.newInput("B") // Byte
+			this.in = this.newInput("B", "Byte", "Byte value shown in the configured formats")
 		}
 
 		getConfig() {

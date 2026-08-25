@@ -17,14 +17,14 @@ const Op_7sDisplay = register(
 
 			this.width += 20
 
-			this.in1 = this.newInput("S1") // Top
-			this.in2 = this.newInput("S2") // Top Left
-			this.in3 = this.newInput("S3") // Top Right
-			this.in4 = this.newInput("S4") // Middle
-			this.in5 = this.newInput("S5") // Bottom Left
-			this.in6 = this.newInput("S6") // Bottom Right
-			this.in7 = this.newInput("S7") // Bottom
-			this.in8 = this.newInput("D") // Dot
+			this.in1 = this.newInput("S1", "Top Segment", "Lights the top segment while true")
+			this.in2 = this.newInput("S2", "Top Left Segment", "Lights the top left segment while true")
+			this.in3 = this.newInput("S3", "Top Right Segment", "Lights the top right segment while true")
+			this.in4 = this.newInput("S4", "Middle Segment", "Lights the middle segment while true")
+			this.in5 = this.newInput("S5", "Bottom Left Segment", "Lights the bottom left segment while true")
+			this.in6 = this.newInput("S6", "Bottom Right Segment", "Lights the bottom right segment while true")
+			this.in7 = this.newInput("S7", "Bottom Segment", "Lights the bottom segment while true")
+			this.in8 = this.newInput("D", "Dot", "Lights the dot while true")
 
 			this.s7_t = false
 			this.s7_tl = false
@@ -125,20 +125,20 @@ const Op_4bit_to_7sSeg = register(
 		constructor(x = 0, y = 0) {
 			super(x, y)
 
-			this.in1 = this.newInput("B0")
-			this.in2 = this.newInput("B1")
-			this.in3 = this.newInput("B2")
-			this.in4 = this.newInput("B3")
-			this.inD = this.newInput("D")
+			this.in1 = this.newInput("B0", "Bit 0", "Bit 0 (value 1) of the number to display")
+			this.in2 = this.newInput("B1", "Bit 1", "Bit 1 (value 2) of the number to display")
+			this.in3 = this.newInput("B2", "Bit 2", "Bit 2 (value 4) of the number to display")
+			this.in4 = this.newInput("B3", "Bit 3", "Bit 3 (value 8) of the number to display")
+			this.inD = this.newInput("D", "Dot", "Passed straight through to the dot output")
 
-			this.ou1 = this.newOutput("S1") // Top
-			this.ou2 = this.newOutput("S2") // Top Left
-			this.ou3 = this.newOutput("S3") // Top Right
-			this.ou4 = this.newOutput("S4") // Middle
-			this.ou5 = this.newOutput("S5") // Bottom Left
-			this.ou6 = this.newOutput("S6") // Bottom Right
-			this.ou7 = this.newOutput("S7") // Bottom
-			this.ouD = this.newOutput("D") // Dot
+			this.ou1 = this.newOutput("S1", "Top Segment", "True when the top segment is part of the number")
+			this.ou2 = this.newOutput("S2", "Top Left Segment", "True when the top left segment is part of the number")
+			this.ou3 = this.newOutput("S3", "Top Right Segment", "True when the top right segment is part of the number")
+			this.ou4 = this.newOutput("S4", "Middle Segment", "True when the middle segment is part of the number")
+			this.ou5 = this.newOutput("S5", "Bottom Left Segment", "True when the bottom left segment is part of the number")
+			this.ou6 = this.newOutput("S6", "Bottom Right Segment", "True when the bottom right segment is part of the number")
+			this.ou7 = this.newOutput("S7", "Bottom Segment", "True when the bottom segment is part of the number")
+			this.ouD = this.newOutput("D", "Dot", "Mirrors the dot input")
 		}
 
 		doUpdate(tick, p5ctx) {

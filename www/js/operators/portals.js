@@ -16,7 +16,7 @@ const Op_Portal1i = register(
 
 			this.width = 40
 
-			this.in_i1 = this.newInput("I1") // Input 1
+			this.in_i1 = this.newInput("I1", "Input 1", "Value transported to output O1 of the linked exit portal")
 
       AllPortals[this.id] = this
 		}
@@ -75,9 +75,9 @@ const Op_Portal4i = register(
 		constructor(x = 0, y = 0) {
 			super(x, y)
 
-			this.in_i2 = this.newInput("I2") // Input 2
-			this.in_i3 = this.newInput("I3") // Input 3
-			this.in_i4 = this.newInput("I4") // Input 4
+			this.in_i2 = this.newInput("I2", "Input 2", "Value transported to output O2 of the linked exit portal")
+			this.in_i3 = this.newInput("I3", "Input 3", "Value transported to output O3 of the linked exit portal")
+			this.in_i4 = this.newInput("I4", "Input 4", "Value transported to output O4 of the linked exit portal")
 		}
 	}
 )
@@ -91,10 +91,10 @@ const Op_Portal8i = register(
 		constructor(x = 0, y = 0) {
 			super(x, y)
 
-			this.in_i5 = this.newInput("I5") // Input 2
-			this.in_i6 = this.newInput("I6") // Input 2
-			this.in_i7 = this.newInput("I7") // Input 3
-			this.in_i8 = this.newInput("I8") // Input 4
+			this.in_i5 = this.newInput("I5", "Input 5", "Value transported to output O5 of the linked exit portal")
+			this.in_i6 = this.newInput("I6", "Input 6", "Value transported to output O6 of the linked exit portal")
+			this.in_i7 = this.newInput("I7", "Input 7", "Value transported to output O7 of the linked exit portal")
+			this.in_i8 = this.newInput("I8", "Input 8", "Value transported to output O8 of the linked exit portal")
 		}
 	}
 )
@@ -154,7 +154,7 @@ const Op_PortalXo = register(
 			if (this.lastOutCount != o.inputs.length) {
 				this._clearOutputs()
 				for(let i = 1; i <= o.inputs.length; i++) {
-					let out = this.newOutput("O" + i)
+					let out = this.newOutput("O" + i, "Output " + i, "Value from input I" + i + " of the linked entry portal")
 					out.id = this.id + '_out_' + i
 				}
 				this.lastOutCount = o.inputs.length

@@ -19,17 +19,17 @@ const Op_Stack = register(
       this.lastC = false
       this.lastR = false
 
-      this.in_v = this.newInput("V") // Value
-			this.in_t = this.newInput("T") // Trigger
-			this.in_f = this.newInput("F") // Flush
-			this.in_p = this.newInput("P") // Pop
-			this.in_c = this.newInput("C") // Clear
-			this.in_k = this.newInput("K") // Keep
-			this.in_r = this.newInput("R") // Reset
+      this.in_v = this.newInput("V", "Value", "Byte value that is pushed onto the stack on a trigger")
+			this.in_t = this.newInput("T", "Trigger", "A rising edge pushes the current value onto the stack")
+			this.in_f = this.newInput("F", "Flush", "A rising edge reads the oldest entry (FIFO)")
+			this.in_p = this.newInput("P", "Pop", "A rising edge reads the newest entry (LIFO)")
+			this.in_c = this.newInput("C", "Clear", "A rising edge empties the stack")
+			this.in_k = this.newInput("K", "Keep", "While true, reading moves a cursor instead of removing entries")
+			this.in_r = this.newInput("R", "Reset", "A rising edge restarts reading from the beginning in keep mode")
 
-			this.out_b = this.newOutput("B") // Byte
-			this.out_t = this.newOutput("T") // Trigger
-			this.out_e = this.newOutput("E") // Empty
+			this.out_b = this.newOutput("B", "Byte", "The value read last")
+			this.out_t = this.newOutput("T", "Trigger", "True for one tick when a value was read")
+			this.out_e = this.newOutput("E", "Empty / End", "True when the stack is empty, or everything was read in keep mode")
 		}
 
 		doUpdate(tick, p5ctx) {
@@ -166,15 +166,15 @@ const Op_Register = register(
 			this.lastA = 0
 			this.lastB = 0
 
-      this.in_a = this.newInput("A") // Address
-			this.in_b = this.newInput("B") // Byte
-			this.in_w = this.newInput("W") // Write
-			this.in_c = this.newInput("C") // Clear
+      this.in_a = this.newInput("A", "Address", "Byte address that is read and written")
+			this.in_b = this.newInput("B", "Byte", "Byte value stored at the address on write")
+			this.in_w = this.newInput("W", "Write", "A rising edge stores the byte at the current address")
+			this.in_c = this.newInput("C", "Clear", "A rising edge erases the whole memory")
 
-			this.out_a = this.newOutput("A") // Address
-			this.out_b = this.newOutput("B") // Byte
-			this.out_t = this.newOutput("T") // Trigger
-			this.out_e = this.newOutput("E") // Empty
+			this.out_a = this.newOutput("A", "Address", "The currently selected address")
+			this.out_b = this.newOutput("B", "Byte", "The byte stored at the current address")
+			this.out_t = this.newOutput("T", "Trigger", "True for one tick when the address or the read byte changes")
+			this.out_e = this.newOutput("E", "Empty", "True while no address holds a value")
 		}
 
 		doUpdate(tick, p5ctx) {
@@ -271,12 +271,12 @@ const Op_StackInput = register(
 			this.lastT = false
 			this.lastR = false
 
-			this.in_t = this.newInput("T") // Trigger
-			this.in_r = this.newInput("R") // Reset
+			this.in_t = this.newInput("T", "Trigger", "A rising edge reads the next value")
+			this.in_r = this.newInput("R", "Reset", "A rising edge restarts reading at the first value")
 
-			this.out_b = this.newOutput("B") // Byte
-			this.out_t = this.newOutput("T") // Trigger
-			this.out_e = this.newOutput("E") // End
+			this.out_b = this.newOutput("B", "Byte", "The value read last")
+			this.out_t = this.newOutput("T", "Trigger", "True for one tick when a value was read")
+			this.out_e = this.newOutput("E", "End", "True when all values have been read")
 		}
 
 		// Komma-getrennte Hex-Zahlen → Bytes, Unlesbares wird ignoriert

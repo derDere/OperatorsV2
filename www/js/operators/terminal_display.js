@@ -59,19 +59,19 @@ const Op_TerminalDisplay = register(
       this._updateDataDisplaySize()
       this._randomFill()
 
-      this.in_b = this.newInput("B") // Byte
-      this.in_w = this.newInput("W") // Write
-      this.in_s = this.newInput("S") // Set
-      this.in_x = this.newInput("X") // Cursor pos X for Goto
-      this.in_y = this.newInput("Y") // Cursor pos Y for Goto
-      this.in_g = this.newInput("G") // Goto X Y
-      this.in_c = this.newInput("C") // Clear
+      this.in_b = this.newInput("B", "Byte", "Character code to write, where 9, 10 and 13 act as tab, newline and carriage return")
+      this.in_w = this.newInput("W", "Write", "A rising edge writes the character at the cursor and advances it")
+      this.in_s = this.newInput("S", "Set", "A rising edge sets the character at the cursor without moving it")
+      this.in_x = this.newInput("X", "Goto X", "Column the cursor jumps to on Goto")
+      this.in_y = this.newInput("Y", "Goto Y", "Row the cursor jumps to on Goto")
+      this.in_g = this.newInput("G", "Goto", "A rising edge moves the cursor to X and Y")
+      this.in_c = this.newInput("C", "Clear", "Wipes the screen and homes the cursor while true")
 
-      this.out_b = this.newOutput("B") // Byte (at Cursor)
-      this.out_x = this.newOutput("X") // Current X
-      this.out_y = this.newOutput("Y") // Current Y
-      this.out_t = this.newOutput("T") // Trigger
-      this.out_e = this.newOutput("E") // Empty
+      this.out_b = this.newOutput("B", "Byte", "Character code under the cursor")
+      this.out_x = this.newOutput("X", "Cursor X", "Current column of the cursor")
+      this.out_y = this.newOutput("Y", "Cursor Y", "Current row of the cursor")
+      this.out_t = this.newOutput("T", "Trigger", "True for one tick when the cursor or the character under it changed")
+      this.out_e = this.newOutput("E", "Empty", "True while the whole screen contains only spaces")
     }
 
     _getEleDisplayContent() {

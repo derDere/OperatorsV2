@@ -17,14 +17,14 @@ const Op_FileInput = register(
 			this.lastR = false
 			this.lastC = false
 
-			this.in_t = this.newInput("T") // Trigger
-			this.in_r = this.newInput("R") // Reset
-			this.in_c = this.newInput("C") // Clear
+			this.in_t = this.newInput("T", "Trigger", "A rising edge reads the next byte of the file")
+			this.in_r = this.newInput("R", "Reset", "A rising edge restarts reading at the first byte")
+			this.in_c = this.newInput("C", "Clear", "A rising edge drops the loaded file")
 
-			this.out_b = this.newOutput("B") // Byte
-			this.out_t = this.newOutput("T") // Trigger
-			this.out_e = this.newOutput("E") // End
-			this.out_n = this.newOutput("N") // New file
+			this.out_b = this.newOutput("B", "Byte", "The byte read last")
+			this.out_t = this.newOutput("T", "Trigger", "True for one tick when a byte was read")
+			this.out_e = this.newOutput("E", "End", "True when all bytes have been read")
+			this.out_n = this.newOutput("N", "New File", "True for one tick when a new file was uploaded")
 		}
 
 		createElement() {
@@ -136,9 +136,9 @@ const Op_FileOutput = register(
 
 			this._blobUrl = null
 
-			this.in_v = this.newInput("V") // Value
-			this.in_t = this.newInput("T") // Trigger
-			this.in_c = this.newInput("C") // Clear
+			this.in_v = this.newInput("V", "Value", "Byte value that is appended to the file on a trigger")
+			this.in_t = this.newInput("T", "Trigger", "A rising edge appends the current value to the file")
+			this.in_c = this.newInput("C", "Clear", "A rising edge empties the collected bytes")
 		}
 
 		kill() {

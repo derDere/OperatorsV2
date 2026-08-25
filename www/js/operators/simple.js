@@ -3,10 +3,10 @@ class base_Simple extends Operator {
 	constructor(x = 0, y = 0) {
 		super(x, y)
 
-		this.in_a = this.newInput("I1") // Input 1
-		this.in_b = this.newInput("I2") // Input 2
-		this.out_c = this.newOutput("O") // Output
-		this.out_not_c = this.newOutput("!O") // Not Output
+		this.in_a = this.newInput("I1", "Input 1", "First boolean input of the gate")
+		this.in_b = this.newInput("I2", "Input 2", "Second boolean input of the gate")
+		this.out_c = this.newOutput("O", "Output", "Result of the gate applied to both inputs")
+		this.out_not_c = this.newOutput("!O", "Inverted Output", "Opposite of the output O")
 
 		this.action = (a, b) => false
 		this.icon = ""
@@ -95,7 +95,11 @@ const Op_Not = register(
 			this._reorderIOs()
 
 			this.inputs[0].name = "A"
+			this.inputs[0].displayName = "Input"
+			this.inputs[0].description = "Boolean value to negate"
 			this.outputs[0].name = "!A"
+			this.outputs[0].displayName = "Output"
+			this.outputs[0].description = "The negated value of input A"
 
 			this.action = (a, b) => !a
 			this.icon = "NOT"
@@ -114,8 +118,8 @@ const Op_Pipe1 = register(
 
 			this.width = 20
 
-			this.in_i = this.newInput("") // Input
-			this.out_o = this.newOutput("") // Output
+			this.in_i = this.newInput("", "Input", "Value that is passed straight through to the output")
+			this.out_o = this.newOutput("", "Output", "The unchanged value from the input")
 
 			this.height = 20
 		}
@@ -139,15 +143,15 @@ const Op_Pipe4 = register(
 
 			this.width = 20
 
-			this.in_i1 = this.newInput("") // Input 1
-			this.in_i2 = this.newInput("") // Input 2
-			this.in_i3 = this.newInput("") // Input 3
-			this.in_i4 = this.newInput("") // Input 4
+			this.in_i1 = this.newInput("", "Input 1", "Value that is passed straight through to output 1")
+			this.in_i2 = this.newInput("", "Input 2", "Value that is passed straight through to output 2")
+			this.in_i3 = this.newInput("", "Input 3", "Value that is passed straight through to output 3")
+			this.in_i4 = this.newInput("", "Input 4", "Value that is passed straight through to output 4")
 
-			this.out_o1 = this.newOutput("") // Output 1
-			this.out_o2 = this.newOutput("") // Output 2
-			this.out_o3 = this.newOutput("") // Output 3
-			this.out_o4 = this.newOutput("") // Output 4
+			this.out_o1 = this.newOutput("", "Output 1", "The unchanged value from input 1")
+			this.out_o2 = this.newOutput("", "Output 2", "The unchanged value from input 2")
+			this.out_o3 = this.newOutput("", "Output 3", "The unchanged value from input 3")
+			this.out_o4 = this.newOutput("", "Output 4", "The unchanged value from input 4")
 		}
 
 		doUpdate(tick, p5ctx) {
@@ -172,23 +176,23 @@ const Op_Pipe8 = register(
 
 			this.width = 20
 
-			this.in_i1 = this.newInput("") // Input 1
-			this.in_i2 = this.newInput("") // Input 2
-			this.in_i3 = this.newInput("") // Input 3
-			this.in_i4 = this.newInput("") // Input 4
-			this.in_i5 = this.newInput("") // Input 5
-			this.in_i6 = this.newInput("") // Input 6
-			this.in_i7 = this.newInput("") // Input 7
-			this.in_i8 = this.newInput("") // Input 8
+			this.in_i1 = this.newInput("", "Input 1", "Value that is passed straight through to output 1")
+			this.in_i2 = this.newInput("", "Input 2", "Value that is passed straight through to output 2")
+			this.in_i3 = this.newInput("", "Input 3", "Value that is passed straight through to output 3")
+			this.in_i4 = this.newInput("", "Input 4", "Value that is passed straight through to output 4")
+			this.in_i5 = this.newInput("", "Input 5", "Value that is passed straight through to output 5")
+			this.in_i6 = this.newInput("", "Input 6", "Value that is passed straight through to output 6")
+			this.in_i7 = this.newInput("", "Input 7", "Value that is passed straight through to output 7")
+			this.in_i8 = this.newInput("", "Input 8", "Value that is passed straight through to output 8")
 
-			this.out_o1 = this.newOutput("") // Output 1
-			this.out_o2 = this.newOutput("") // Output 2
-			this.out_o3 = this.newOutput("") // Output 3
-			this.out_o4 = this.newOutput("") // Output 4
-			this.out_o5 = this.newOutput("") // Output 5
-			this.out_o6 = this.newOutput("") // Output 6
-			this.out_o7 = this.newOutput("") // Output 7
-			this.out_o8 = this.newOutput("") // Output 8
+			this.out_o1 = this.newOutput("", "Output 1", "The unchanged value from input 1")
+			this.out_o2 = this.newOutput("", "Output 2", "The unchanged value from input 2")
+			this.out_o3 = this.newOutput("", "Output 3", "The unchanged value from input 3")
+			this.out_o4 = this.newOutput("", "Output 4", "The unchanged value from input 4")
+			this.out_o5 = this.newOutput("", "Output 5", "The unchanged value from input 5")
+			this.out_o6 = this.newOutput("", "Output 6", "The unchanged value from input 6")
+			this.out_o7 = this.newOutput("", "Output 7", "The unchanged value from input 7")
+			this.out_o8 = this.newOutput("", "Output 8", "The unchanged value from input 8")
 		}
 
 		doUpdate(tick, p5ctx) {
@@ -218,7 +222,7 @@ const Op_Value = register(
 			this.binary = true
 			this.value = false
 
-			this.out_v = this.newOutput("V") // Value
+			this.out_v = this.newOutput("V", "Value", "The configured value, as bit or byte depending on the Binary setting")
 		}
 
 		getConfig() {

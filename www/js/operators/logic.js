@@ -9,10 +9,10 @@ const Op_Pulse = register(
 
 			this.last = false
 
-			this.in_s = this.newInput("I") // Input
+			this.in_s = this.newInput("I", "Input", "Signal whose state changes are turned into pulses")
 
-			this.out_p_u = this.newOutput("U") // Up flank
-			this.out_p_d = this.newOutput("D") // Down flank
+			this.out_p_u = this.newOutput("U", "Up Flank", "True for one tick when the input switches to true")
+			this.out_p_d = this.newOutput("D", "Down Flank", "True for one tick when the input switches to false")
 		}
 
 		doUpdate(tick, p5ctx) {
@@ -65,11 +65,11 @@ const Op_RsFlipFlop = register(
 
 			this.state = false
 
-			this.in_s = this.newInput("S")
-			this.in_r = this.newInput("R")
+			this.in_s = this.newInput("S", "Set", "Sets the stored state to true while active")
+			this.in_r = this.newInput("R", "Reset", "Resets the stored state to false while active")
 
-			this.out_o = this.newOutput("Q")
-			this.out_no = this.newOutput("!Q")
+			this.out_o = this.newOutput("Q", "State", "The currently stored state")
+			this.out_no = this.newOutput("!Q", "Inverted State", "Opposite of the stored state")
 		}
 
 		doUpdate(tick, p5ctx) {
@@ -120,10 +120,10 @@ const Op_TFlipFlop = register(
 			this.state = false
 			this.last = false
 
-			this.in_t = this.newInput("T")
+			this.in_t = this.newInput("T", "Toggle", "A rising edge flips the stored state")
 
-			this.out_o = this.newOutput("Q")
-			this.out_no = this.newOutput("!Q")
+			this.out_o = this.newOutput("Q", "State", "The currently stored state")
+			this.out_no = this.newOutput("!Q", "Inverted State", "Opposite of the stored state")
 		}
 
 		doUpdate(tick, p5ctx) {
@@ -174,11 +174,11 @@ const Op_Memory1 = register(
 			this.state = false
 			this.last = false
 
-			this.in_v = this.newInput("B1")
-			this.in_t = this.newInput("T")
+			this.in_v = this.newInput("B1", "Bit", "Bit value that is stored on a trigger")
+			this.in_t = this.newInput("T", "Trigger", "A rising edge stores the current bit input")
 
-			this.out_b = this.newOutput("B")
-			this.out_nb = this.newOutput("!B")
+			this.out_b = this.newOutput("B", "Stored Bit", "The currently stored bit")
+			this.out_nb = this.newOutput("!B", "Inverted Bit", "Opposite of the stored bit")
 		}
 
 		doUpdate(tick, p5ctx) {
@@ -230,10 +230,10 @@ const Op_Memory8 = register(
 			this.state = 0
 			this.last = false
 
-			this.in_v = this.newInput("B")
-			this.in_t = this.newInput("T")
+			this.in_v = this.newInput("B", "Byte", "Byte value that is stored on a trigger")
+			this.in_t = this.newInput("T", "Trigger", "A rising edge stores the current byte input")
 
-			this.out_b = this.newOutput("B")
+			this.out_b = this.newOutput("B", "Stored Byte", "The currently stored byte")
 		}
 
 		doUpdate(tick, p5ctx) {
@@ -281,12 +281,12 @@ const Op_4bit_to_byte = register(
 		constructor(x = 0, y = 0) {
 			super(x, y)
 
-			this.in1 = this.newInput("B0")
-			this.in2 = this.newInput("B1")
-			this.in3 = this.newInput("B2")
-			this.in4 = this.newInput("B3")
+			this.in1 = this.newInput("B0", "Bit 0", "Bit 0 (value 1) of the resulting byte")
+			this.in2 = this.newInput("B1", "Bit 1", "Bit 1 (value 2) of the resulting byte")
+			this.in3 = this.newInput("B2", "Bit 2", "Bit 2 (value 4) of the resulting byte")
+			this.in4 = this.newInput("B3", "Bit 3", "Bit 3 (value 8) of the resulting byte")
 
-			this.ouByte = this.newOutput("B")
+			this.ouByte = this.newOutput("B", "Byte", "The byte combined from the four bit inputs")
 		}
 
 		doUpdate(tick, p5ctx) {
@@ -332,16 +332,16 @@ const Op_8bit_to_byte = register(
 		constructor(x = 0, y = 0) {
 			super(x, y)
 
-			this.in1 = this.newInput("B0")
-			this.in2 = this.newInput("B1")
-			this.in3 = this.newInput("B2")
-			this.in4 = this.newInput("B3")
-			this.in5 = this.newInput("B4")
-			this.in6 = this.newInput("B5")
-			this.in7 = this.newInput("B6")
-			this.in8 = this.newInput("B7")
+			this.in1 = this.newInput("B0", "Bit 0", "Bit 0 (value 1) of the resulting byte")
+			this.in2 = this.newInput("B1", "Bit 1", "Bit 1 (value 2) of the resulting byte")
+			this.in3 = this.newInput("B2", "Bit 2", "Bit 2 (value 4) of the resulting byte")
+			this.in4 = this.newInput("B3", "Bit 3", "Bit 3 (value 8) of the resulting byte")
+			this.in5 = this.newInput("B4", "Bit 4", "Bit 4 (value 16) of the resulting byte")
+			this.in6 = this.newInput("B5", "Bit 5", "Bit 5 (value 32) of the resulting byte")
+			this.in7 = this.newInput("B6", "Bit 6", "Bit 6 (value 64) of the resulting byte")
+			this.in8 = this.newInput("B7", "Bit 7", "Bit 7 (value 128) of the resulting byte")
 
-			this.ouByte = this.newOutput("B")
+			this.ouByte = this.newOutput("B", "Byte", "The byte combined from the eight bit inputs")
 		}
 
 		doUpdate(tick, p5ctx) {
@@ -395,12 +395,12 @@ const Op_byte_to_4bit = register(
 		constructor(x = 0, y = 0) {
 			super(x, y)
 
-			this.in1 = this.newInput("B")
+			this.in1 = this.newInput("B", "Byte", "Byte whose lowest four bits are split out")
 
-			this.ouB1 = this.newOutput("B0")
-			this.ouB2 = this.newOutput("B1")
-			this.ouB3 = this.newOutput("B2")
-			this.ouB4 = this.newOutput("B3")
+			this.ouB1 = this.newOutput("B0", "Bit 0", "Bit 0 (value 1) of the input byte")
+			this.ouB2 = this.newOutput("B1", "Bit 1", "Bit 1 (value 2) of the input byte")
+			this.ouB3 = this.newOutput("B2", "Bit 2", "Bit 2 (value 4) of the input byte")
+			this.ouB4 = this.newOutput("B3", "Bit 3", "Bit 3 (value 8) of the input byte")
 		}
 
 		doUpdate(tick, p5ctx) {
@@ -445,16 +445,16 @@ const Op_byte_to_8bit = register(
 		constructor(x = 0, y = 0) {
 			super(x, y)
 
-			this.in1 = this.newInput("B")
+			this.in1 = this.newInput("B", "Byte", "Byte that is split into its eight bits")
 
-			this.ouB1 = this.newOutput("B0")
-			this.ouB2 = this.newOutput("B1")
-			this.ouB3 = this.newOutput("B2")
-			this.ouB4 = this.newOutput("B3")
-			this.ouB5 = this.newOutput("B4")
-			this.ouB6 = this.newOutput("B5")
-			this.ouB7 = this.newOutput("B6")
-			this.ouB8 = this.newOutput("B7")
+			this.ouB1 = this.newOutput("B0", "Bit 0", "Bit 0 (value 1) of the input byte")
+			this.ouB2 = this.newOutput("B1", "Bit 1", "Bit 1 (value 2) of the input byte")
+			this.ouB3 = this.newOutput("B2", "Bit 2", "Bit 2 (value 4) of the input byte")
+			this.ouB4 = this.newOutput("B3", "Bit 3", "Bit 3 (value 8) of the input byte")
+			this.ouB5 = this.newOutput("B4", "Bit 4", "Bit 4 (value 16) of the input byte")
+			this.ouB6 = this.newOutput("B5", "Bit 5", "Bit 5 (value 32) of the input byte")
+			this.ouB7 = this.newOutput("B6", "Bit 6", "Bit 6 (value 64) of the input byte")
+			this.ouB8 = this.newOutput("B7", "Bit 7", "Bit 7 (value 128) of the input byte")
 		}
 
 		doUpdate(tick, p5ctx) {
@@ -511,18 +511,18 @@ const Op_Counter4 = register(
 			this.lastI = false
 			this.lastD = false
 
-			this.in_i = this.newInput("I")
-			this.in_d = this.newInput("D")
-			this.in_r = this.newInput("R")
+			this.in_i = this.newInput("I", "Increment", "A rising edge counts up by one")
+			this.in_d = this.newInput("D", "Decrement", "A rising edge counts down by one")
+			this.in_r = this.newInput("R", "Reset", "Sets the counter back to zero while true")
 
-			this.out_u = this.newOutput("U")
+			this.out_u = this.newOutput("U", "Underflow", "True for one tick when the counter falls below zero and wraps to 15")
 
-			this.out_b1 = this.newOutput("B0")
-			this.out_b2 = this.newOutput("B1")
-			this.out_b3 = this.newOutput("B2")
-			this.out_b4 = this.newOutput("B3")
+			this.out_b1 = this.newOutput("B0", "Bit 0", "Bit 0 (value 1) of the counter value")
+			this.out_b2 = this.newOutput("B1", "Bit 1", "Bit 1 (value 2) of the counter value")
+			this.out_b3 = this.newOutput("B2", "Bit 2", "Bit 2 (value 4) of the counter value")
+			this.out_b4 = this.newOutput("B3", "Bit 3", "Bit 3 (value 8) of the counter value")
 
-			this.out_o = this.newOutput("O")
+			this.out_o = this.newOutput("O", "Overflow", "True for one tick when the counter overflows and wraps to zero")
 		}
 
 		doUpdate(tick, p5ctx) {
@@ -604,15 +604,15 @@ const Op_Counter8 = register(
 			this.lastI = false
 			this.lastD = false
 
-			this.in_i = this.newInput("I")
-			this.in_d = this.newInput("D")
-			this.in_r = this.newInput("R")
+			this.in_i = this.newInput("I", "Increment", "A rising edge counts up by one")
+			this.in_d = this.newInput("D", "Decrement", "A rising edge counts down by one")
+			this.in_r = this.newInput("R", "Reset", "Sets the counter back to zero while true")
 
-			this.out_u = this.newOutput("U")
+			this.out_u = this.newOutput("U", "Underflow", "True for one tick when the counter falls below zero and wraps to 255")
 
-			this.out_b = this.newOutput("B")
+			this.out_b = this.newOutput("B", "Byte", "The current counter value as a byte")
 
-			this.out_o = this.newOutput("O")
+			this.out_o = this.newOutput("O", "Overflow", "True for one tick when the counter overflows and wraps to zero")
 		}
 
 		doUpdate(tick, p5ctx) {
@@ -688,11 +688,11 @@ const Op_Repeater = register(
 			this.output = false
 			this.delay = 0
 
-			this.in_d = this.newInput("D") // Delay (Byte, Ticks)
-			this.in_s = this.newInput("S") // Signal
-			this.in_l = this.newInput("L") // Lock
+			this.in_d = this.newInput("D", "Delay", "Number of ticks the signal is delayed by")
+			this.in_s = this.newInput("S", "Signal", "Bit signal that enters the delay line")
+			this.in_l = this.newInput("L", "Lock", "While true the repeater freezes and ignores the input")
 
-			this.out_o = this.newOutput("O") // Output
+			this.out_o = this.newOutput("O", "Output", "The delayed signal")
 		}
 
 		doUpdate(tick, p5ctx) {

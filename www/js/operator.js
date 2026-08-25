@@ -28,6 +28,8 @@ class IOControl extends Control { //////////////////////////////////////////////
 		this.lastId = this.id
 
 		this.name = "?"
+		this.displayName = "???"
+		this.description = "..."
 		this.isOutput = false
 		this.renderName = true
 
@@ -307,7 +309,7 @@ class Operator extends Movable { ///////////////////////////////////////////////
 		}
 	}
 
-	newInput(input_name) {
+	newInput(input_name, input_displayName, input_description) {
 		let render = true
 		if (input_name.length <= 0) {
 			input_name = "IN" + this.inputs.length
@@ -322,13 +324,15 @@ class Operator extends Movable { ///////////////////////////////////////////////
 		let inp = new IOControl(this)
 		inp.id = this.id + '_in_' + input_name
 		inp.name = input_name
+		inp.displayName = input_displayName
+		inp.description = input_description
 		inp.renderName = render
 		this.inputs.push(inp)
 		this._reorderIOs()
 		return inp
 	}
 
-	newOutput(output_name) {
+	newOutput(output_name, output_displayName, output_description) {
 		let render = true
 		if (output_name.length <= 0) {
 			output_name = "OUT" + this.outputs.length
@@ -343,6 +347,8 @@ class Operator extends Movable { ///////////////////////////////////////////////
 		let oup = new IOControl(this)
 		oup.id = this.id + '_out_' + output_name
 		oup.name = output_name
+		oup.displayName = output_displayName
+		oup.description = output_description
 		oup.renderName = render
 		oup.isOutput = true
 		this.outputs.push(oup)

@@ -11,8 +11,8 @@ const Op_NetSender = register(
 
       this._connected = false
 
-			this.in_b = this.newInput("B") // Byte
-      this.in_t = this.newInput("T") // Trigger
+			this.in_b = this.newInput("B", "Byte", "Byte value sent into the channel on a trigger")
+      this.in_t = this.newInput("T", "Trigger", "A rising edge sends the current byte")
 
       this._lastT = false
 
@@ -149,8 +149,8 @@ const Op_NetReceiver = register(
 
       this._connected = false
 
-			this.out_b = this.newOutput("B") // Byte
-      this.out_t = this.newOutput("T") // Trigger
+			this.out_b = this.newOutput("B", "Byte", "The byte received last from the channel")
+      this.out_t = this.newOutput("T", "Trigger", "True for one tick when the received byte changes")
 
       this.value = 0 // gets updated via websocket
 

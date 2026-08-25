@@ -6,11 +6,11 @@ class base_Vector1t1 extends Operator {
 	constructor(x = 0, y = 0) {
 		super(x, y)
 
-		this.in_ax = this.newInput("AX") // Input Vector A.X
-		this.in_ay = this.newInput("AY") // Input Vector A.Y
+		this.in_ax = this.newInput("AX", "Vector A X", "X component of input vector A")
+		this.in_ay = this.newInput("AY", "Vector A Y", "Y component of input vector A")
 
-		this.out_cx = this.newOutput("CX") // Output Vector C.X
-    this.out_cy = this.newOutput("CY") // Output Vector C.Y
+		this.out_cx = this.newOutput("CX", "Vector C X", "X component of the result vector C")
+    this.out_cy = this.newOutput("CY", "Vector C Y", "Y component of the result vector C")
 
 		this.action = (x, y) => [x, y]
 
@@ -49,7 +49,7 @@ class base_Vector1at1 extends base_Vector1t1 {
 	constructor(x = 0, y = 0) {
 		super(x, y)
 
-		this.in_v = this.newInput("V") // Input Value
+		this.in_v = this.newInput("V", "Value", "Scalar value the operation applies to the vector")
 
 		this.action = (x1, y1, v) => [x, y]
 
@@ -75,8 +75,8 @@ class base_Vector2t1 extends base_Vector1t1 {
 	constructor(x = 0, y = 0) {
 		super(x, y)
 
-		this.in_bx = this.newInput("BX") // Input Vector B.X
-		this.in_by = this.newInput("BY") // Input Vector B.Y
+		this.in_bx = this.newInput("BX", "Vector B X", "X component of input vector B")
+		this.in_by = this.newInput("BY", "Vector B Y", "Y component of input vector B")
 
 		this.action = (x1, y1, x2, y2) => [x, y]
 

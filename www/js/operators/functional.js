@@ -3,8 +3,8 @@ class base_Functional extends Operator {
 	constructor(x = 0, y = 0) {
 		super(x, y)
 
-		this.in_b1 = this.newInput("B1") // Byte 1
-		this.in_b2 = this.newInput("B2") // Byte 2 
+		this.in_b1 = this.newInput("B1", "Byte 1", "First byte operand")
+		this.in_b2 = this.newInput("B2", "Byte 2", "Second byte operand")
 
 		this.icon = ""
 	}
@@ -49,10 +49,10 @@ class base_Functional_solo extends Operator {
 	constructor(x = 0, y = 0) {
 		super(x, y)
 
-		this.in_b1 = this.newInput("B1") // Byte 1 
+		this.in_b1 = this.newInput("B1", "Byte", "The byte the function is applied to")
 
-		this.out_r = this.newOutput("R") // Result
-		this.out_rn = this.newOutput("RN") // is Result Negative
+		this.out_r = this.newOutput("R", "Result", "The absolute result of the function as a byte")
+		this.out_rn = this.newOutput("RN", "Result Negative", "True when the result is negative")
 
 		this.func = b => [0] // Should only Return R because RN is calculated from the update
 
@@ -96,10 +96,10 @@ class base_Functional_calc extends base_Functional {
 	constructor(x = 0, y = 0) {
 		super(x, y)
 
-		this.out_r = this.newOutput("R") // Result
-		this.out_rn = this.newOutput("RN") // is Result Negative
-		this.out_o = this.newOutput("O") // Overflow
-		this.out_on = this.newOutput("ON") // is Overflow Negative
+		this.out_r = this.newOutput("R", "Result", "The remaining result as a byte after the overflow is split off")
+		this.out_rn = this.newOutput("RN", "Result Negative", "True when the result is negative")
+		this.out_o = this.newOutput("O", "Overflow", "How many times the result exceeded 255")
+		this.out_on = this.newOutput("ON", "Overflow Negative", "True when the overflow is negative")
 
 		this.func = (a, b) => [0] // Should Return R because RN O ON are defined by the base!
 
@@ -128,9 +128,9 @@ class base_Functional_comparer extends base_Functional {
 	constructor(x = 0, y = 0) {
 		super(x, y)
 
-		this.out_b = this.newOutput("B") // Bitwise Output
-		this.out_o = this.newOutput("O") // Output
-		this.out_no = this.newOutput("!O") // Not Output
+		this.out_b = this.newOutput("B", "Bitwise Result", "Byte result of the bitwise comparison")
+		this.out_o = this.newOutput("O", "Output", "True when the comparison holds")
+		this.out_no = this.newOutput("!O", "Inverted Output", "True when the comparison does not hold")
 
 		// (this placeholder function, purposly, has an invalid output with O and !O both being false to identify it as a placeholder)
 		this.func = (a, b) => [0, false, false] // Should Return B O !O in that order!
@@ -292,11 +292,11 @@ const Op_Tan = register(
 		constructor(x = 0, y = 0) {
 			super(x, y)
 
-			this.in_b1 = this.newInput("B1") // Byte 1 
+			this.in_b1 = this.newInput("B1", "Angle", "Angle as a byte where 255 equals 2 PI")
 
-			this.out_t = this.newOutput("T") // Tan / Cotan
-			this.out_co = this.newOutput("CO") // Use Cotan
-			this.out_tn = this.newOutput("TN") // Tan/Cotan is negative
+			this.out_t = this.newOutput("T", "Tangent", "Tangent or cotangent of the angle scaled to a byte")
+			this.out_co = this.newOutput("CO", "Cotangent Used", "True when the cotangent was output instead of the tangent")
+			this.out_tn = this.newOutput("TN", "Negative", "True when the tangent value is negative")
 
 			this.icon = "TAN"
 		}
@@ -359,7 +359,7 @@ const Op_Rnd = register(
 		constructor(x = 0, y = 0) {
 			super(x, y)
 
-			this.out_r = this.newOutput("R") // Random
+			this.out_r = this.newOutput("R", "Random", "A new random byte every tick")
 
 			this.icon = "RND"
 		}
@@ -396,12 +396,12 @@ const Op_Noise = register(
 		constructor(x = 0, y = 0) {
 			super(x, y)
 			
-			this.in_a = this.newInput("A") // A Val
-			this.in_b = this.newInput("B") // B Val
-			this.in_c = this.newInput("C") // C Bal
-			this.in_s = this.newInput("S") // Scale
+			this.in_a = this.newInput("A", "Coordinate A", "First coordinate sampled in the noise field")
+			this.in_b = this.newInput("B", "Coordinate B", "Second coordinate sampled in the noise field")
+			this.in_c = this.newInput("C", "Coordinate C", "Third coordinate sampled in the noise field")
+			this.in_s = this.newInput("S", "Scale", "Divides all coordinates to zoom the noise")
 
-			this.out_r = this.newOutput("N") // Noise
+			this.out_r = this.newOutput("N", "Noise", "Perlin noise value at the given coordinates as a byte")
 
 			this.icon = "NOI"
 		}

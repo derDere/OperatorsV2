@@ -40,19 +40,19 @@ const Op_LineDisplay = register(
       this.lastD = false
       this.lastC = false
 
-      this.in_x = this.newInput("X") // Pen Pos X for Goto
-      this.in_y = this.newInput("Y") // Pen Pos Y for Goto
-      this.in_g = this.newInput("G") // Goto
-      this.in_d = this.newInput("D") // Drawto
-      this.in_w = this.newInput("W") // Weight of pen
-      this.in_c = this.newInput("C") // Clear
+      this.in_x = this.newInput("X", "Target X", "X coordinate the pen moves or draws to")
+      this.in_y = this.newInput("Y", "Target Y", "Y coordinate the pen moves or draws to")
+      this.in_g = this.newInput("G", "Goto", "A rising edge moves the pen to the target without drawing")
+      this.in_d = this.newInput("D", "Drawto", "A rising edge draws a line from the pen to the target")
+      this.in_w = this.newInput("W", "Pen Weight", "Line thickness used when drawing")
+      this.in_c = this.newInput("C", "Clear", "A rising edge wipes the screen")
 
-      this.out_x = this.newOutput("X") // current pen x
-      this.out_y = this.newOutput("Y") // current pen y
-      this.out_g = this.newOutput("G") // Gone to trigger
-      this.out_d = this.newOutput("D") // Drawn to trigger
-      this.out_w = this.newOutput("W") // current Pen weight
-      this.out_t = this.newOutput("T") // General trigger
+      this.out_x = this.newOutput("X", "Pen X", "Current X position of the pen")
+      this.out_y = this.newOutput("Y", "Pen Y", "Current Y position of the pen")
+      this.out_g = this.newOutput("G", "Moved", "True for one tick when the pen moved without drawing")
+      this.out_d = this.newOutput("D", "Drawn", "True for one tick when a line was drawn")
+      this.out_w = this.newOutput("W", "Pen Weight", "The currently used line thickness")
+      this.out_t = this.newOutput("T", "Trigger", "True for one tick when the pen moved or drew")
     }
 
     doUpdate(tick, p5ctx) {

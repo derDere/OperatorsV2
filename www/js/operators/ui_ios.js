@@ -9,8 +9,8 @@ const Op_Switch = register(
 
 			this.state = false
 
-			this.out_c = this.newOutput("O") // Output
-			this.out_not_c = this.newOutput("!O") // Not Output
+			this.out_c = this.newOutput("O", "Output", "True while the switch is turned on")
+			this.out_not_c = this.newOutput("!O", "Inverted Output", "True while the switch is turned off")
 
 			this.switchCtrl = new Control(-10, 0, 10, BOUNDS_TYPE_CIRCLE, this)
 			this.switchCtrl.backgroundColor = mainP5.color(255)
@@ -108,8 +108,8 @@ const Op_Button = register(
 			this.pressed = false
 			this.text = "Press!"
 
-			this.out_c = this.newOutput("O") // Output
-			this.out_not_c = this.newOutput("!O") // Not Output
+			this.out_c = this.newOutput("O", "Output", "True for one tick when the button is clicked")
+			this.out_not_c = this.newOutput("!O", "Inverted Output", "Opposite of the output O")
 
 			this.btnCtrl = new Control(0, 0, 12, BOUNDS_TYPE_RECT, this)
 			this.btnCtrl.width = 44
@@ -196,8 +196,8 @@ const Op_Tick = register(
 
 			this.state = false
 
-			this.out_c = this.newOutput("T") // Tick
-			this.out_not_c = this.newOutput("!T") // Not Tick
+			this.out_c = this.newOutput("T", "Tick", "Alternates between true and false every frame")
+			this.out_not_c = this.newOutput("!T", "Inverted Tick", "Opposite of the tick output")
 		}
 
 		doUpdate(tick, p5ctx) {
@@ -243,11 +243,11 @@ const Op_Clock = register(
 			this.state = false
 			this.b = 0
 
-			this.in_b = this.newInput("B") // Byte (Clock Delay)
-			this.in_p = this.newInput("P") // Power
+			this.in_b = this.newInput("B", "Interval", "Byte that sets how many ticks pass before the clock toggles")
+			this.in_p = this.newInput("P", "Power", "The clock only counts and toggles while this is true")
 
-			this.out_c = this.newOutput("C") // Clock
-			this.out_nc = this.newOutput("!C") // Not Clock
+			this.out_c = this.newOutput("C", "Clock", "Square wave signal that toggles every interval")
+			this.out_nc = this.newOutput("!C", "Inverted Clock", "Opposite of the clock output")
 		}
 
 		doUpdate(tick, p5ctx) {
@@ -327,15 +327,15 @@ const Op_TextInput = register(
 			this.powered = false
 			this.lastF = false
 
-			this.in_p = this.newInput("P") // Power
-			this.in_f = this.newInput("F") // Flush
-			this.in_c = this.newInput("C") // Clear
+			this.in_p = this.newInput("P", "Power", "While true, one typed character per tick is read into the stack")
+			this.in_f = this.newInput("F", "Flush", "A rising edge emits the oldest stacked byte on B")
+			this.in_c = this.newInput("C", "Clear", "Empties the character stack while true")
 
-			this.out_b = this.newOutput("B") // Byte
-			this.out_t = this.newOutput("T") // Trigger
-			this.out_n = this.newOutput("N") // New Line
-			this.out_w = this.newOutput("W") // Waiting
-			this.out_e = this.newOutput("E") // Empty
+			this.out_b = this.newOutput("B", "Byte", "Character code emitted by the last flush")
+			this.out_t = this.newOutput("T", "Trigger", "True for one tick when a byte is emitted on B")
+			this.out_n = this.newOutput("N", "New Line", "True for one tick when the user presses Enter")
+			this.out_w = this.newOutput("W", "Waiting", "True while unread text is still waiting in the input field")
+			this.out_e = this.newOutput("E", "Empty", "True while the character stack is empty")
 		}
 
 		getConfig() {
@@ -504,8 +504,8 @@ const Op_Slider = register(
 			this.value = 0
 			this.val_changed = false
 
-			this.out_v = this.newOutput("V") // Value
-			this.out_t = this.newOutput("T") // trigger if value changed
+			this.out_v = this.newOutput("V", "Value", "Current slider position as a byte from 0 to 255")
+			this.out_t = this.newOutput("T", "Trigger", "True for one tick when the slider value changes")
 		}
 
 		changed(sender) {
