@@ -510,10 +510,16 @@ const Op_Counter4 = register(
 			this.value = 0
 			this.lastI = false
 			this.lastD = false
+			this.lastL = false
 
 			this.in_i = this.newInput("I", "Increment", "A rising edge counts up by one")
 			this.in_d = this.newInput("D", "Decrement", "A rising edge counts down by one")
 			this.in_r = this.newInput("R", "Reset", "Sets the counter back to zero while true")
+			this.in_b1 = this.newInput("B0", "Bit 0", "Bit 0 (value 1) that is loaded on a load trigger")
+			this.in_b2 = this.newInput("B1", "Bit 1", "Bit 1 (value 2) that is loaded on a load trigger")
+			this.in_b3 = this.newInput("B2", "Bit 2", "Bit 2 (value 4) that is loaded on a load trigger")
+			this.in_b4 = this.newInput("B3", "Bit 3", "Bit 3 (value 8) that is loaded on a load trigger")
+			this.in_l = this.newInput("L", "Load", "A rising edge sets the counter to the bit inputs")
 
 			this.out_u = this.newOutput("U", "Underflow", "True for one tick when the counter falls below zero and wraps to 15")
 
@@ -531,6 +537,7 @@ const Op_Counter4 = register(
 			let i = !!(this.in_i.value)
 			let d = !!(this.in_d.value)
 			let r = !!(this.in_r.value)
+			let l = !!(this.in_l.value)
 
 			if (i != this.lastI) {
 				if (i) {
@@ -543,12 +550,23 @@ const Op_Counter4 = register(
 				}
 			}
 
+			// Laden schlägt Zählen im selben Tick, Reset behält die höchste Priorität
+			if (l != this.lastL && l) {
+				let v = 0
+				if (this.in_b1.value) v |= 1
+				if (this.in_b2.value) v |= 2
+				if (this.in_b3.value) v |= 4
+				if (this.in_b4.value) v |= 8
+				this.value = v
+			}
+
 			if (r) {
 				this.value = 0
 			}
 
 			this.lastI = i
 			this.lastD = d
+			this.lastL = l
 
 			let b0 = !!(this.value & 1)
 			let b1 = !!(this.value & 2)
@@ -603,10 +621,13 @@ const Op_Counter8 = register(
 			this.value = 0
 			this.lastI = false
 			this.lastD = false
+			this.lastL = false
 
 			this.in_i = this.newInput("I", "Increment", "A rising edge counts up by one")
 			this.in_d = this.newInput("D", "Decrement", "A rising edge counts down by one")
 			this.in_r = this.newInput("R", "Reset", "Sets the counter back to zero while true")
+			this.in_b = this.newInput("B", "Byte", "Byte value that is loaded on a load trigger")
+			this.in_l = this.newInput("L", "Load", "A rising edge sets the counter to the byte input")
 
 			this.out_u = this.newOutput("U", "Underflow", "True for one tick when the counter falls below zero and wraps to 255")
 
@@ -621,6 +642,7 @@ const Op_Counter8 = register(
 			let i = !!(this.in_i.value)
 			let d = !!(this.in_d.value)
 			let r = !!(this.in_r.value)
+			let l = !!(this.in_l.value)
 
 			if (i != this.lastI) {
 				if (i) {
@@ -633,12 +655,18 @@ const Op_Counter8 = register(
 				}
 			}
 
+			// Laden schlägt Zählen im selben Tick, Reset behält die höchste Priorität
+			if (l != this.lastL && l) {
+				this.value = (this.in_b.value) & 255
+			}
+
 			if (r) {
 				this.value = 0
 			}
 
 			this.lastI = i
 			this.lastD = d
+			this.lastL = l
 
 			let b = (this.value) & 255
 			let o = this.value >= 255
@@ -743,6 +771,59 @@ const Op_Repeater = register(
 			}
 			p5ctx.endShape()
 			p5ctx.pop()
+
+			p5ctx.pop()
+		}
+	}
+)
+
+const Op_Select = register(
+	"Select",
+	"Logic",
+	"Outputs the byte of the channel whose enable bit is set. Multiple enabled bytes combine via bitwise OR, E = any enable set",
+	class extends Operator {
+
+		constructor(x = 0, y = 0) {
+			super(x, y)
+
+			// je Kanal ein Enable-Bit und ein Byte, alternierend angeordnet
+			this.channels = []
+			for (let c = 1; c <= 4; c++) {
+				let enable = this.newInput("E" + c, "Enable " + c, "While true, byte " + c + " is put onto the output")
+				let byte = this.newInput("B" + c, "Byte " + c, "Byte that is output while enable " + c + " is true")
+				this.channels.push([enable, byte])
+			}
+
+			this.out_b = this.newOutput("B", "Byte", "Bitwise OR of all enabled bytes, 0 while none is enabled")
+			this.out_e = this.newOutput("E", "Enabled", "True while at least one enable is active")
+		}
+
+		doUpdate(tick, p5ctx) {
+			super.doUpdate(tick, p5ctx)
+
+			let value = 0
+			let enabled = false
+			for (const [enable, byte] of this.channels) {
+				if (enable.value) {
+					value |= (byte.value & 255)
+					enabled = true
+				}
+			}
+
+			this.out_b.value = value
+			this.out_e.value = enabled
+		}
+
+		doDraw(tick, p5ctx) {
+			super.doDraw(tick, p5ctx)
+
+			p5ctx.push()
+
+			p5ctx.noStroke()
+			p5ctx.fill(0)
+			p5ctx.textAlign(p5ctx.CENTER, p5ctx.CENTER)
+			p5ctx.textSize(12)
+			p5ctx.text('SELECT', 0, 0)
 
 			p5ctx.pop()
 		}
