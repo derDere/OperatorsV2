@@ -6,6 +6,8 @@ function initMenu() {
   datMenuObj = {
     "💾 Save As": _saveFile,
     "📂 Open File": _loadFile,
+    "📤 Export": _exportFile,
+    "📥 Import": _importFile,
     "🌐 Wiki": _gotoWiki
   }
 
@@ -24,14 +26,12 @@ function _gotoWiki() {
   window.open(zielUrl, fensterName, einstellungen);
 }
 
-function _saveFile() {
-  let jj = allOperatorsToJson()
-
+function _downloadJson(jj, fileName) {
   const blob = new Blob([jj], { type: "application/zip;charset=utf-8" })
 
   const link = document.createElement("a")
   link.href = URL.createObjectURL(blob)
-  link.download = "Unknown.json"
+  link.download = fileName
   document.body.appendChild(link)
   link.click()
   document.body.removeChild(link)
@@ -39,7 +39,7 @@ function _saveFile() {
   URL.revokeObjectURL(link.href)
 }
 
-function _loadFile() {
+function _pickJsonFile(onLoaded) {
   const input = document.createElement('input')
   input.type = 'file'
   input.accept = '.json'
@@ -51,12 +51,32 @@ function _loadFile() {
     const reader = new FileReader()
 
     reader.onload = function (e) {
-      jj = e.target.result
-      loadJsonToAll(jj)
+      onLoaded(e.target.result)
     }
 
     reader.readAsText(file)
   }
 
   input.click()
+}
+
+function _saveFile() {
+  _downloadJson(allOperatorsToJson(), "Unknown.json")
+}
+
+function _loadFile() {
+  _pickJsonFile(jj => loadJsonToAll(jj))
+}
+
+// Exportiert die Auswahl samt der Verbindungen dazwischen; ohne Auswahl die
+// ganze Schaltung. Das Dateiformat ist dasselbe wie beim Speichern.
+function _exportFile() {
+  let ops = (selectedOperators.length > 0) ? selectedOperators : AllOperators
+  _downloadJson(JSON.stringify(operatorsToJsonData(ops)), "Export.json")
+}
+
+// Fuegt den Dateiinhalt mittig in der Ansicht der laufenden Schaltung hinzu,
+// ohne sie zu leeren
+function _importFile() {
+  _pickJsonFile(jj => addJsonDataCentered(JSON.parse(jj)))
 }

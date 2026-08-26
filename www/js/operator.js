@@ -431,3 +431,105 @@ function loadJsonToAll(jj) {
 		new Connection(startIO, endIO)
 	}
 }
+
+// Teil-Serialisierung: die uebergebenen Operatoren samt aller Verbindungen,
+// deren beide Enden dazugehoeren — gleiche Datenform wie beim Speichern
+function operatorsToJsonData(ops) {
+	let all = []
+	let opIds = new Set()
+	for (const op of ops) {
+		all.push(op.getConfig())
+		opIds.add(op.id)
+	}
+
+	let lines = []
+	for (const con of AllConnections) {
+		if (!con.start) continue
+		if (!con.end) continue
+		if (con == mouseConnection) continue
+		if (!opIds.has(con.start.parent?.id)) continue
+		if (!opIds.has(con.end.parent?.id)) continue
+		lines.push({
+			s: con.start.id,
+			e: con.end.id
+		})
+	}
+
+	return {
+		doff: [dragOffset.x, dragOffset.y],
+		opAll: all,
+		conAll: lines
+	}
+}
+
+// IO-IDs beginnen mit der ID ihres Operators (<opId>_in_/_out_<name>)
+function _remapIoId(ioId, idMap) {
+	for (const oldId in idMap) {
+		if (ioId.startsWith(oldId)) {
+			return idMap[oldId] + ioId.substring(oldId.length)
+		}
+	}
+	return ioId
+}
+
+// Fuegt gespeicherte Daten der laufenden Schaltung hinzu, ohne sie zu leeren.
+// Alle Operator-IDs werden neu vergeben, damit nichts mit Vorhandenem
+// kollidiert; die Verbindungs-Endpunkte werden entsprechend umgeschrieben.
+// Liefert die neu erzeugten Operatoren.
+function addJsonDataToAll(data, offsetX = 0, offsetY = 0) {
+	let created = []
+	let idMap = {}
+
+	for (const opc of (data.opAll || [])) {
+		let entryName = opc[CONSTRUCTOR_KEY]
+		if (!(entryName in OperatorRegistry)) continue
+		let entry = OperatorRegistry[entryName]
+		let newOp = new entry.classFnk(opc._x + offsetX, opc._y + offsetY)
+		newOp.entryName = entry.name
+		idMap[opc._id] = newOp.id
+		let conf = { ...opc }
+		conf._id = newOp.id // frische ID behalten statt der gespeicherten
+		conf._x = opc._x + offsetX
+		conf._y = opc._y + offsetY
+		newOp.setConfig(conf, true)
+		created.push(newOp)
+	}
+
+	for (const conc of (data.conAll || [])) {
+		let startIO = getControlById(_remapIoId(conc.s, idMap))
+		let endIO = getControlById(_remapIoId(conc.e, idMap))
+
+		if (!startIO) continue
+		if (!endIO) continue
+
+		new Connection(startIO, endIO)
+	}
+
+	return created
+}
+
+// Fuegt gespeicherte Daten mittig in der aktuellen Ansicht ein: der
+// Mittelpunkt der Gruppe landet (aufs Raster gerundet) in der Bildmitte
+function addJsonDataCentered(data, extraOffset = 0) {
+	let ops = data.opAll || []
+	if (ops.length <= 0) {
+		return []
+	}
+
+	let minX = ops[0]._x
+	let maxX = ops[0]._x
+	let minY = ops[0]._y
+	let maxY = ops[0]._y
+	for (const opc of ops) {
+		minX = Math.min(minX, opc._x)
+		maxX = Math.max(maxX, opc._x)
+		minY = Math.min(minY, opc._y)
+		maxY = Math.max(maxY, opc._y)
+	}
+
+	// die Bildmitte liegt in Weltkoordinaten bei -dragOffset
+	let offsetX = Math.round((-dragOffset.x - ((minX + maxX) / 2)) / 20) * 20 + extraOffset
+	let offsetY = Math.round((-dragOffset.y - ((minY + maxY) / 2)) / 20) * 20 + extraOffset
+
+	return addJsonDataToAll(data, offsetX, offsetY)
+}

@@ -76,26 +76,89 @@ function mousePressed(event, p5ctx) {
 		MouseInBounds &&
 		p5ctx.mouseButton.left
 	) {
-		selectedOperators = []
-		updateProps(null)
-		startSelection(event, p5ctx)
+		if (ctrlPressed) {
+			// Ctrl + Ziehen auf freier Flaeche schneidet Verbindungen statt auszuwaehlen
+			cutStartPoint = mousePos.copy()
+		}
+		else {
+			selectedOperators = []
+			updateProps(null)
+			startSelection(event, p5ctx)
+		}
 	}
 }
 
 function mouseReleased() {
 	canvasIsDragged = false
 	stopSelection(mainP5)
+	if (cutStartPoint) {
+		cutConnections(cutStartPoint, mousePos, mainP5)
+		cutStartPoint = null
+	}
 }
 
 var shiftPressed = false
 var ctrlPressed = false
+var opClipboard = null
+var pasteCount = 0
+var cutStartPoint = null
+
+function duplicateSelection() {
+	if (selectedOperators.length <= 0) return
+	let data = operatorsToJsonData(selectedOperators)
+	selectedOperators = addJsonDataToAll(data, 20, 20)
+}
+
+function copySelection() {
+	if (selectedOperators.length <= 0) return
+	opClipboard = operatorsToJsonData(selectedOperators)
+	pasteCount = 0
+}
+
+function pasteClipboard() {
+	if (!opClipboard) return
+	// mittig einfuegen; jedes weitere Einfuegen versetzt, damit nichts deckungsgleich stapelt
+	selectedOperators = addJsonDataCentered(opClipboard, 20 * pasteCount)
+	pasteCount += 1
+}
+
+// Trennt alle Verbindungen, deren Linie die Strecke von `from` nach `to`
+// kreuzt. Die Strecke wird in kurzen Schritten abgetastet und gegen die
+// punktgenaue Trefferpruefung der jeweiligen Linienart gehalten.
+function cutConnections(from, to, p5ctx) {
+	let steps = Math.max(1, Math.ceil(Math.hypot(to.x - from.x, to.y - from.y) / 3))
+	for (const con of [...AllConnections]) {
+		if (con == mouseConnection) continue
+		if (!con.start || !con.end) continue
+		for (let i = 0; i <= steps; i++) {
+			let point = {
+				x: from.x + ((to.x - from.x) * (i / steps)),
+				y: from.y + ((to.y - from.y) * (i / steps))
+			}
+			if (con.line.isMouseOver(point, p5ctx)) {
+				con.kill()
+				break
+			}
+		}
+	}
+}
+
+function drawCutLine(p5ctx) {
+	if (!cutStartPoint) return
+	p5ctx.push()
+	p5ctx.stroke('#ff3333')
+	p5ctx.strokeWeight(2)
+	p5ctx.drawingContext.setLineDash([6, 6])
+	p5ctx.line(cutStartPoint.x, cutStartPoint.y, mousePos.x, mousePos.y)
+	p5ctx.drawingContext.setLineDash([])
+	p5ctx.pop()
+}
 
 function keyPressed(e) {
-	if (e.key == 'Delete') {
-		let currentEle = document.activeElement
-		if (currentEle && currentEle.tagName.toUpperCase() == "INPUT") {
-			return
-		}
+	let currentEle = document.activeElement
+	let typing = currentEle && currentEle.tagName.toUpperCase() == "INPUT"
+
+	if (e.key == 'Delete' && !typing) {
 		if (!!connectionHover) {
 			connectionHover.kill()
 		}
@@ -103,6 +166,19 @@ function keyPressed(e) {
 			for (let op of [...selectedOperators]) {
 				op.kill()
 			}
+		}
+	}
+	if (e.ctrlKey && !typing) {
+		if (e.key == 'd' || e.key == 'D') {
+			e.preventDefault() // sonst oeffnet der Browser den Lesezeichen-Dialog
+			duplicateSelection()
+		}
+		// Ctrl+C nur abfangen, wenn keine Textauswahl kopiert werden soll
+		if ((e.key == 'c' || e.key == 'C') && (window.getSelection() + '').length <= 0) {
+			copySelection()
+		}
+		if (e.key == 'v' || e.key == 'V') {
+			pasteClipboard()
 		}
 	}
 	if (e.key == 'Shift') {
@@ -176,6 +252,7 @@ function main_draw(p5ctx) {
 	p5ctx.pop()
 
 	drawSelection(p5ctx)
+	drawCutLine(p5ctx)
 
 	drawConnections(tick, p5ctx)
 	drawControls(tick, p5ctx)
@@ -194,7 +271,14 @@ function main_draw(p5ctx) {
 	p5ctx.fill('#00000080')
 	p5ctx.textSize(12)
 	p5ctx.textAlign(p5ctx.LEFT, p5ctx.TOP)
-	p5ctx.text("Double click to add operators.\nRight click to move.", 10, 10)
+	p5ctx.text(
+		"Double click to add operators.\n" +
+		"Right click to move.\n" +
+		"Del: delete selection / hovered line\n" +
+		"Ctrl+D: duplicate selection\n" +
+		"Ctrl+C / Ctrl+V: copy & paste\n" +
+		"Ctrl+Drag: cut connections",
+		10, 10)
 	
 	p5ctx.textAlign(p5ctx.CENTER, p5ctx.BOTTOM)
 	p5ctx.text(`${-dragOffset.x}, ${dragOffset.y}`, p5ctx.width / 2, p5ctx.height - 5)

@@ -21,12 +21,16 @@ const Op_Switch = register(
     getConfig() {
 			return {
 				...super.getConfig(),
-				_state: this.state
+				state: !!this.state
 			}
 		}
 
 		setConfig(conf, loaded = false) {
 			super.setConfig(conf, loaded)
+			if ('state' in conf) {
+				this.state = !!conf.state
+			}
+			// aeltere Speicherdateien tragen den Zustand unter '_state'
 			if ('_state' in conf && loaded) {
 				this.state = conf._state
 			}
@@ -320,6 +324,7 @@ const Op_TextInput = register(
 			this.stackDisplayEle = null
 			this.textInputEle = null
 			this.elementWidth = TEXT_INPUT_DEFAULT_WIDTH
+			this.initialText = ""
 
 			this.stack = []
 
@@ -341,7 +346,8 @@ const Op_TextInput = register(
 		getConfig() {
 			return {
 				...super.getConfig(),
-				eleWidth: mainP5.max(this.elementWidth, TEXT_INPUT_MIN_WIDTH)
+				eleWidth: mainP5.max(this.elementWidth, TEXT_INPUT_MIN_WIDTH),
+				Text: this.initialText
 			}
 		}
 
@@ -349,6 +355,16 @@ const Op_TextInput = register(
 			super.setConfig(conf, loaded)
 			if ('eleWidth' in conf) {
 				this.elementWidth = mainP5.max(conf.eleWidth, TEXT_INPUT_MIN_WIDTH)
+			}
+			if ('Text' in conf) {
+				let text = conf.Text + ''
+				let changed = (text != this.initialText)
+				this.initialText = text
+				// ins Eingabefeld nur bei echter Aenderung oder beim Laden,
+				// damit Panel-Aenderungen anderer Felder den Live-Inhalt nicht ueberschreiben
+				if (this.textInputEle && (changed || loaded)) {
+					this.textInputEle.value = text
+				}
 			}
 		}
 
@@ -381,6 +397,7 @@ const Op_TextInput = register(
 				this.textInputEle = document.createElement('input')
 				this.textInputEle.type = 'text'
 				this.textInputEle.placeholder = ">_"
+				this.textInputEle.value = this.initialText
 				this.textInputEle.addEventListener('input', this._textInput.bind(this))
 				this.textInputEle.addEventListener('keydown', this._keyDown.bind(this))
 			}
@@ -508,6 +525,22 @@ const Op_Slider = register(
 			this.out_t = this.newOutput("T", "Trigger", "True for one tick when the slider value changes")
 		}
 
+		getConfig() {
+			return {
+				...super.getConfig(),
+				value: this.value & 255
+			}
+		}
+
+		setConfig(conf, loaded = false) {
+			super.setConfig(conf, loaded)
+			if ('value' in conf) {
+				let v = mainP5.round(conf.value) & 255
+				this.val_changed = this.val_changed || (this.value != v)
+				this.value = v
+			}
+		}
+
 		changed(sender) {
 			let v = parseInt(this.ele.value)
 			if (v < 0) v = 0
@@ -529,6 +562,11 @@ const Op_Slider = register(
 			ele.value = this.value
 			ele.title = this.value + ''
 			return ele
+		}
+
+		updateElement(ele) {
+			ele.value = this.value
+			ele.title = this.value + ''
 		}
 
 		doUpdate(tick, p5ctx) {
