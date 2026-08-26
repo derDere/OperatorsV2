@@ -6,6 +6,9 @@ var toolTip = null
 var toolTipTitle = null
 var toolTipBody = null
 
+// Kategorien des Dialogs samt ihrer Eintraege, fuer die Suche
+var _dialogGroups = []
+
 function showToolTip() {
 	toolTip.style.display = 'block'
 	toolTipTitle.innerText = this.name
@@ -42,11 +45,15 @@ function initNewOperatorDialog() {
 		catEle.innerText = category
 		newOperatorSelection.appendChild(catEle)
 
+		let group = { catEle: catEle, options: [] }
+		_dialogGroups.push(group)
+
 		for (let entryKey of categories[category]) {
 			let entry = OperatorRegistry[entryKey]
 			let option = document.createElement('span')
 			option.className = "new-entry-option"
 			option.dataset.entryName = entry.name
+			group.options.push({ ele: option, text: (entry.name + ' ' + entry.category).toLowerCase() })
 			let ctx = new p5(p => {
 				let e = new entry.classFnk(0, 0)
 				p.setup = () => {
@@ -69,7 +76,26 @@ function initNewOperatorDialog() {
 		}
 	}
 
+	newOperatorSearch.addEventListener('input', _filterNewOperatorDialog)
+
 	newOperatorDialog.addEventListener('toggle', _dialogToggled)
+}
+
+// Blendet alle Eintraege aus, die den Suchbegriff nicht enthalten;
+// Kategorien ohne sichtbare Eintraege verschwinden mit
+function _filterNewOperatorDialog() {
+	let term = newOperatorSearch.value.trim().toLowerCase()
+	for (const group of _dialogGroups) {
+		let visible = 0
+		for (const option of group.options) {
+			let match = option.text.includes(term)
+			option.ele.style.display = match ? '' : 'none'
+			if (match) {
+				visible += 1
+			}
+		}
+		group.catEle.style.display = (visible > 0) ? '' : 'none'
+	}
 }
 
 function _dialogToggled(event) {
@@ -90,7 +116,10 @@ function addNewOperator(event, p5ctx) {
 	newOpPos = mousePos.copy()
 	newOpDialogOpen = true
 	newOperatorSelection.value = '__NONE__'
+	newOperatorSearch.value = ''
+	_filterNewOperatorDialog()
 	newOperatorDialog.showPopover()
+	newOperatorSearch.focus()
 	_moveDialogTo(event.clientX, event.clientY, p5ctx)
 }
 

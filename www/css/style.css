@@ -99,6 +99,7 @@ body {
 
 #newOperatorSelection {
 	padding: 20px 20px 60px 20px;
+	min-width: 280px;
 	max-width: 450px;
 	max-height: 400px;
 	overflow: auto;
@@ -137,6 +138,13 @@ body {
 	vertical-align: middle;
 	image-rendering: auto;
   image-rendering: smooth;
+}
+
+#newOperatorSearch {
+	float: left;
+	width: 55%;
+	height: 20px;
+	box-sizing: border-box;
 }
 
 #dialog-bottom {
