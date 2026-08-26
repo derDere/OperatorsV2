@@ -84,6 +84,7 @@ const PropertyDefinitions = {
 	"eleWidth": "Input Width:slider[20,1000,1]",
 	"value": "Value:slider[0,255,1]",
 	"color": "Color:color",
+	"Background": "color",
 }
 
 function updateProps(operator) {

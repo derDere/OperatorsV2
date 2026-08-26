@@ -252,3 +252,121 @@ const Op_Anchor = register(
     }
   }
 )
+
+const Op_Label = register(
+  "Label",
+  "Organisation",
+  "Displays a static text in the panel area",
+  class extends Placeable {
+
+    constructor(x = 0, y = 0) {
+      super(x, y)
+
+      // stark durchscheinend, damit er nicht wie ein funktionaler Baustein wirkt
+      this.backgroundColor = mainP5.color('#ffffff30')
+      this.backgroundHoverColor = mainP5.color('#ffffff60')
+      this.backgroundActiveColor = mainP5.color('#ffffff60')
+
+      this.text = "Label"
+      this.fontFamily = "Arial"
+      this.fontSize = 14
+      this.color = "#000000"
+      this.background = "#ffffff"
+
+      this._bgCell = null // Zelle, die aktuell die Hintergrundfarbe traegt
+    }
+
+    kill() {
+      super.kill()
+      if (this._bgCell) {
+        this._bgCell.style.backgroundColor = ''
+        this._bgCell = null
+      }
+    }
+
+    getConfig() {
+      return {
+        ...super.getConfig(),
+        Text: this.text,
+        "Font Family": this.fontFamily,
+        "Font Size": this.fontSize,
+        color: this.color,
+        Background: this.background
+      }
+    }
+
+    setConfig(conf, loaded = false) {
+      super.setConfig(conf, loaded)
+      if ('Text' in conf) {
+        this.text = conf.Text
+      }
+      if ('Font Family' in conf) {
+        this.fontFamily = conf['Font Family']
+      }
+      if ('Font Size' in conf) {
+        this.fontSize = conf['Font Size']
+      }
+      if ('color' in conf) {
+        this.color = conf.color
+      }
+      if ('Background' in conf) {
+        this.background = conf.Background
+      }
+    }
+
+    createElement() {
+      return document.createElement('div')
+    }
+
+    updateElement(ele) {
+      ele.innerText = this.text
+      ele.style.fontFamily = this.fontFamily
+      ele.style.fontSize = this.fontSize + 'px'
+      ele.style.color = this.color
+
+      // Allein in der Zelle traegt die Zelle die Hintergrundfarbe — sie fuellt
+      // dann randlos und der Text bleibt durch die Zellzentrierung mittig.
+      // Mit Nachbarn ist das Label inline und die Farbe liegt als
+      // Marker-Markierung direkt auf dem Text.
+      let cell = ele.parentElement
+      let alone = !!cell && cell.children.length == 1
+
+      if (this._bgCell && (!alone || this._bgCell != cell)) {
+        this._bgCell.style.backgroundColor = ''
+        this._bgCell = null
+      }
+
+      if (alone) {
+        cell.style.backgroundColor = this.background
+        this._bgCell = cell
+        ele.style.backgroundColor = 'transparent'
+        ele.style.display = ''
+        ele.style.padding = ''
+        ele.style.borderRadius = ''
+      }
+      else {
+        ele.style.backgroundColor = this.background
+        ele.style.display = 'inline'
+        ele.style.padding = '1px 4px'
+        ele.style.borderRadius = '3px'
+      }
+    }
+
+    doDraw(tick, p5ctx) {
+      super.doDraw(tick, p5ctx)
+
+      p5ctx.push()
+
+      p5ctx.noStroke()
+      p5ctx.fill(0)
+      p5ctx.textAlign(p5ctx.CENTER, p5ctx.BOTTOM)
+      p5ctx.textSize(12)
+      p5ctx.text(this.text.substring(0, 11), 0, 5)
+      p5ctx.textAlign(p5ctx.CENTER, p5ctx.TOP)
+      p5ctx.textSize(10)
+      p5ctx.text('LABEL', 0, 5)
+
+      p5ctx.pop()
+    }
+  }
+)
