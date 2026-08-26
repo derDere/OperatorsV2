@@ -72,6 +72,10 @@ const PropertyDefinitions = {
 		type: "select",
 		options: { "Combined": "combined", "Channeled": "channeled" }
 	},
+	"Base": {
+		type: "select",
+		options: { "Binary": "binary", "Octal": "octal", "Decimal": "decimal" }
+	},
 	"col": "Column:number[0,1000,1]",
 	"row": "Row:number[0,1000,1]",
 	"colSpan": "Column Span:number[1,1000,1]",

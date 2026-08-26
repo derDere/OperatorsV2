@@ -829,3 +829,65 @@ const Op_Select = register(
 		}
 	}
 )
+
+const CONVERTER_BASES = { binary: 2, octal: 8, decimal: 10 }
+
+const Op_BaseConverter = register(
+	"Base Converter",
+	"Converter",
+	"Splits the lowest digit of the byte in the configured base: V = B % base, O = B / base. Chain O into the next converter for the next digit",
+	class extends Operator {
+
+		constructor(x = 0, y = 0) {
+			super(x, y)
+
+			this.base = 'decimal'
+
+			this.in_b = this.newInput("B", "Byte", "Byte whose lowest digit is split off")
+
+			this.out_v = this.newOutput("V", "Value", "The lowest digit of the byte in the configured base")
+			this.out_o = this.newOutput("O", "Overflow", "The remaining value after the digit is split off")
+		}
+
+		getConfig() {
+			return {
+				...super.getConfig(),
+				Base: this.base
+			}
+		}
+
+		setConfig(conf, loaded = false) {
+			super.setConfig(conf, loaded)
+			if ('Base' in conf) {
+				this.base = conf.Base
+			}
+		}
+
+		doUpdate(tick, p5ctx) {
+			super.doUpdate(tick, p5ctx)
+
+			let b = (this.in_b.value) & 255
+			let base = CONVERTER_BASES[this.base] || 10
+
+			this.out_v.value = b % base
+			this.out_o.value = (b / base) | 0
+		}
+
+		doDraw(tick, p5ctx) {
+			super.doDraw(tick, p5ctx)
+
+			p5ctx.push()
+
+			p5ctx.noStroke()
+			p5ctx.fill(0)
+			p5ctx.textAlign(p5ctx.CENTER, p5ctx.BOTTOM)
+			p5ctx.textSize(18)
+			p5ctx.text('%' + (CONVERTER_BASES[this.base] || 10), 0, 5)
+			p5ctx.textAlign(p5ctx.CENTER, p5ctx.TOP)
+			p5ctx.textSize(10)
+			p5ctx.text('CONVERT', 0, 5)
+
+			p5ctx.pop()
+		}
+	}
+)
