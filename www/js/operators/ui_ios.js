@@ -576,3 +576,146 @@ const Op_Slider = register(
 		}
 	}
 )
+const Op_Time = register(
+	"Time",
+	"Signal",
+	"Outputs the current clock time. T toggles when the selected time part changes, with no part selected the millisecond counts",
+	class extends Operator {
+
+		constructor(x = 0, y = 0) {
+			super(x, y)
+
+			this.state = false
+			this.lastParts = null
+			this.isUTC = false
+
+			this.in_y = this.newInput("Y", "Year", "While true, a year change toggles the trigger")
+			this.in_mo = this.newInput("MO", "Month", "While true, a month change toggles the trigger")
+			this.in_d = this.newInput("D", "Day", "While true, a day change toggles the trigger")
+			this.in_h = this.newInput("H", "Hour", "While true, an hour change toggles the trigger")
+			this.in_mi = this.newInput("MI", "Minute", "While true, a minute change toggles the trigger")
+			this.in_s = this.newInput("S", "Second", "While true, a second change toggles the trigger")
+
+			this.out_yh = this.newOutput("YH", "Year High", "High byte of the current year")
+			this.out_yl = this.newOutput("YL", "Year Low", "Low byte of the current year")
+			this.out_mo = this.newOutput("MO", "Month", "The current month (1-12)")
+			this.out_d = this.newOutput("D", "Day", "The current day of the month (1-31)")
+			this.out_dw = this.newOutput("DW", "Day of Week", "The current day of the week (0 = Monday)")
+			this.out_kw = this.newOutput("KW", "Calendar Week", "The current ISO calendar week (week 1 holds the first Thursday of the year)")
+			this.out_h = this.newOutput("H", "Hour", "The current hour (0-23)")
+			this.out_mi = this.newOutput("MI", "Minute", "The current minute (0-59)")
+			this.out_s = this.newOutput("S", "Second", "The current second (0-59)")
+			this.out_msh = this.newOutput("MSH", "Millisecond High", "High byte of the current millisecond")
+			this.out_msl = this.newOutput("MSL", "Millisecond Low", "Low byte of the current millisecond")
+			this.out_t = this.newOutput("T", "Trigger", "Toggles when the selected time part changes")
+		}
+
+		getConfig() {
+			return {
+				...super.getConfig(),
+				IsUTC: this.isUTC
+			}
+		}
+
+		setConfig(conf, loaded = false) {
+			super.setConfig(conf, loaded)
+			if ('IsUTC' in conf) {
+				this.isUTC = !!conf.IsUTC
+			}
+		}
+
+		doUpdate(tick, p5ctx) {
+			super.doUpdate(tick, p5ctx)
+
+			let now = new Date()
+			let parts = this.isUTC ? [
+				now.getUTCFullYear(),
+				now.getUTCMonth() + 1,
+				now.getUTCDate(),
+				now.getUTCHours(),
+				now.getUTCMinutes(),
+				now.getUTCSeconds(),
+				now.getUTCMilliseconds()
+			] : [
+				now.getFullYear(),
+				now.getMonth() + 1,
+				now.getDate(),
+				now.getHours(),
+				now.getMinutes(),
+				now.getSeconds(),
+				now.getMilliseconds()
+			]
+
+			let selects = [
+				!!(this.in_y.value),
+				!!(this.in_mo.value),
+				!!(this.in_d.value),
+				!!(this.in_h.value),
+				!!(this.in_mi.value),
+				!!(this.in_s.value)
+			]
+
+			if (this.lastParts) {
+				let anySelected = selects.some(s => s)
+				let changed = false
+				for (let i = 0; i < parts.length; i++) {
+					// ohne Auswahl zaehlt die Millisekunde (Index 6)
+					let watched = anySelected ? (i < 6 && selects[i]) : (i == 6)
+					if (watched && parts[i] != this.lastParts[i]) {
+						changed = true
+					}
+				}
+				if (changed) {
+					this.state = !this.state
+				}
+			}
+			this.lastParts = parts
+
+			// Kalenderwoche nach ISO 8601 (Erstausgabe 1988, loeste die ISO 2015:1976
+			// "Numbering of weeks" ab): KW1 ist die Woche, in der der erste Donnerstag
+			// des Jahres liegt; Wochentag 0 = Montag. Gerechnet wird in UTC auf dem
+			// bereits gewaehlten Datum, damit keine Sommerzeit hineinspielt.
+			let date = new Date(Date.UTC(parts[0], parts[1] - 1, parts[2]))
+			let dayOfWeek = (date.getUTCDay() + 6) % 7
+			date.setUTCDate(date.getUTCDate() - dayOfWeek + 3) // Donnerstag derselben Woche
+			let firstThursday = new Date(Date.UTC(date.getUTCFullYear(), 0, 4)) // der 4. Januar liegt immer in KW1
+			firstThursday.setUTCDate(firstThursday.getUTCDate() - ((firstThursday.getUTCDay() + 6) % 7) + 3)
+			let week = 1 + Math.round((date - firstThursday) / (7 * 24 * 60 * 60 * 1000))
+
+			this.out_yh.value = (parts[0] >> 8) & 255
+			this.out_yl.value = parts[0] & 255
+			this.out_mo.value = parts[1]
+			this.out_d.value = parts[2]
+			this.out_dw.value = dayOfWeek
+			this.out_kw.value = week
+			this.out_h.value = parts[3]
+			this.out_mi.value = parts[4]
+			this.out_s.value = parts[5]
+			this.out_msh.value = (parts[6] >> 8) & 255
+			this.out_msl.value = parts[6] & 255
+			this.out_t.value = this.state
+		}
+
+		doDraw(tick, p5ctx) {
+			super.doDraw(tick, p5ctx)
+
+			p5ctx.push()
+
+			p5ctx.noStroke()
+			p5ctx.fill(0)
+			p5ctx.textAlign(p5ctx.CENTER, p5ctx.BOTTOM)
+			p5ctx.textSize(18)
+			p5ctx.text('TIME', 0, 5)
+			if (this.lastParts) {
+				let hh = ('0' + this.lastParts[3]).substr(-2)
+				let mm = ('0' + this.lastParts[4]).substr(-2)
+				let ss = ('0' + this.lastParts[5]).substr(-2)
+				p5ctx.textAlign(p5ctx.CENTER, p5ctx.TOP)
+				p5ctx.textSize(10)
+				p5ctx.text(hh + ':' + mm + ':' + ss, 0, 5)
+			}
+
+			p5ctx.pop()
+		}
+	}
+)
