@@ -227,6 +227,21 @@ const Op_Divide = register(
 	}
 )
 
+const Op_Modulo = register(
+	"Modulo",
+	"Math",
+	"O = B1 % B2",
+	class extends base_Functional_calc {
+		constructor(x = 0, y = 0) {
+			super(x, y)
+
+			this.func = (a, b) => (a % b) | 0
+
+			this.icon = "MOD"
+		}
+	}
+)
+
 const Op_Sin = register(
 	"Sinus",
 	"Math",
