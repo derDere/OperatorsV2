@@ -62,7 +62,12 @@ class IOControl extends Control { //////////////////////////////////////////////
 				eio = sio
 				sio = tmp
 			}
-			new Connection(sio, eio)
+			// Eine zweite Verbindung zwischen denselben IOs läge deckungsgleich
+			// unter der ersten und wäre unsichtbar — Duplikate daher gar nicht anlegen
+			let exists = AllConnections.some(con => con.start == sio && con.end == eio)
+			if (!exists) {
+				new Connection(sio, eio)
+			}
 		}
 		mouseConnection.start = null
 	}

@@ -412,6 +412,7 @@ class OperatorDemo {
 			con.update(this.tick, p)
 			con.line.mouseIsOver = false
 		}
+		transferConnectionValues(this.connections)
 		if (!!connectionHover) {
 			connectionHover.line.mouseIsOver = true
 		}

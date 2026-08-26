@@ -49,13 +49,6 @@ class Connection {
 		if (this.start?.killed || this.end?.killed) {
 			this.kill()
 		}
-		if (
-			(!!this.start) &&
-			(!!this.end)
-		) {
-			this.end.value = this.start.value
-			this.value = this.start.value
-		}
 		this.line.update(tick, p5ctx)
 		if (this.line?.mouseIsOver) {
 			if (this.start) {
@@ -66,6 +59,34 @@ class Connection {
 
 	draw(tick, p5ctx) {
 		this.line.draw(tick, p5ctx)
+	}
+}
+
+// Überträgt die Werte aller Verbindungen auf ihre Eingänge. Führen mehrere
+// Verbindungen auf denselben Eingang, überlagern sich die Quellen per ODER
+// (Bus-Verhalten wie bei den Funk-Kanälen): reine Bit-Quellen bleiben ein Bit,
+// sobald ein Byte beteiligt ist, wird bitweise auf Bytes gerechnet.
+function transferConnectionValues(connections) {
+	const inputValues = new Map()
+	for (const con of connections) {
+		if (!con.start || !con.end) {
+			continue
+		}
+		con.value = con.start.value
+		let value = con.start.value
+		if (inputValues.has(con.end)) {
+			let prev = inputValues.get(con.end)
+			if (typeof prev == 'boolean' && typeof value == 'boolean') {
+				value = prev || value
+			}
+			else {
+				value = (prev & 255) | (value & 255)
+			}
+		}
+		inputValues.set(con.end, value)
+	}
+	for (const [input, value] of inputValues) {
+		input.value = value
 	}
 }
 
@@ -92,10 +113,13 @@ function updateConnections(tick, p5ctx) {
 		mouseConnection.path = wireRouter.previewRoute(mouseConnection, mousePos)
 	}
 
-	for (let con of AllConnections) {
+	// update() kann Verbindungen killen und aus AllConnections splicen — deshalb über eine Kopie laufen
+	for (let con of [...AllConnections]) {
 		con.update(tick, p5ctx)
 		con.line.mouseIsOver = false
 	}
+
+	transferConnectionValues(AllConnections)
 
 	if (!!connectionHover) {
 		connectionHover.line.mouseIsOver = true
