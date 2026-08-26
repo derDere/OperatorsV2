@@ -17,7 +17,7 @@ function initMenu() {
   datMenuBlocker = new DatBlocker(datMenu)
 
   datMenu.edit(datMenuObj)
-  datMenu.open()
+  datMenu.close()
 }
 
 function _gotoWiki() {
