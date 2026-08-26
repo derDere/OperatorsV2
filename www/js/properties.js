@@ -64,6 +64,14 @@ function valueChangedEventHandler(a, b, c, d) {
 }
 
 const PropertyDefinitions = {
+	"Mode": {
+		type: "select",
+		options: { "Bit": "bit", "Nibble": "nibble", "Byte": "byte", "Bitwise": "bitwise" }
+	},
+	"Variant": {
+		type: "select",
+		options: { "Combined": "combined", "Channeled": "channeled" }
+	},
 	"col": "Column:number[0,1000,1]",
 	"row": "Row:number[0,1000,1]",
 	"colSpan": "Column Span:number[1,1000,1]",
