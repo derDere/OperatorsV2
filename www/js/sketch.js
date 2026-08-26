@@ -291,7 +291,7 @@ function main_draw(p5ctx) {
 		let ty = p5ctx.mouseY + 20
 		let bounds = p5ctx.textBounds(tooltip, tx, ty);
 		p5ctx.stroke('333')
-		p5ctx.fill('#ffffff80')
+		p5ctx.fill('#ffffffD0')
 		p5ctx.rect(tx - 0.5, ty - 0.5, p5ctx.round(bounds.w) + 10, p5ctx.round(bounds.h) + 10)
 
 		p5ctx.noStroke()

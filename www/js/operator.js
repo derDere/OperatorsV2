@@ -80,7 +80,7 @@ class IOControl extends Control { //////////////////////////////////////////////
 		this.backgroundColor = valueColor(this.value, 1, false, p5ctx)
 		this.backgroundHoverColor = valueColor(this.value, 0.8, false, p5ctx)
 		if (this.isMouseOver) {
-			tooltip = this.value + ''
+			tooltip = this.displayName + ': ' + this.value
 		}
 	}
 
