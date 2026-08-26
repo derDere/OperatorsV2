@@ -42,10 +42,10 @@ function initDemos() {
 
 function showWikiError(message) {
 	wikiContentEle.innerHTML = ''
-	let box = document.createElement('div')
-	box.className = 'wiki-error'
-	box.innerText = message
-	wikiContentEle.appendChild(box)
+	let errorBox = document.createElement('div')
+	errorBox.className = 'wiki-error'
+	errorBox.innerText = message
+	wikiContentEle.appendChild(errorBox)
 }
 
 async function loadWikiPage(page) {

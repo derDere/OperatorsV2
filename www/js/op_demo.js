@@ -168,13 +168,15 @@ class IoValueBox {
 		this.popup.style.top = (boxRect.top - inFrameRect.top) + 'px'
 
 		this._outsideHandler = (event) => {
-			if (this.popup.contains(event.target)) {
+			// beim Resize ist das Target das window selbst (kein Node) — auch das schließt
+			if ((event.target instanceof Node) && this.popup.contains(event.target)) {
 				return
 			}
 			this.closeSlider()
 		}
 		document.addEventListener('pointerdown', this._outsideHandler, true)
 		window.addEventListener('scroll', this._outsideHandler, true)
+		window.addEventListener('resize', this._outsideHandler, true)
 	}
 
 	closeSlider() {
@@ -183,6 +185,7 @@ class IoValueBox {
 		}
 		document.removeEventListener('pointerdown', this._outsideHandler, true)
 		window.removeEventListener('scroll', this._outsideHandler, true)
+		window.removeEventListener('resize', this._outsideHandler, true)
 		this._outsideHandler = null
 
 		// Beschriftung und Quadrat zurück in ihre Zeile
@@ -238,8 +241,8 @@ class OperatorDemo {
 	}
 
 	kill() {
-		for (const box of this.ioBoxes) {
-			box.closeSlider()
+		for (const valueBox of this.ioBoxes) {
+			valueBox.closeSlider()
 		}
 		this.ioBoxes = []
 		for (const con of [...this.connections]) {
@@ -342,35 +345,35 @@ class OperatorDemo {
 
 	// Umschließendes Rechteck aller Operatoren (Weltkoordinaten)
 	_bounds() {
-		let box = null
+		let bounds = null
 		for (const op of this.operators) {
 			let left = op.pos.x - (op.width / 2)
 			let right = op.pos.x + (op.width / 2)
 			let top = op.pos.y - (op.height / 2)
 			let bottom = op.pos.y + (op.height / 2)
-			if (!box) {
-				box = { left: left, right: right, top: top, bottom: bottom }
+			if (!bounds) {
+				bounds = { left: left, right: right, top: top, bottom: bottom }
 			}
 			else {
-				box.left = mainP5.min(box.left, left)
-				box.right = mainP5.max(box.right, right)
-				box.top = mainP5.min(box.top, top)
-				box.bottom = mainP5.max(box.bottom, bottom)
+				bounds.left = mainP5.min(bounds.left, left)
+				bounds.right = mainP5.max(bounds.right, right)
+				bounds.top = mainP5.min(bounds.top, top)
+				bounds.bottom = mainP5.max(bounds.bottom, bottom)
 			}
 		}
-		if (!box) {
-			box = { left: 0, right: 0, top: 0, bottom: 0 }
+		if (!bounds) {
+			bounds = { left: 0, right: 0, top: 0, bottom: 0 }
 		}
-		return box
+		return bounds
 	}
 
 	_startCanvas() {
-		let box = this._bounds()
-		let width = Math.max(DEMO_MIN_WIDTH, Math.ceil(box.right - box.left) + (2 * DEMO_PADDING))
-		let height = Math.max(DEMO_MIN_HEIGHT, Math.ceil(box.bottom - box.top) + (2 * DEMO_PADDING))
+		let bounds = this._bounds()
+		let width = Math.max(DEMO_MIN_WIDTH, Math.ceil(bounds.right - bounds.left) + (2 * DEMO_PADDING))
+		let height = Math.max(DEMO_MIN_HEIGHT, Math.ceil(bounds.bottom - bounds.top) + (2 * DEMO_PADDING))
 
 		// dragOffset schiebt die Mitte des Aufbaus in die Canvas-Mitte
-		this._dragOffset = mainP5.createVector(-(box.left + box.right) / 2, -(box.top + box.bottom) / 2)
+		this._dragOffset = mainP5.createVector(-(bounds.left + bounds.right) / 2, -(bounds.top + bounds.bottom) / 2)
 
 		this.canvasWrap = document.createElement('div')
 		this.canvasWrap.className = 'operator-demo-canvas'
@@ -433,8 +436,8 @@ class OperatorDemo {
 		this._drawTooltip(p)
 
 		// die Wert-Quadrate der Bedienfelder mitziehen
-		for (const box of this.ioBoxes) {
-			box.refresh()
+		for (const valueBox of this.ioBoxes) {
+			valueBox.refresh()
 		}
 
 		// Stand für den nächsten Frame dieser Demo sichern
@@ -522,27 +525,27 @@ class OperatorDemo {
 		let name = io.displayName || io.name
 		label.innerText = withOwnerName ? (op.entryName + ' · ' + name) : name
 
-		let box = new IoValueBox(io, readonly)
-		box.row = row
-		box.label = label
-		this.ioBoxes.push(box)
+		let valueBox = new IoValueBox(io, readonly)
+		valueBox.row = row
+		valueBox.label = label
+		this.ioBoxes.push(valueBox)
 
 		// Beschriftung außen, Quadrat am Canvas — Ausgänge spiegelbildlich zu Eingängen
 		if (readonly) {
-			row.appendChild(box.ele)
+			row.appendChild(valueBox.ele)
 			row.appendChild(label)
 		}
 		else {
 			row.appendChild(label)
-			row.appendChild(box.ele)
+			row.appendChild(valueBox.ele)
 		}
 		return row
 	}
 
 	_showError(err) {
-		let box = document.createElement('div')
-		box.className = 'operator-demo-error'
-		box.innerText = 'Demo konnte nicht geladen werden: ' + err.message
-		this.ele.appendChild(box)
+		let errorBox = document.createElement('div')
+		errorBox.className = 'operator-demo-error'
+		errorBox.innerText = 'Demo konnte nicht geladen werden: ' + err.message
+		this.ele.appendChild(errorBox)
 	}
 }
