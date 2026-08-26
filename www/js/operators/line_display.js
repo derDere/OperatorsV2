@@ -77,11 +77,12 @@ const Op_LineDisplay = register(
       if (this.lastG != g && g) {
         goTo = true
       }
-      this.lastG = d
+      this.lastG = g
 
       this._pen_w = w
 
       if (drawTo) {
+        this.ctx.stroke('#afa')
         this.ctx.strokeWeight(w)
         this.ctx.line(
           this._pen_x,
