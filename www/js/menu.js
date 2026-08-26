@@ -91,6 +91,9 @@ const UNSAVED_WARNING_MS = 60 * 1000
 var lastSaveTime = Date.now()
 
 window.addEventListener('beforeunload', (e) => {
+  if (AllOperators.length <= 0) {
+    return // eine leere Schaltung hat nichts zu verlieren
+  }
   if ((Date.now() - lastSaveTime) > UNSAVED_WARNING_MS) {
     e.preventDefault()
     e.returnValue = ''
