@@ -4,6 +4,7 @@ var datMenuBlocker = null
 
 function initMenu() {
   datMenuObj = {
+    "📄 New": _newFile,
     "💾 Save As": _saveFile,
     "📂 Open File": _loadFile,
     "📤 Export": _exportFile,
@@ -60,9 +61,41 @@ function _pickJsonFile(onLoaded) {
   input.click()
 }
 
+// Leert die komplette Schaltung und setzt die Ansicht auf den Ursprung
+function _newFile() {
+  if (!confirm("Do you really want to remove everything?!")) {
+    return
+  }
+  for (const op of [...AllOperators]) {
+    op.kill()
+  }
+  for (const con of [...AllConnections]) {
+    if (con == mouseConnection) continue
+    con.kill()
+  }
+  selectedOperators = []
+  updateProps(null)
+  dragOffset.x = 0
+  dragOffset.y = 0
+}
+
 function _saveFile() {
   _downloadJson(allOperatorsToJson(), "Unknown.json")
+  lastSaveTime = Date.now()
 }
+
+// Beim Verlassen der Seite warnt der Browser-eigene Dialog, wenn das letzte
+// Speichern laenger als diese Spanne zurueckliegt (der Seitenstart zaehlt
+// als frisch gespeichert)
+const UNSAVED_WARNING_MS = 60 * 1000
+var lastSaveTime = Date.now()
+
+window.addEventListener('beforeunload', (e) => {
+  if ((Date.now() - lastSaveTime) > UNSAVED_WARNING_MS) {
+    e.preventDefault()
+    e.returnValue = ''
+  }
+})
 
 function _loadFile() {
   _pickJsonFile(jj => loadJsonToAll(jj))

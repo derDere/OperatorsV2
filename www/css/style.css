@@ -30,6 +30,9 @@ body {
 #maincanvas canvas {
 	display: block;
 
+	user-select: none;
+	-webkit-user-select: none;
+
 	background: url(/gfx/grid-bg.png);
 
 	image-rendering: -moz-crisp-edges;
