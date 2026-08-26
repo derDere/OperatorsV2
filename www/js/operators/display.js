@@ -269,6 +269,7 @@ const Op_Byte = register(
 			p5ctx.textAlign(p5ctx.CENTER, p5ctx.CENTER)
 			p5ctx.textSize(18)
 			if (this.showBinary) {
+				p5ctx.textSize(10)
 				p5ctx.text('0b' + this.value.toString(2).toUpperCase() + '', 0, 0)
 			}
 			else if (this.showOctal) {
