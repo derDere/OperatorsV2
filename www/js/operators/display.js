@@ -110,14 +110,27 @@ const Op_Byte = register(
 			this.showDecimal = false
 			this.showHexadecimal = true
 			this.showCharacter = false
+			this.showLeadingZeros = true
 			this.fontSize = 18
 			this.fontFamily = "Courier New"
+			this.color = "#000000"
+			this.background = "#ffffff"
 			this.advancedDisplay = true
 			this.seperator = "\\n"
 
 			this.value = 0
 
+			this._bgCell = null // Zelle, die aktuell die Hintergrundfarbe traegt
+
 			this.in = this.newInput("B", "Byte", "Byte value shown in the configured formats")
+		}
+
+		kill() {
+			super.kill()
+			if (this._bgCell) {
+				this._bgCell.style.backgroundColor = ''
+				this._bgCell = null
+			}
 		}
 
 		getConfig() {
@@ -125,7 +138,10 @@ const Op_Byte = register(
 				...super.getConfig(),
 			  "Font Family": this.fontFamily,
 			  "Font Size": this.fontSize,
+			  color: this.color,
+			  Background: this.background,
 			  "Advanced Display": this.advancedDisplay,
+			  "Show Leading Zeros": this.showLeadingZeros,
 			  "Seperator": this.seperator,
 			  "Show Bin": this.showBinary,
 			  "Show Oct": this.showOctal,
@@ -143,8 +159,17 @@ const Op_Byte = register(
 			if ('Font Size' in conf) {
 				this.fontSize = conf['Font Size']
 			}
+			if ('color' in conf) {
+				this.color = conf.color
+			}
+			if ('Background' in conf) {
+				this.background = conf.Background
+			}
 			if ('Advanced Display' in conf) {
 				this.advancedDisplay = conf['Advanced Display']
+			}
+			if ('Show Leading Zeros' in conf) {
+				this.showLeadingZeros = conf['Show Leading Zeros']
 			}
 			if ('Seperator' in conf) {
 				this.seperator = conf['Seperator']
@@ -171,6 +196,7 @@ const Op_Byte = register(
 			ele.className = 'byte-display'
 			ele.style.fontSize = this.fontSize + 'px'
 			ele.style.fontFamily = this.fontFamily
+			ele.style.color = this.color
 			ele.innerText = this._getValueDisplay()
 			return ele
 		}
@@ -178,7 +204,32 @@ const Op_Byte = register(
 		updateElement() {
 			this.ele.style.fontSize = this.fontSize + 'px'
 			this.ele.style.fontFamily = this.fontFamily
+			this.ele.style.color = this.color
 			this.ele.innerText = this._getValueDisplay()
+
+			// Allein in der Zelle traegt die Zelle die Hintergrundfarbe — sie fuellt
+			// dann randlos und der Wert bleibt durch die Zellzentrierung mittig.
+			// Mit Nachbarn liegt die Farbe als Marker-Markierung direkt auf dem Wert.
+			let cell = this.ele.parentElement
+			let alone = !!cell && cell.children.length == 1
+
+			if (this._bgCell && (!alone || this._bgCell != cell)) {
+				this._bgCell.style.backgroundColor = ''
+				this._bgCell = null
+			}
+
+			if (alone) {
+				cell.style.backgroundColor = this.background
+				this._bgCell = cell
+				this.ele.style.backgroundColor = 'transparent'
+				this.ele.style.padding = ''
+				this.ele.style.borderRadius = ''
+			}
+			else {
+				this.ele.style.backgroundColor = this.background
+				this.ele.style.padding = '1px 4px'
+				this.ele.style.borderRadius = '3px'
+			}
 		}
 
 		_charify(ignoreSetting = false) {
@@ -206,7 +257,8 @@ const Op_Byte = register(
 			let DEC = this.advancedDisplay ? (centerCorrection + '0d') : ''
 			let HEX = this.advancedDisplay ? '0x' : ''
 
-			let FRONT = this.advancedDisplay ? '00000000' : ''
+			// Fuellt Bin auf 8, Oct/Dec auf 3 und Hex auf 2 Stellen mit fuehrenden Nullen auf
+			let FRONT = this.showLeadingZeros ? '00000000' : ''
 
 			const Displays = [
 				[

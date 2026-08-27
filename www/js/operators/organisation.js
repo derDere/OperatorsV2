@@ -268,6 +268,7 @@ const Op_Label = register(
       this.backgroundActiveColor = mainP5.color('#ffffff60')
 
       this.text = "Label"
+      this.href = ""
       this.fontFamily = "Arial"
       this.fontSize = 14
       this.color = "#000000"
@@ -288,6 +289,7 @@ const Op_Label = register(
       return {
         ...super.getConfig(),
         Text: this.text,
+        Href: this.href,
         "Font Family": this.fontFamily,
         "Font Size": this.fontSize,
         color: this.color,
@@ -299,6 +301,9 @@ const Op_Label = register(
       super.setConfig(conf, loaded)
       if ('Text' in conf) {
         this.text = conf.Text
+      }
+      if ('Href' in conf) {
+        this.href = conf.Href
       }
       if ('Font Family' in conf) {
         this.fontFamily = conf['Font Family']
@@ -319,7 +324,24 @@ const Op_Label = register(
     }
 
     updateElement(ele) {
-      ele.innerText = this.text
+      // Mit gesetztem Href wird der Text als Link in neuem Tab dargestellt,
+      // in Textfarbe des Labels; ohne Href als blanker Text.
+      if (this.href) {
+        let link = ele.firstElementChild
+        if (!link || link.tagName != 'A') {
+          ele.innerText = ''
+          link = document.createElement('a')
+          link.target = '_blank'
+          link.rel = 'noopener'
+          link.style.color = 'inherit'
+          ele.appendChild(link)
+        }
+        link.href = this.href
+        link.innerText = this.text
+      }
+      else {
+        ele.innerText = this.text
+      }
       ele.style.fontFamily = this.fontFamily
       ele.style.fontSize = this.fontSize + 'px'
       ele.style.color = this.color
