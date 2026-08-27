@@ -117,6 +117,10 @@ const Op_FileInput = register(
 	}
 )
 
+// So viele Ticks muss nach dem letzten Push Ruhe sein, bevor der Download
+// wieder freigegeben wird (30 Ticks ≈ 0,5 s bei 60 FPS)
+const FILE_OUT_WRITE_HOLD_TICKS = 30
+
 const Op_FileOutput = register(
 	"File Output",
 	"User Output",
@@ -135,6 +139,9 @@ const Op_FileOutput = register(
 			this.lastC = false
 
 			this._blobUrl = null
+			this._lastPushTick = null // Tick des letzten Pushes
+			this._writing = false // solange true, wird der Stapel gerade beschrieben
+			this._downloadDisabled = true
 
 			this.in_v = this.newInput("V", "Value", "Byte value that is appended to the file on a trigger")
 			this.in_t = this.newInput("T", "Trigger", "A rising edge appends the current value to the file")
@@ -175,7 +182,12 @@ const Op_FileOutput = register(
 			ele.innerText = this.linkText
 			ele.href = '#'
 			// Blob erst beim Klick bauen — der Download enthält so immer den aktuellen Stapelinhalt
-			ele.addEventListener('click', () => {
+			ele.addEventListener('click', (event) => {
+				// deckt Auslösen per Tastatur ab, Mausklicks blockt schon pointer-events
+				if (this._downloadDisabled) {
+					event.preventDefault()
+					return
+				}
 				let blob = new Blob([Uint8Array.from(this.bytes)], { type: this.mimeType })
 				if (this._blobUrl) {
 					URL.revokeObjectURL(this._blobUrl)
@@ -189,6 +201,22 @@ const Op_FileOutput = register(
 
 		updateElement(ele) {
 			ele.innerText = this.linkText
+
+			// Ausgegraut, solange es nichts Fertiges herunterzuladen gibt:
+			// bei leerem Stapel und waehrend der Stapel beschrieben wird
+			this._downloadDisabled = this.bytes.length <= 0 || this._writing
+			if (this._downloadDisabled) {
+				ele.style.color = '#999999'
+				ele.style.textDecoration = 'none'
+				ele.style.pointerEvents = 'none'
+				ele.style.cursor = 'default'
+			}
+			else {
+				ele.style.color = ''
+				ele.style.textDecoration = ''
+				ele.style.pointerEvents = ''
+				ele.style.cursor = ''
+			}
 		}
 
 		doUpdate(tick, p5ctx) {
@@ -213,11 +241,16 @@ const Op_FileOutput = register(
 
 			if (push) {
 				this.bytes.push(v)
+				this._lastPushTick = tick
 			}
 
 			if (clear) {
 				this.bytes = []
 			}
+
+			// Gilt als "wird beschrieben", bis nach dem letzten Push kurz Ruhe war
+			this._writing = this._lastPushTick != null
+				&& (tick - this._lastPushTick) < FILE_OUT_WRITE_HOLD_TICKS
 		}
 
 		doDraw(tick, p5ctx) {
