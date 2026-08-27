@@ -2,7 +2,24 @@ var datMenu = null
 var datMenuObj = null
 var datMenuBlocker = null
 
+// zuletzt vom Server geholte Beispiel-Dateinamen (www/examples/*.json)
+var exampleFileNames = []
+
 function initMenu() {
+  datMenu = new dat.GUI()
+  datMenu.title = "🏠 Menu"
+  datMenuBlocker = new DatBlocker(datMenu)
+
+  _rebuildMenu()
+  datMenu.close()
+
+  // Die Beispiel-Liste kommt vom Server und wird bei jedem Aufklappen des
+  // Menues frisch geholt — neu abgelegte Dateien erscheinen so ohne Neuladen
+  datMenu.onOpen(_refreshExamples)
+  _refreshExamples()
+}
+
+function _rebuildMenu() {
   datMenuObj = {
     "📄 New": _newFile,
     "💾 Save As": _saveFile,
@@ -12,12 +29,52 @@ function initMenu() {
     "🌐 Wiki": _gotoWiki
   }
 
-  datMenu = new dat.GUI()
-  datMenu.title = "🏠 Menu"
-  datMenuBlocker = new DatBlocker(datMenu)
+  let definitions = {}
+  for (const fileName of exampleFileNames) {
+    // Punkte im Schluessel wuerde edit() als Verschachtelung deuten — darum raus damit
+    let key = 'example:' + fileName.replace(/\./g, '_')
+    datMenuObj[key] = () => _loadExample(fileName)
+    definitions[key] = {
+      label: fileName.replace(/\.json$/i, ''),
+      folder: '📚 Examples'
+    }
+  }
 
-  datMenu.edit(datMenuObj)
-  datMenu.close()
+  datMenu.edit(datMenuObj, definitions)
+}
+
+// Holt die Beispiel-Liste vom Server; nur bei einer Aenderung wird das Menue
+// neu aufgebaut. Ohne erreichbaren Server (Seite direkt aus dem Dateisystem
+// geoeffnet) bleibt das Menue einfach ohne Beispiele.
+function _refreshExamples() {
+  fetch('/examples/')
+    .then((response) => {
+      if (!response.ok) throw new Error('HTTP ' + response.status)
+      return response.json()
+    })
+    .then((names) => {
+      if (!Array.isArray(names)) return
+      if (JSON.stringify(names) == JSON.stringify(exampleFileNames)) return
+      exampleFileNames = names
+      _rebuildMenu()
+    })
+    .catch(() => {})
+}
+
+// Laedt nach Rueckfrage ein Beispiel vom Server und ersetzt damit die
+// komplette Schaltung (dasselbe Format wie beim Datei-Oeffnen)
+function _loadExample(fileName) {
+  let label = fileName.replace(/\.json$/i, '')
+  if (!confirm('Do you really want to load the example "' + label + '"? The current circuit will be replaced!')) {
+    return
+  }
+  fetch('/examples/' + encodeURIComponent(fileName))
+    .then((response) => {
+      if (!response.ok) throw new Error('HTTP ' + response.status)
+      return response.text()
+    })
+    .then((jj) => loadJsonToAll(jj))
+    .catch((err) => alert('Loading the example failed: ' + err.message))
 }
 
 function _gotoWiki() {

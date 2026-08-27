@@ -12,6 +12,7 @@ const fs = require('fs')
 const path = require('path')
 const websocket = require('./websocket')
 const wiki = require('./wiki')
+const examples = require('./examples')
 
 const PORT = parseInt(process.env.PORT || '8080')
 const WWW_ROOT = path.resolve(process.env.WWW_ROOT || path.join(__dirname, '..', 'www'))
@@ -30,6 +31,10 @@ const MIME_TYPES = {
 function handleRequest(req, res) {
 	if (wiki.handles(req)) {
 		wiki.handleRequest(req, res)
+		return
+	}
+	if (examples.handles(req)) {
+		examples.handleRequest(req, res)
 		return
 	}
 	serveStatic(req, res)
