@@ -42,7 +42,7 @@ function main_setup(p5ctx) {
 }
 
 function doubleClicked(event, p5ctx) {
-	if (event.originalTarget != mainCanvas.elt) {
+	if (event.target != mainCanvas.elt) {
 		return
 	}
 	if (!hoverControl && !newOpDialogOpen) {
