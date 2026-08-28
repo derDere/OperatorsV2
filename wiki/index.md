@@ -1,20 +1,17 @@
 # OperatorsV2 Wiki
 
-Willkommen in der Dokumentation von **OperatorsV2** — dem visuellen Logik- und
-Datenfluss-Editor. Diese Seiten werden als Markdown geschrieben und vom Server
-als HTML ausgeliefert; das Besondere sind die **Live-Demos**: lauffähige
-Operator-Aufbauten direkt in der Doku.
+Willkommen! **OperatorsV2** ist ein Baukasten im Browser: Du legst Bausteine
+(„Operatoren") auf eine Fläche und verbindest sie mit Linien. Durch die Linien
+fließen Werte — wie Strom durch Kabel. So entstehen Schaltungen: vom simplen
+Lichtschalter über eine Digitaluhr bis zum kleinen Zeichencomputer.
 
-> Die Demos sind echte Schaltungen — die Werte fließen pro Frame durch die
-> Verbindungen, genau wie im Editor.
+**Du brauchst keinerlei Vorkenntnisse.** Diese Doku erklärt alles von Grund
+auf — und das Beste: Fast jede Seite enthält **Live-Demos**. Das sind keine
+Bilder, sondern echte, laufende Schaltungen direkt hier im Wiki.
 
-## Erste Demo
+## So bedienst du die Live-Demos
 
-Ein Not-Gatter. Unverdrahtete Eingänge stehen **links**, unverdrahtete
-Ausgänge **rechts** neben dem Canvas — jeweils als kleines Wert-Quadrat in den
-Statusfarben (rot = true, weiß = false, blau = Bytewert als Hex). Ein Klick
-auf ein Eingangs-Quadrat öffnet einen Regler von −1 (false) bis 256 (true),
-ein weiterer Klick schaltet direkt zwischen true und false um:
+Eine Demo sieht so aus — probiere es gleich aus:
 
 ```operatorsv2
 {
@@ -25,17 +22,37 @@ ein weiterer Klick schaltet direkt zwischen true und false um:
 }
 ```
 
-## Seiten
+- **Links** neben der Demo-Fläche stehen die freien **Eingänge**, **rechts**
+  die **Ausgänge**. Jede Zeile hat ein kleines **Wert-Kästchen**.
+- Die Farbe des Kästchens zeigt den Wert: **rot mit Haken = an**,
+  **weiß = aus**, **blau mit Code = eine Zahl** (dazu später mehr).
+- **Klicke auf ein Eingangs-Kästchen**: Es öffnet sich ein Schieberegler.
+  Ganz links heißt *aus*, ganz rechts *an*, dazwischen liegen die Zahlen
+  0 bis 255. Ein weiterer Klick auf das Kästchen springt direkt zwischen
+  *an* und *aus* hin und her.
+- Ausgangs-Kästchen kannst du nur ablesen — sie zeigen, was die Schaltung
+  gerade ausgibt.
+- Fahre mit der Maus über eine Zeile: Ein Tooltip erklärt den Anschluss.
 
-| Seite | Inhalt |
+Stelle oben den Eingang auf *an* — der Ausgang des Not-Bausteins geht aus.
+Genau das ist seine Aufgabe: Er dreht jeden Wert um.
+
+## Wo fange ich an?
+
+| Seite | Das lernst du dort |
 | --- | --- |
-| [Logik-Gatter](demos/logic-gates.md) | And, Or, Not — Eingänge stellen, Ausgänge ablesen |
-| [Signale](demos/signals.md) | Clock und Counter — getaktete Demos mit Bytewerten |
+| [Erste Schritte](grundlagen/erste-schritte.md) | Den Editor öffnen und die erste eigene Schaltung bauen |
+| [Steuerung des Editors](grundlagen/steuerung.md) | Alle Maus- und Tastaturbefehle: platzieren, verbinden, löschen, speichern |
+| [Werte und Signale](grundlagen/werte-und-signale.md) | Was durch die Leitungen fließt: an/aus, Zahlen, Farben, Takte und Flanken |
+| [Bits und Bytes](grundlagen/bits-und-bytes.md) | Wie Computer mit Schaltern zählen — verständlich erklärt |
+| [Operator-Lexikon](operatoren/index.md) | Jeder Baustein ausführlich erklärt, mit Demos und Einsatzideen |
 
-## So entsteht eine Demo
+## Was steckt dahinter?
 
-Ein Codeblock mit dem Typ `operatorsv2` enthält einen gespeicherten Aufbau als
-JSON (dasselbe Format wie *Save* im Editor). Unverdrahtete Eingänge erscheinen
-automatisch links, unverdrahtete Ausgänge rechts neben dem Canvas — mit dem
-Displaynamen als Beschriftung und der Pin-Beschreibung als Tooltip; die
-Ausgangs-Quadrate sind nur lesend.
+Jede Schaltung arbeitet in winzigen Arbeitsschritten, den **Ticks** — viele
+Dutzend pro Sekunde. In jedem Tick schauen alle Bausteine auf ihre Eingänge
+und setzen ihre Ausgänge neu. Deshalb reagiert alles sofort und läuft
+ständig weiter, auch hier in den Demos.
+
+> Tipp: Das Wiki erreichst du aus dem Editor jederzeit über den Menüpunkt
+> **🌐 Wiki** im 🏠-Menü.
