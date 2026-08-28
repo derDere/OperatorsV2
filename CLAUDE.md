@@ -112,22 +112,46 @@ an alle Horcher; ohne Sendungen verklingt das Signal auf 0. Die Stellschrauben (
 
 ### Wiki (Doku mit Live-Demos)
 
-- Inhalte liegen als Markdown unter `wiki/`; die Route `/wiki/<seite>` (`server/wiki.js`)
-  wandelt sie per `marked` in HTML-Fragmente um, andere Dateien (Bilder …) liefert sie roh aus.
-  Beim Umwandeln werden relative `.md`-Links zu Hash-Links (`#ordner/seite`) und andere relative
-  Pfade zu `/wiki/<pfad>` umgeschrieben.
+- **Zielgruppe und Schreibstandard:** Das Wiki ist der Lehrteil des Projekts. Es richtet
+  sich an Leser ab etwa zehn Jahren (weiterführende Schule) ohne Vorwissen in Technik,
+  Elektronik und Programmierung. **Schulrechnen wird vorausgesetzt** — Plus, Minus, Mal,
+  Geteilt, Rest, Prozent, Kommazahlen werden nie erklärt und bekommen keine Alltagsbilder.
+  Fachliches dagegen wird kurz in Alltagsworten erklärt und **danach beim Namen genannt**
+  („… das nennt man den **absoluten Wert**"), damit der Leser den Begriff mitnimmt; die
+  Erklärung selbst bleibt frei von Fachwörtern („ohne das Minus davor" statt „ohne
+  Vorzeichen"). Alltagsbilder kommen nur dort zum Einsatz, wo ein Konzept wirklich fremd
+  ist, und bleiben erwachsen (Lichtschalter, Metronom, Kilometerzähler, Tellerstapel).
+  Wiederkehrende Konzepte haben eigene Grundlagenseiten — `flanken-und-takt`,
+  `stapel-und-warteschlange`, `vektoren`, `negative-zahlen-und-ueberlauf` —, auf die die
+  Operator-Seiten mit einem Satz verweisen, statt sie jedes Mal herzuleiten. Ton: gutes
+  Schulbuch, knapp. Maßstab ist `wiki/de/operatoren/math/subtract.md`.
+- Inhalte liegen als Markdown unter `wiki/`, **zweisprachig in je einem Baum pro Sprache**
+  (`wiki/de/**`, `wiki/en/**`) mit **identischen Datei-Pfaden** — nur die Inhalte sind
+  übersetzt. Die Route `/wiki/<seite>` (`server/wiki.js`) wandelt sie per `marked` in
+  HTML-Fragmente um, andere Dateien (Bilder …) liefert sie roh aus. Beim Umwandeln werden
+  relative `.md`-Links zu Hash-Links (`#sprache/ordner/seite`) und andere relative Pfade zu
+  `/wiki/<pfad>` umgeschrieben — relative Links bleiben dadurch automatisch im Sprachbaum.
 - `www/wiki.html` ist der Wrapper: `www/js/wiki.js` lädt die Fragmente anhand des URL-Hashs
   dynamisch nach (Navigation/Zurück über `hashchange`), `www/css/wiki.css` formatiert das
   Markdown. In der Kopfleiste sitzen ein Zurück-Knopf (`history.back()` — das Wiki-Fenster
-  öffnet oft ohne Browser-Menüleiste) und die Volltextsuche.
+  öffnet oft ohne Browser-Menüleiste), die Volltextsuche und die Sprachwahl.
+- Sprachwahl: Das erste Hash-Segment ist die Sprache; Hashes ohne Sprachsegment bekommen die
+  erkannte Sprache vorangestellt (gemerkte Dropdown-Wahl aus localStorage, sonst
+  Browsersprache, Fallback en). `wiki.js` hält das `lang`-Attribut der Seite auf der
+  angezeigten Sprache und übersetzt die Wrapper-Texte (`WIKI_STRINGS`); das Dropdown wechselt
+  auf denselben Seitenpfad im anderen Sprachbaum — deshalb müssen beide Bäume dieselben
+  Datei-Pfade tragen.
 - Die Suche basiert auf Pagefind: `server/search.js` rendert beim Serverstart alle
   Wiki-Seiten über `renderMarkdown` (Export von `server/wiki.js`) und baut daraus per
   Pagefind-Node-API einen Index **im Speicher**, ausgeliefert unter `/pagefind/` (die Mounts
   bleiben read-only, ein Build-Schritt entfällt; Wiki-Änderungen erscheinen in der Suche nach
-  einem Server-Neustart). `www/js/wiki_search.js` lädt `/pagefind/pagefind.js` bei der ersten
-  Eingabe und übersetzt Treffer-URLs in Hash-Links. Demo-Codeblöcke tragen
-  `data-pagefind-ignore` und bleiben dadurch aus dem Index; `lang="de"` (wiki.html und die
-  gerenderten Index-Seiten) wählt die deutsche Wortstamm-Erkennung.
+  einem Server-Neustart). Das erste Pfadsegment jeder Seite bestimmt ihr `lang`-Attribut —
+  Pagefind baut daraus **je Sprache einen eigenen Teilindex** samt passender
+  Wortstamm-Erkennung. `www/js/wiki_search.js` lädt `/pagefind/pagefind.js` bei der ersten
+  Eingabe, wählt den Sprachindex über das `lang`-Attribut der Seite (bei einem Sprachwechsel
+  zieht es per `pagefind.destroy()`/`init()` um — gefunden wird immer nur die gerade gelesene
+  Sprache) und übersetzt Treffer-URLs in Hash-Links. Demo-Codeblöcke tragen
+  `data-pagefind-ignore` und bleiben dadurch aus dem Index.
 - Codeblöcke der Sprache `operatorsv2` enthalten einen gespeicherten Aufbau als JSON (Format wie
   beim Editor-Speichern) und werden zu Live-Demos: `OperatorDemo` (`www/js/op_demo.js`) lädt das
   JSON in ein eigenes kleines p5-Canvas, die Logik läuft echt. Unverdrahtete IOs erscheinen als
