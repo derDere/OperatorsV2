@@ -103,29 +103,39 @@ body.wiki {
 	box-shadow: 0 0 0 1px #00000026;
 }
 
+/* die Liste dockt exakt in Knopfbreite direkt unter dem Knopf an */
 #wiki-lang-options {
 	position: absolute;
-	top: calc(100% + 8px);
+	top: calc(100% + 4px);
+	left: 0;
 	right: 0;
+	box-sizing: border-box;
 	z-index: 20;
 	display: flex;
 	flex-direction: column;
+	align-items: center;
 	gap: 4px;
-	padding: 6px;
+	padding: 4px 0;
 	background: #fff;
 	border: 1px solid #ccc;
-	border-radius: 8px;
+	border-radius: 6px;
 	box-shadow: 0 4px 16px #00000030;
+}
+
+/* das display: flex darf das hidden-Attribut (Auf-/Zuklappen per wiki.js)
+   nicht aushebeln */
+#wiki-lang-options[hidden] {
+	display: none;
 }
 
 #wiki-lang-options button {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	padding: 5px 8px;
+	padding: 4px 5px;
 	background: transparent;
 	border: 0 none;
-	border-radius: 6px;
+	border-radius: 4px;
 	cursor: pointer;
 }
 
