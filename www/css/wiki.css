@@ -33,16 +33,21 @@ body.wiki {
 /* Zurück-Knopf: Das Wiki-Fenster öffnet oft ohne Browser-Menüleiste,
    der Knopf übernimmt dann den Zurück-Schritt der Historie */
 #wiki-back {
+	display: flex;
+	align-items: center;
+	justify-content: center;
 	width: 32px;
 	height: 32px;
 	padding: 0;
-	font-size: 18px;
-	line-height: 1;
 	color: #222;
 	background: #f0f0f0;
 	border: 1px solid #ccc;
 	border-radius: 6px;
 	cursor: pointer;
+}
+
+#wiki-back img {
+	display: block;
 }
 
 #wiki-back:hover {
@@ -59,6 +64,77 @@ body.wiki {
 	font-weight: bold;
 	color: #222;
 	text-decoration: none;
+}
+
+#wiki-header-right {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+/* Sprachwahl des Wikis: Flaggen-Knopf mit aufklappender Flaggenliste —
+   bewusst ohne Text, damit die Auswahl selbst keine Übersetzung braucht */
+#wiki-lang {
+	position: relative;
+}
+
+#wiki-lang-current {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 40px;
+	height: 32px;
+	padding: 0;
+	background: #f7f7f7;
+	border: 1px solid #ccc;
+	border-radius: 6px;
+	cursor: pointer;
+}
+
+#wiki-lang-current:hover {
+	background: #eee;
+	border-color: #999;
+}
+
+.wiki-lang-flag {
+	display: block;
+	border-radius: 2px;
+	/* feine Kontur, damit helle Flaggenteile nicht im Hintergrund verschwimmen */
+	box-shadow: 0 0 0 1px #00000026;
+}
+
+#wiki-lang-options {
+	position: absolute;
+	top: calc(100% + 8px);
+	right: 0;
+	z-index: 20;
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	padding: 6px;
+	background: #fff;
+	border: 1px solid #ccc;
+	border-radius: 8px;
+	box-shadow: 0 4px 16px #00000030;
+}
+
+#wiki-lang-options button {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 5px 8px;
+	background: transparent;
+	border: 0 none;
+	border-radius: 6px;
+	cursor: pointer;
+}
+
+#wiki-lang-options button:hover {
+	background: #f2f8ff;
+}
+
+#wiki-lang-options button.active {
+	background: #e8f2ff;
 }
 
 /* ------------------------------------------------------------- Wiki-Suche */

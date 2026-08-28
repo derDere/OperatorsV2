@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="de">
+<!-- Das lang-Attribut folgt zur Laufzeit der angezeigten Wiki-Sprache (wiki.js) -->
+<html lang="en">
 
 <head>
 	<link rel="shortcut icon" href="favicon.png" type="image/x-icon">
@@ -18,12 +19,31 @@
 	<header id="wiki-header">
 		<div id="wiki-header-left">
 			<!-- Das Wiki-Fenster öffnet oft ohne Browser-Menüleiste — dieser Knopf ersetzt den Zurück-Button des Browsers -->
-			<button id="wiki-back" type="button" title="Zurück zur vorherigen Seite">←</button>
+			<button id="wiki-back" type="button">
+				<img src="gfx/arrow-left.svg" alt="" width="18" height="18">
+			</button>
 			<a href="#index" id="wiki-title">OperatorsV2 Wiki</a>
 		</div>
-		<div id="wiki-search-box">
-			<input type="search" id="wiki-search" placeholder="Wiki durchsuchen…" autocomplete="off">
-			<div id="wiki-search-results" hidden></div>
+		<div id="wiki-header-right">
+			<div id="wiki-search-box">
+				<input type="search" id="wiki-search" autocomplete="off">
+				<div id="wiki-search-results" hidden></div>
+			</div>
+			<!-- Sprachwahl: vorbelegt aus der Browsersprache, per Hand umschaltbar (wiki.js).
+			     Flaggen (gfx/flag-*.svg) statt Text, damit die Auswahl selbst keine
+			     Übersetzung braucht; der Knopf zeigt die Flagge der angezeigten Sprache
+			     (kopiert aus der Liste) -->
+			<div id="wiki-lang">
+				<button id="wiki-lang-current" type="button"></button>
+				<div id="wiki-lang-options" hidden>
+					<button type="button" data-lang="de" title="Deutsch">
+						<img class="wiki-lang-flag" src="gfx/flag-de.svg" alt="Deutsch" width="24" height="16">
+					</button>
+					<button type="button" data-lang="en" title="English">
+						<img class="wiki-lang-flag" src="gfx/flag-us.svg" alt="English" width="24" height="16">
+					</button>
+				</div>
+			</div>
 		</div>
 	</header>
 	<main id="wiki-content"></main>

@@ -5,14 +5,49 @@
 // Treffer als aufklappbare Liste unter dem Suchfeld. Die Treffer-URLs
 // entsprechen den Hash-Seiten der Wiki-Navigation (wiki.js) — ein Klick
 // navigiert also ganz normal per Hash-Link.
+//
+// Mehrsprachigkeit: Der Index ist nach Sprachen getrennt (je Sprachbaum des
+// Wikis einer); Pagefind wählt beim Initialisieren den Index, der zum
+// lang-Attribut der Seite passt. wiki.js hält dieses Attribut auf der
+// Sprache der angezeigten Seite und meldet Wechsel über
+// updateWikiSearchLanguage — bei der nächsten Suche wird Pagefind dann per
+// destroy()/init() auf den neuen Sprachindex umgezogen. Gefunden wird so
+// immer genau die Sprache, die man gerade liest.
 
 const SEARCH_MAX_RESULTS = 8
 const SEARCH_DEBOUNCE_MS = 200
+
+// Oberflächentexte der Suche je Sprache
+const SEARCH_STRINGS = {
+	de: {
+		placeholder: 'Wiki durchsuchen…',
+		preparing: 'Die Suche wird gerade vorbereitet — gleich noch einmal tippen.',
+		noResults: (term) => "Keine Treffer für '" + term + "'."
+	},
+	en: {
+		placeholder: 'Search the wiki…',
+		preparing: 'The search is warming up — please type again in a moment.',
+		noResults: (term) => "No results for '" + term + "'."
+	}
+}
 
 var searchInputEle = null
 var searchResultsEle = null
 var _pagefindPromise = null
 var _searchCounter = 0
+var _activeSearchLang = null // Sprache, mit der Pagefind gerade initialisiert ist
+
+function _searchStrings() {
+	return SEARCH_STRINGS[document.documentElement.lang] || SEARCH_STRINGS.en
+}
+
+// Von wiki.js bei jedem Seitenladen aufgerufen — hält das Suchfeld auf der
+// Sprache der angezeigten Seite
+function updateWikiSearchLanguage(lang) {
+	if (searchInputEle) {
+		searchInputEle.placeholder = (SEARCH_STRINGS[lang] || SEARCH_STRINGS.en).placeholder
+	}
+}
 
 // Lädt die Pagefind-Bibliothek beim ersten Bedarf; schlägt der Abruf fehl
 // (der Index entsteht direkt nach dem Serverstart), wird beim nächsten
@@ -77,10 +112,20 @@ async function _runSearch() {
 	}
 	catch {
 		if (searchId == _searchCounter) {
-			_showSearchMessage('Die Suche wird gerade vorbereitet — gleich noch einmal tippen.')
+			_showSearchMessage(_searchStrings().preparing)
 		}
 		return
 	}
+
+	// Hat die Seite seit der letzten Suche die Sprache gewechselt, zieht
+	// Pagefind auf den passenden Sprachindex um (destroy vergisst den alten
+	// Stand, init lädt anhand des aktuellen lang-Attributs neu)
+	let lang = document.documentElement.lang
+	if (_activeSearchLang !== null && _activeSearchLang !== lang) {
+		await pagefind.destroy()
+		await pagefind.init()
+	}
+	_activeSearchLang = lang
 
 	let search = await pagefind.debouncedSearch(term, {}, SEARCH_DEBOUNCE_MS)
 	if (search === null || searchId != _searchCounter) {
@@ -93,7 +138,7 @@ async function _runSearch() {
 	}
 
 	if (results.length <= 0) {
-		_showSearchMessage("Keine Treffer für '" + term + "'.")
+		_showSearchMessage(_searchStrings().noResults(term))
 		return
 	}
 
@@ -107,6 +152,8 @@ async function _runSearch() {
 window.addEventListener('load', () => {
 	searchInputEle = document.getElementById('wiki-search')
 	searchResultsEle = document.getElementById('wiki-search-results')
+
+	updateWikiSearchLanguage(document.documentElement.lang)
 
 	searchInputEle.addEventListener('input', () => _runSearch())
 

@@ -1,0 +1,34 @@
+<!-- US-Flagge für die Sprachwahl des Wikis (wiki.html); die Sterne sind als
+     Punktraster angedeutet — in Knopfgröße wirkt das ruhiger als 50 Sterne -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19 10" preserveAspectRatio="none">
+	<rect width="19" height="10" fill="#b22234"/>
+	<g fill="#ffffff">
+		<rect width="19" height="0.769" y="0.769"/>
+		<rect width="19" height="0.769" y="2.308"/>
+		<rect width="19" height="0.769" y="3.846"/>
+		<rect width="19" height="0.769" y="5.385"/>
+		<rect width="19" height="0.769" y="6.923"/>
+		<rect width="19" height="0.769" y="8.462"/>
+	</g>
+	<rect width="7.6" height="5.385" fill="#3c3b6e"/>
+	<g fill="#ffffff">
+		<circle cx="0.95" cy="0.9" r="0.32"/>
+		<circle cx="2.85" cy="0.9" r="0.32"/>
+		<circle cx="4.75" cy="0.9" r="0.32"/>
+		<circle cx="6.65" cy="0.9" r="0.32"/>
+		<circle cx="1.9" cy="1.8" r="0.32"/>
+		<circle cx="3.8" cy="1.8" r="0.32"/>
+		<circle cx="5.7" cy="1.8" r="0.32"/>
+		<circle cx="0.95" cy="2.7" r="0.32"/>
+		<circle cx="2.85" cy="2.7" r="0.32"/>
+		<circle cx="4.75" cy="2.7" r="0.32"/>
+		<circle cx="6.65" cy="2.7" r="0.32"/>
+		<circle cx="1.9" cy="3.6" r="0.32"/>
+		<circle cx="3.8" cy="3.6" r="0.32"/>
+		<circle cx="5.7" cy="3.6" r="0.32"/>
+		<circle cx="0.95" cy="4.5" r="0.32"/>
+		<circle cx="2.85" cy="4.5" r="0.32"/>
+		<circle cx="4.75" cy="4.5" r="0.32"/>
+		<circle cx="6.65" cy="4.5" r="0.32"/>
+	</g>
+</svg>

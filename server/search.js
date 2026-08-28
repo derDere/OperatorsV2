@@ -8,13 +8,19 @@
 //   2. Jede Seite mit derselben Markdown-Pipeline wie die Wiki-Route rendern
 //      (wiki.js exportiert renderMarkdown) und als virtuelle HTML-Seite an
 //      Pagefind übergeben. Die Demo-Blöcke tragen data-pagefind-ignore und
-//      bleiben dadurch außen vor; lang="de" aktiviert die deutsche
-//      Wortstamm-Erkennung.
+//      bleiben dadurch außen vor.
 //   3. Die fertigen Index-Dateien per getFiles() in eine Map übernehmen.
 //
+// Mehrsprachigkeit: Die Wiki-Inhalte liegen je Sprache in einem eigenen
+// Baum (wiki/de/**, wiki/en/**). Das erste Pfadsegment bestimmt das
+// lang-Attribut der indexierten Seite — Pagefind baut daraus von selbst
+// einen getrennten Index samt Wortstamm-Erkennung je Sprache, und der
+// Browser-Client wählt den Index über das lang-Attribut von wiki.html.
+//
 // Die Seiten-URLs im Index entsprechen den Hash-Seiten des Wiki-Frontends
-// ("/grundlagen/steuerung" → "#grundlagen/steuerung") — das Suchfeld in
-// wiki.html (www/js/wiki_search.js) übersetzt Treffer direkt in Hash-Links.
+// ("/de/grundlagen/steuerung" → "#de/grundlagen/steuerung") — das Suchfeld
+// in wiki.html (www/js/wiki_search.js) übersetzt Treffer direkt in
+// Hash-Links.
 
 const fs = require('fs')
 const path = require('path')
@@ -62,7 +68,10 @@ async function buildIndex() {
 			let text = await fs.promises.readFile(path.join(wiki.WIKI_ROOT, rel), 'utf8')
 			let fragment = await wiki.renderMarkdown(rel, text)
 			let url = '/' + rel.slice(0, -3) // ohne .md — entspricht der Hash-Seite im Frontend
-			let content = '<!DOCTYPE html><html lang="de"><head><meta charset="utf-8"></head><body>' + fragment + '</body></html>'
+			// das erste Pfadsegment ist der Sprachbaum (wiki/de/**, wiki/en/**)
+			let first = rel.split('/')[0]
+			let lang = /^[a-z]{2}(-[a-z]{2})?$/i.test(first) ? first : 'en'
+			let content = '<!DOCTYPE html><html lang="' + lang + '"><head><meta charset="utf-8"></head><body>' + fragment + '</body></html>'
 			let { errors } = await index.addHTMLFile({ url: url, content: content })
 			if (errors && errors.length > 0) {
 				console.error('Suche: Seite ' + rel + ' konnte nicht indexiert werden:', errors)
