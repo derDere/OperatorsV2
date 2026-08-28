@@ -13,6 +13,10 @@
 // Operator-Aufbau als JSON (dasselbe Format wie das Speichern im Editor).
 // Sie werden zu Demo-Containern mit eingebettetem JSON, aus denen wiki.js
 // per OperatorDemo (www/js/op_demo.js) lauffähige Canvas-Demos erzeugt.
+// data-pagefind-ignore hält das JSON aus dem Suchindex heraus (search.js).
+//
+// Die Umwandlung selbst ist als renderMarkdown exportiert — die Suche
+// (search.js) rendert damit beim Indexaufbau dieselben Seiteninhalte.
 
 const fs = require('fs')
 const path = require('path')
@@ -94,7 +98,7 @@ function _renderCode(token) {
 	if (lang === 'operatorsv2') {
 		// "</" JSON-konform maskieren, damit kein "</script>" im Inhalt das Tag vorzeitig beendet
 		let jj = token.text.replace(/<\//g, '<\\/')
-		return '<div class="operator-demo"><script type="application/json">' + jj + '</script></div>\n'
+		return '<div class="operator-demo" data-pagefind-ignore="all"><script type="application/json">' + jj + '</script></div>\n'
 	}
 	let cls = lang ? ' class="language-' + _escapeHtml(lang) + '"' : ''
 	return '<pre><code' + cls + '>' + _escapeHtml(token.text) + '\n</code></pre>\n'
@@ -140,6 +144,21 @@ function handleRequest(req, res) {
 	}
 }
 
+/**
+ * Wandelt einen Markdown-Text in das HTML-Fragment einer Wiki-Seite um.
+ * rel ist der Seitenpfad relativ zum Wiki-Root (Posix-Schreibweise, mit
+ * .md-Endung) — er bestimmt, wogegen relative Links aufgelöst werden.
+ */
+function renderMarkdown(rel, text) {
+	return _getMarked().then((marked) => {
+		_currentDir = path.posix.dirname(rel)
+		if (_currentDir === '.') {
+			_currentDir = ''
+		}
+		return marked.parse(text)
+	})
+}
+
 function _serveMarkdown(filePath, rel, res) {
 	fs.readFile(filePath, 'utf8', (err, text) => {
 		if (err) {
@@ -147,13 +166,8 @@ function _serveMarkdown(filePath, rel, res) {
 			res.end('Not Found')
 			return
 		}
-		_getMarked()
-			.then((marked) => {
-				_currentDir = path.posix.dirname(rel)
-				if (_currentDir === '.') {
-					_currentDir = ''
-				}
-				let html = marked.parse(text)
+		renderMarkdown(rel, text)
+			.then((html) => {
 				res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' })
 				res.end(html)
 			})
@@ -178,4 +192,4 @@ function _serveAsset(filePath, res) {
 	})
 }
 
-module.exports = { handles, handleRequest }
+module.exports = { handles, handleRequest, renderMarkdown, WIKI_ROOT }

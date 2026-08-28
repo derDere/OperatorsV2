@@ -14,11 +14,12 @@ Verbindungslinien verdrahtet; Werte (Booleans oder Bytes) fließen pro Frame dur
 - `wiki/` — die Dokumentation als Markdown-Dateistruktur (siehe Abschnitt Wiki).
 - `server/` — schlanker Node-Webserver, der `www/` ausliefert. Zentrale Verteilstelle ist
   `handleRequest` in `server/server.js`: weitere Routen klinken sich dort über ihr Pfad-Präfix
-  ein — so macht es die Wiki-Route (`server/wiki.js`, Präfix `/wiki/`), eine spätere API macht
-  es genauso. WebSockets nimmt derselbe `http.Server` über sein `upgrade`-Ereignis an — dahinter
-  liegen die Funk-Kanäle in `server/websocket.js` (RFC 6455 ohne Abhängigkeiten implementiert).
-  Einzige npm-Abhängigkeit ist `marked` (Markdown → HTML, `server/package.json`); installiert
-  wird sie beim Docker-Build per `npm ci`, für lokale Läufe per `npm --prefix server install`.
+  ein — so machen es die Wiki-Route (`server/wiki.js`, Präfix `/wiki/`) und die Such-Route
+  (`server/search.js`, Präfix `/pagefind/`), eine spätere API macht es genauso. WebSockets nimmt
+  derselbe `http.Server` über sein `upgrade`-Ereignis an — dahinter liegen die Funk-Kanäle in
+  `server/websocket.js` (RFC 6455 ohne Abhängigkeiten implementiert). npm-Abhängigkeiten sind
+  `marked` (Markdown → HTML) und `pagefind` (Suchindex, `server/package.json`); installiert
+  werden sie beim Docker-Build per `npm ci`, für lokale Läufe per `npm --prefix server install`.
 - Betrieb über Docker Compose (Service `web`; `www/` und `wiki/` werden read-only gemountet),
   gesteuert **ausschließlich über das Makefile** — Docker Desktop muss bereits laufen:
   `make start` (legt `.env` aus `env.example` an, falls sie fehlt), `make wait`, `make open`,
@@ -117,7 +118,16 @@ an alle Horcher; ohne Sendungen verklingt das Signal auf 0. Die Stellschrauben (
   Pfade zu `/wiki/<pfad>` umgeschrieben.
 - `www/wiki.html` ist der Wrapper: `www/js/wiki.js` lädt die Fragmente anhand des URL-Hashs
   dynamisch nach (Navigation/Zurück über `hashchange`), `www/css/wiki.css` formatiert das
-  Markdown.
+  Markdown. In der Kopfleiste sitzen ein Zurück-Knopf (`history.back()` — das Wiki-Fenster
+  öffnet oft ohne Browser-Menüleiste) und die Volltextsuche.
+- Die Suche basiert auf Pagefind: `server/search.js` rendert beim Serverstart alle
+  Wiki-Seiten über `renderMarkdown` (Export von `server/wiki.js`) und baut daraus per
+  Pagefind-Node-API einen Index **im Speicher**, ausgeliefert unter `/pagefind/` (die Mounts
+  bleiben read-only, ein Build-Schritt entfällt; Wiki-Änderungen erscheinen in der Suche nach
+  einem Server-Neustart). `www/js/wiki_search.js` lädt `/pagefind/pagefind.js` bei der ersten
+  Eingabe und übersetzt Treffer-URLs in Hash-Links. Demo-Codeblöcke tragen
+  `data-pagefind-ignore` und bleiben dadurch aus dem Index; `lang="de"` (wiki.html und die
+  gerenderten Index-Seiten) wählt die deutsche Wortstamm-Erkennung.
 - Codeblöcke der Sprache `operatorsv2` enthalten einen gespeicherten Aufbau als JSON (Format wie
   beim Editor-Speichern) und werden zu Live-Demos: `OperatorDemo` (`www/js/op_demo.js`) lädt das
   JSON in ein eigenes kleines p5-Canvas, die Logik läuft echt. Unverdrahtete IOs erscheinen als

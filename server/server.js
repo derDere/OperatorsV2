@@ -13,6 +13,7 @@ const path = require('path')
 const websocket = require('./websocket')
 const wiki = require('./wiki')
 const examples = require('./examples')
+const search = require('./search')
 
 const PORT = parseInt(process.env.PORT || '8080')
 const WWW_ROOT = path.resolve(process.env.WWW_ROOT || path.join(__dirname, '..', 'www'))
@@ -35,6 +36,10 @@ function handleRequest(req, res) {
 	}
 	if (examples.handles(req)) {
 		examples.handleRequest(req, res)
+		return
+	}
+	if (search.handles(req)) {
+		search.handleRequest(req, res)
 		return
 	}
 	serveStatic(req, res)
@@ -80,3 +85,7 @@ server.on('upgrade', websocket.handleUpgrade)
 server.listen(PORT, () => {
 	console.log('OperatorsV2-Server läuft auf Port ' + PORT + ', www-Ordner: ' + WWW_ROOT)
 })
+
+// Der Suchindex entsteht parallel zum Serverstart — die Seiten sind sofort
+// erreichbar, die Wiki-Suche wenige Augenblicke später
+search.buildIndex()

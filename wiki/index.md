@@ -55,4 +55,6 @@ und setzen ihre Ausgänge neu. Deshalb reagiert alles sofort und läuft
 ständig weiter, auch hier in den Demos.
 
 > Tipp: Das Wiki erreichst du aus dem Editor jederzeit über den Menüpunkt
-> **🌐 Wiki** im 🏠-Menü.
+> **🌐 Wiki** im 🏠-Menü. Oben in der Leiste findest du außerdem eine
+> **Volltextsuche** über alle Wiki-Seiten und einen **←**-Knopf, der zur
+> zuvor besuchten Seite zurückführt.

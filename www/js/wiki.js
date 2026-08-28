@@ -92,4 +92,8 @@ window.addEventListener('load', () => {
 	wikiContentEle = document.getElementById('wiki-content')
 	window.addEventListener('hashchange', () => loadWikiPage(currentHashPage()))
 	loadWikiPage(currentHashPage())
+
+	// Zurück-Knopf im Kopfbereich: Das Wiki-Fenster öffnet oft ohne
+	// Browser-Menüleiste, darum gibt es den Zurück-Schritt hier als Knopf
+	document.getElementById('wiki-back').addEventListener('click', () => history.back())
 })

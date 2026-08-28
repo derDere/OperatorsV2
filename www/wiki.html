@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 
 <head>
 	<link rel="shortcut icon" href="favicon.png" type="image/x-icon">
@@ -16,7 +16,15 @@
 
 <body class="wiki">
 	<header id="wiki-header">
-		<a href="#index" id="wiki-title">OperatorsV2 Wiki</a>
+		<div id="wiki-header-left">
+			<!-- Das Wiki-Fenster öffnet oft ohne Browser-Menüleiste — dieser Knopf ersetzt den Zurück-Button des Browsers -->
+			<button id="wiki-back" type="button" title="Zurück zur vorherigen Seite">←</button>
+			<a href="#index" id="wiki-title">OperatorsV2 Wiki</a>
+		</div>
+		<div id="wiki-search-box">
+			<input type="search" id="wiki-search" placeholder="Wiki durchsuchen…" autocomplete="off">
+			<div id="wiki-search-results" hidden></div>
+		</div>
 	</header>
 	<main id="wiki-content"></main>
 	<script src="js/ws.js"></script>
@@ -48,6 +56,7 @@
 	<script src="js/operators/file.js"></script>
 	<script src="js/op_demo.js"></script>
 	<script src="js/wiki.js"></script>
+	<script src="js/wiki_search.js"></script>
 </body>
 
 </html>

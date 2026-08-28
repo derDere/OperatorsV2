@@ -1,6 +1,6 @@
-/* Wiki-Seite (wiki.html): Rahmenlayout, Markdown-Formatierung und die
-   Demo-Blöcke samt IO-Bedienfeldern und Tooltip. Grundfarben und Scrollbars
-   kommen aus style.css. */
+/* Wiki-Seite (wiki.html): Rahmenlayout samt Zurück-Knopf und Suche,
+   Markdown-Formatierung und die Demo-Blöcke samt IO-Bedienfeldern und
+   Tooltip. Grundfarben und Scrollbars kommen aus style.css. */
 
 /* ------------------------------------------------------------------ Rahmen */
 
@@ -24,11 +24,123 @@ body.wiki {
 	box-shadow: 0 0 5px #00000020;
 }
 
+#wiki-header-left {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+}
+
+/* Zurück-Knopf: Das Wiki-Fenster öffnet oft ohne Browser-Menüleiste,
+   der Knopf übernimmt dann den Zurück-Schritt der Historie */
+#wiki-back {
+	width: 32px;
+	height: 32px;
+	padding: 0;
+	font-size: 18px;
+	line-height: 1;
+	color: #222;
+	background: #f0f0f0;
+	border: 1px solid #ccc;
+	border-radius: 6px;
+	cursor: pointer;
+}
+
+#wiki-back:hover {
+	background: #e0e0e0;
+	border-color: #999;
+}
+
+#wiki-back:active {
+	background: #d0d0d0;
+}
+
 #wiki-title {
 	font-size: 18px;
 	font-weight: bold;
 	color: #222;
 	text-decoration: none;
+}
+
+/* ------------------------------------------------------------- Wiki-Suche */
+
+#wiki-search-box {
+	position: relative;
+}
+
+#wiki-search {
+	box-sizing: border-box;
+	width: 260px;
+	max-width: 40vw;
+	padding: 6px 10px;
+	font-size: 14px;
+	color: #222;
+	background: #f7f7f7;
+	border: 1px solid #ccc;
+	border-radius: 6px;
+	outline: none;
+}
+
+#wiki-search:focus {
+	background: #fff;
+	border-color: #0080ff;
+}
+
+/* Treffer-Liste: klappt unter dem Suchfeld auf, rechtsbündig am Feld */
+#wiki-search-results {
+	position: absolute;
+	top: calc(100% + 8px);
+	right: 0;
+	width: 420px;
+	max-width: 90vw;
+	max-height: min(60vh, 480px);
+	overflow-y: auto;
+	background: #fff;
+	border: 1px solid #ccc;
+	border-radius: 8px;
+	box-shadow: 0 4px 16px #00000030;
+}
+
+.wiki-search-result {
+	display: block;
+	padding: 9px 14px;
+	color: #222;
+	text-decoration: none;
+	border-bottom: 1px solid #eee;
+}
+
+.wiki-search-result:last-child {
+	border-bottom: 0 none;
+}
+
+.wiki-search-result:hover {
+	background: #f2f8ff;
+}
+
+.wiki-search-result-title {
+	display: block;
+	font-size: 14px;
+	font-weight: bold;
+	color: #0080ff;
+}
+
+.wiki-search-result-excerpt {
+	display: block;
+	margin-top: 2px;
+	font-size: 12px;
+	line-height: 1.45;
+	color: #555;
+}
+
+.wiki-search-result-excerpt mark {
+	background: #ffe9a8;
+	border-radius: 2px;
+	padding: 0 1px;
+}
+
+.wiki-search-message {
+	padding: 12px 14px;
+	font-size: 13px;
+	color: #666;
 }
 
 #wiki-content {
