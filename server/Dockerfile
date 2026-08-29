@@ -2,7 +2,7 @@
 # Image wird nichts kompiliert, npm ci installiert nur die gepinnten Pakete.
 # Die Ordner www und wiki kommen zur Laufzeit als Mounts nach /www und /wiki
 # (siehe docker-compose.yml).
-FROM node:lts-alpine
+FROM node:alpine
 
 WORKDIR /app
 COPY package.json package-lock.json ./
