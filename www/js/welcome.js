@@ -12,6 +12,10 @@
 // Seite bleibt dabei voll bedienbar — die Tour lässt den Leser die Schaltung
 // wirklich selbst bauen.
 //
+// Es gibt zwei Touren: die Grundtour erklärt den Editor, die erweiterte Tour
+// setzt ihn voraus und baut eine große Schaltung. Der letzte Schritt der
+// Grundtour bietet die erweiterte Tour als eigenen Knopf an.
+//
 // Die Texte stehen in js/welcome_texts.js, die Sprache liefert js/lang.js: Sie
 // folgt der Wiki-Sprachwahl, auch wenn diese im geöffneten Wiki-Fenster
 // gerade umgestellt wird (storage-Ereignis).
@@ -21,6 +25,10 @@ const WELCOME_HIDDEN_STORAGE_KEY = 'operatorsv2-welcome-hidden'
 const WELCOME_MARGIN = 16       // Abstand zum Fensterrand in Pixeln
 const WELCOME_INTRO_WIDTH = 560 // Breite der Begrüßung (mit Bild)
 const WELCOME_TOUR_WIDTH = 360  // Breite des Hinweis-Fensters der Tour
+
+// Schlüssel der beiden Schritt-Listen in js/welcome_texts.js
+const WELCOME_TOUR_BASIC = 'tour'
+const WELCOME_TOUR_ADVANCED = 'tourAdvanced'
 
 class WelcomeGuide { ////////////////////////////////////////////////////////////////////////////////////
 
@@ -42,10 +50,13 @@ class WelcomeGuide { ///////////////////////////////////////////////////////////
 		this.againBox = document.getElementById('welcomeAgainBox')
 		this.againLabel = document.getElementById('welcomeAgainLabel')
 		this.wikiLink = document.getElementById('welcomeWiki')
+		this.extra = document.getElementById('welcomeExtra')
+		this.advancedButton = document.getElementById('welcomeAdvanced')
 
 		this.lang = detectLanguage()
 		this.strings = WELCOME_STRINGS[this.lang]
 
+		this.tourKey = WELCOME_TOUR_BASIC
 		this.stepIndex = -1 // -1 = Begrüßung, ab 0 der jeweilige Tour-Schritt
 		this.isOpen = false
 
@@ -57,8 +68,17 @@ class WelcomeGuide { ///////////////////////////////////////////////////////////
 		return this.stepIndex >= 0
 	}
 
+	// Schritte der gerade laufenden Tour
+	get steps() {
+		return this.strings[this.tourKey]
+	}
+
 	get stepCount() {
-		return this.strings.tour.length
+		return this.steps.length
+	}
+
+	get isLastStep() {
+		return this.stepIndex >= (this.stepCount - 1)
 	}
 
 	_wireEvents() {
@@ -67,6 +87,7 @@ class WelcomeGuide { ///////////////////////////////////////////////////////////
 		this.closeButton.addEventListener('click', () => this.close())
 		this.backButton.addEventListener('click', () => this.goToStep(this.stepIndex - 1))
 		this.nextButton.addEventListener('click', () => this._next())
+		this.advancedButton.addEventListener('click', () => this.startTour(WELCOME_TOUR_ADVANCED))
 
 		this.wikiLink.addEventListener('click', (event) => {
 			event.preventDefault()
@@ -116,6 +137,7 @@ class WelcomeGuide { ///////////////////////////////////////////////////////////
 	// Öffnet die Begrüßung. Der Haken zeigt dabei den gemerkten Stand, sodass
 	// ein erneutes Öffnen über das Menü ihn auch wieder aufheben kann.
 	open() {
+		this.tourKey = WELCOME_TOUR_BASIC
 		this.stepIndex = -1
 		this.againBox.checked = this._readHidden()
 		this.isOpen = true
@@ -130,7 +152,9 @@ class WelcomeGuide { ///////////////////////////////////////////////////////////
 		this.open()
 	}
 
-	startTour() {
+	// Beginnt eine der beiden Touren bei ihrem ersten Schritt
+	startTour(tourKey = WELCOME_TOUR_BASIC) {
+		this.tourKey = tourKey
 		this.goToStep(0)
 	}
 
@@ -157,7 +181,7 @@ class WelcomeGuide { ///////////////////////////////////////////////////////////
 	}
 
 	_next() {
-		if (this.stepIndex >= (this.stepCount - 1)) {
+		if (this.isLastStep) {
 			this.close()
 			return
 		}
@@ -179,19 +203,26 @@ class WelcomeGuide { ///////////////////////////////////////////////////////////
 		this.wikiLink.innerText = strings.wiki
 		this.againLabel.innerText = strings.again
 		this.previewImage.alt = strings.previewAlt
+		this.advancedButton.innerText = strings.advanced
 
 		if (this.isTour) {
-			let step = strings.tour[this.stepIndex]
+			let step = this.steps[this.stepIndex]
 			this.titleEle.innerText = step.title
 			this.textEle.innerHTML = step.text
 			this.stepEle.innerText = strings.step(this.stepIndex + 1, this.stepCount)
-			this.nextButton.innerText = (this.stepIndex >= (this.stepCount - 1)) ? strings.finish : strings.next
+			this.nextButton.innerText = this.isLastStep ? strings.finish : strings.next
 			this.backButton.disabled = (this.stepIndex <= 0)
 		}
 		else {
 			this.titleEle.innerText = strings.title
 			this.textEle.innerHTML = strings.intro
 		}
+
+		// Am Ende der Grundtour steht die erweiterte Tour als Angebot bereit und
+		// nimmt dort die Hauptrolle unter den Knöpfen ein
+		let offersAdvanced = this.isTour && this.isLastStep && (this.tourKey == WELCOME_TOUR_BASIC)
+		this.extra.hidden = !offersAdvanced
+		this.nextButton.classList.toggle('welcome-primary', !offersAdvanced)
 
 		this.preview.hidden = this.isTour
 		this.stepEle.hidden = !this.isTour

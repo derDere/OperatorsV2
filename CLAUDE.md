@@ -14,7 +14,8 @@ Verbindungslinien verdrahtet; Werte (Booleans oder Bytes) fließen pro Frame dur
 - `wiki/` — die Dokumentation als Markdown-Dateistruktur (siehe Abschnitt Wiki).
 - `dev/` — Arbeitsmaterial, das nicht ausgeliefert wird: Schaltungen im Speicherformat, die
   hinter einem Bild oder einer Doku-Stelle stehen und für eine Neuauflage wieder ladbar sein
-  müssen (`welcome-preview-circuit.json` ist die Schaltung auf `www/gfx/welcome-preview.png`).
+  müssen. `welcome-preview-circuit.json` ist die Schaltung auf `www/gfx/welcome-preview.png`,
+  `Funkschaltung.json` das fertige Ergebnis der erweiterten Willkommens-Tour.
 - `server/` — schlanker Node-Webserver, der `www/` ausliefert. Zentrale Verteilstelle ist
   `handleRequest` in `server/server.js`: weitere Routen klinken sich dort über ihr Pfad-Präfix
   ein — so machen es die Wiki-Route (`server/wiki.js`, Präfix `/wiki/`) und die Such-Route
@@ -176,13 +177,29 @@ an alle Horcher; ohne Sendungen verklingt das Signal auf 0. Die Stellschrauben (
   (localStorage `operatorsv2-welcome-hidden`) allein der Stand des Ankreuzfeldes **beim
   Schließen** — er lässt sich dort auch wieder aufheben. Der Menüpunkt **👋 Welcome** öffnet
   die Begrüßung jederzeit erneut.
-- Die Tour lässt dasselbe Fenster nach unten links wandern und führt in elf Schritten durch den
-  Editor; dabei baut der Leser selbst einen Zähler aus Switch, Slider, Clock, Counter8 und
-  Byte-Anzeige. Das Fenster ist ein reines DOM-Overlay, die Seite darunter bleibt voll
-  bedienbar — seine Mausereignisse stoppt es, damit die Zeichenfläche sie nicht ebenfalls
-  auswertet (die p5-Handler horchen am `window`).
+- Die Tour lässt dasselbe Fenster nach unten links wandern. Das Fenster ist ein reines
+  DOM-Overlay, die Seite darunter bleibt voll bedienbar — seine Mausereignisse stoppt es, damit
+  die Zeichenfläche sie nicht ebenfalls auswertet (die p5-Handler horchen am `window`).
+- Es gibt **zwei Touren**, in `welcome_texts.js` die Listen `tour` und `tourAdvanced`:
+  - Die **Grundtour** (elf Schritte) erklärt den Editor; dabei baut der Leser einen Zähler aus
+    Switch, Slider, Clock, Counter8 und Byte-Anzeige.
+  - Die **erweiterte Tour** (sechzehn Schritte) setzt das voraus und baut eine Funkstation:
+    Text Input → Funkkanal → Fernschreiber (Terminal Display), dazu ein Sichtgerät auf dem Line
+    Display, verteilt über Portale. Ergebnis: `dev/Funkschaltung.json`. Drei Stellen darin sind
+    keine Willkür, sondern Bedingung:
+    - Der **Enter-Riegel**: `P` des Text Input hängt nicht am Dauerstrom, sondern an einem RS
+      FlipFlop, das `N` (Enter) setzt und `Not(W)` wieder löscht. Nur so bleibt der getippte
+      Text bis zum Absenden veränderbar, statt Zeichen für Zeichen sofort in der Warteschlange
+      zu verschwinden.
+    - Das **Kennbit**: T FlipFlop + Select + 128, per ODER auf denselben Sender-Eingang wie das
+      Zeichen gelegt. Es hält aufeinanderfolgende gleiche Zeichen unterscheidbar, weil der
+      Funkkanal nur Wertänderungen meldet.
+    - Ein **`Pipe 1`** gleicht die Tick-Zahl von Auslöser und Byte an, damit beide zusammen am
+      Terminal ankommen.
+  - Angeboten wird die erweiterte Tour über einen eigenen Knopf, den nur der letzte Schritt der
+    Grundtour einblendet.
 - Alle Texte stehen zweisprachig in `www/js/welcome_texts.js`, beide Sprachen mit gleich vielen
-  Schritten. Der Editor hat bewusst **keine eigene Sprachwahl**: Er folgt über
+  Schritten je Tour. Der Editor hat bewusst **keine eigene Sprachwahl**: Er folgt über
   `www/js/lang.js` der Wiki-Sprache und stellt sich per `storage`-Ereignis sofort um, wenn sie
   im geöffneten Wiki-Fenster gewechselt wird. Seine übrige Oberfläche bleibt englisch.
 - Das Vorschaubild `www/gfx/welcome-preview.png` ist ein Bildschirmfoto des Editors; die darauf

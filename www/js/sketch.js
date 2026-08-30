@@ -278,7 +278,9 @@ function main_draw(p5ctx) {
 		"Del: delete selection / hovered line\n" +
 		"Ctrl+D: duplicate selection\n" +
 		"Ctrl+C / Ctrl+V: copy & paste\n" +
-		"Ctrl+Drag: cut connections",
+		"Ctrl+Drag: cut connections\n" +
+		"Connections: " + (AllConnections.length - 1) + "\n" +
+		"Operators: " + AllOperators.length,
 		10, 10)
 	
 	p5ctx.textAlign(p5ctx.CENTER, p5ctx.BOTTOM)

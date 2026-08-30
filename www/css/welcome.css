@@ -129,6 +129,18 @@
 	margin: 16px 0 0 0;
 }
 
+/* Das Angebot der erweiterten Tour sitzt ueber der Knopfzeile und nimmt die
+   ganze Breite ein — es ist am letzten Schritt der Hauptweg, nicht Beiwerk */
+#welcomeExtra {
+	flex: 0 0 auto;
+	margin: 16px 0 0 0;
+}
+
+#welcomeExtra button {
+	width: 100%;
+	padding: 9px 14px;
+}
+
 #welcomeTourActions {
 	justify-content: space-between;
 }
