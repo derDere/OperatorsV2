@@ -154,7 +154,7 @@ const WELCOME_STRINGS = {
 					'Funkkanal des Servers hinaus, kommt zurück und rollt über einen ' +
 					'<b>Fernschreiber</b> mit Klappanzeige. Daneben zeichnet ein <b>Sichtgerät</b> ' +
 					'den Funkverkehr als Kurve mit.<br><br>' +
-					'Rund zwei Dutzend Bausteine. Zieh die Fläche unterwegs mit der rechten ' +
+					'Fast drei Dutzend Bausteine. Zieh die Fläche unterwegs mit der rechten ' +
 					'Maustaste weiter — es wird breit.'
 			},
 			{
@@ -272,13 +272,35 @@ const WELCOME_STRINGS = {
 					'Stationen durchlaufen, sonst kommt der Auslöser vor dem Zeichen an.'
 			},
 			{
+				title: 'Die Nullsperre',
+				text:
+					'Zwischen zwei Zeichen verklingt das Signal auf 0 — und eine 0 ist auch eine ' +
+					'Änderung. Der Empfänger meldet sie pflichtbewusst, und der Fernschreiber ' +
+					'würde jedes Mal ein leeres Zeichen setzen: zwischen jedem Buchstaben eine ' +
+					'Lücke. Mit zwei Stationen auf einer Frequenz wird es noch bunter — dann ' +
+					'überlagern sich die Sendungen, und zwischendurch bleibt auch mal nur das ' +
+					'Kennbit übrig. Ein Zeichen, das keines ist.<br><br>' +
+					'Also lassen wir die Null gar nicht erst durch. Setze ein <b>Equals</b> und ein ' +
+					'<b>And</b>:<br><br>' +
+					'• <code>O1</code> des Portals auf <code>B2</code> des Equals — <code>B1</code> ' +
+					'bleibt frei und zählt damit als 0. Sein Ausgang <code>!O</code> ist also genau ' +
+					'dann an, wenn der Wert <i>nicht</i> 0 ist<br>' +
+					'• der Ausgang des Pipe auf <code>I1</code> des And, <code>!O</code> des Equals ' +
+					'auf <code>I2</code><br><br>' +
+					'Das And lässt den Auslöser nur durch, wenn wirklich ein Zeichen dahintersteckt. ' +
+					'Und weil es dabei einen Tick kostet, braucht auch das Zeichen einen Umweg: ' +
+					'Setze hinter das Modulo ein zweites <b>Pipe 1</b>. Schon sind beide Wege ' +
+					'wieder gleich lang.'
+			},
+			{
 				title: 'Die Klappanzeige',
 				text:
 					'Setze ein <b>Terminal Display</b>. Stell in den Eigenschaften <b>Terminal ' +
 					'Width</b> auf 22 und <b>Terminal Height</b> auf 6.<br><br>' +
-					'<code>R</code> des Modulo geht auf <code>B</code>, der Ausgang des Pipe auf ' +
-					'<code>W</code>. <code>W</code> steht für Write: Bei jedem Impuls schreibt es ' +
-					'das Zeichen an die Schreibmarke und rückt eine Stelle weiter.<br><br>' +
+					'Der Ausgang des Pipe hinter dem Modulo geht auf <code>B</code>, ' +
+					'<code>O</code> des And auf <code>W</code>. <code>W</code> steht für Write: Bei ' +
+					'jedem Impuls schreibt es das Zeichen an die Schreibmarke und rückt eine Stelle ' +
+					'weiter.<br><br>' +
 					'Jetzt der erste Probelauf: Tippe links im Panel etwas in das Feld des Text ' +
 					'Input und drück <b>Enter</b>. Sieh zu, wie die Zeichen sich auf der Anzeige ' +
 					'durchdrehen — wie die Klappanzeige am Bahnhof.'
@@ -489,7 +511,7 @@ const WELCOME_STRINGS = {
 					'You type a message. It goes out character by character over a real radio ' +
 					'channel on the server, comes back, and rolls across a <b>teleprinter</b> with ' +
 					'a flap display. Next to it a <b>scope</b> plots the traffic as a curve.<br><br>' +
-					'Around two dozen blocks. Drag the canvas along with the right mouse button as ' +
+					'Nearly three dozen blocks. Drag the canvas along with the right mouse button as ' +
 					'you go — this one gets wide.'
 			},
 			{
@@ -607,13 +629,35 @@ const WELCOME_STRINGS = {
 					'or the trigger arrives before the character does.'
 			},
 			{
+				title: 'The zero gate',
+				text:
+					'Between two characters the signal fades to 0 — and a 0 is a change as well. ' +
+					'The receiver dutifully reports it, and the teleprinter would set a blank ' +
+					'character every time: a gap between every letter. With two stations on one ' +
+					'frequency it gets even livelier — the transmissions overlap, and every now and ' +
+					'then all that is left in between is the marker bit. A character that is none.' +
+					'<br><br>' +
+					'So we stop the zero before it gets through. Place an <b>Equals</b> and an ' +
+					'<b>And</b>:<br><br>' +
+					'• <code>O1</code> of the portal to <code>B2</code> of the Equals — ' +
+					'<code>B1</code> stays free and therefore counts as 0. Its output ' +
+					'<code>!O</code> is on exactly when the value is <i>not</i> 0<br>' +
+					'• the output of the Pipe to <code>I1</code> of the And, <code>!O</code> of the ' +
+					'Equals to <code>I2</code><br><br>' +
+					'The And lets the trigger through only when there really is a character behind ' +
+					'it. And since it costs a tick doing so, the character needs a detour as well: ' +
+					'place a second <b>Pipe 1</b> behind the Modulo. Now both paths are the same ' +
+					'length again.'
+			},
+			{
 				title: 'The flap display',
 				text:
 					'Place a <b>Terminal Display</b>. In its properties set <b>Terminal Width</b> ' +
 					'to 22 and <b>Terminal Height</b> to 6.<br><br>' +
-					'<code>R</code> of the Modulo goes to <code>B</code>, the output of the Pipe to ' +
-					'<code>W</code>. <code>W</code> stands for write: on every pulse it writes the ' +
-					'character at the cursor and moves one place on.<br><br>' +
+					'The output of the Pipe behind the Modulo goes to <code>B</code>, ' +
+					'<code>O</code> of the And to <code>W</code>. <code>W</code> stands for write: ' +
+					'on every pulse it writes the character at the cursor and moves one place on.' +
+					'<br><br>' +
 					'Time for the first trial run: type something into the Text Input field on the ' +
 					'left and press <b>Enter</b>. Watch the characters roll into place — like the ' +
 					'flap board at a railway station.'

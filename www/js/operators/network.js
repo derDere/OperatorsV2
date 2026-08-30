@@ -23,7 +23,8 @@ function generateStringGuid(str) {
   // UUID v4 Vorgabe: Das erste Zeichen im 4. Block muss '8', '9', 'a' oder 'b' sein
   const allowedChars = ['8', '9', 'a', 'b']
   const part4 = allowedChars[Math.abs(hash2) % 4] + b4.substring(1, 4)
-  const part5 = b1.substring(4, 8) + b2.substring(4, 8)
+  // Der letzte Block einer UUID ist zwölf Zeichen lang
+  const part5 = b1.substring(4, 8) + b2.substring(4, 8) + b3.substring(4, 8)
 
   return `${part1}-${part2}-${part3}-${part4}-${part5}`
 }
@@ -34,10 +35,22 @@ function isValidGuid(guid) {
   return guidRegex.test(guid)
 }
 
-function channelDisplay(guid, p5ctx) {
-  if (!isValidGuid(guid)) {
-    guid = generateStringGuid(guid)
+// Ein Kanal wird unter einem frei wählbaren Namen eingestellt, die Verbindung
+// braucht dafür eine feste Kennung. Ein Name, der bereits als GUID geschrieben
+// ist, gilt unverändert, jeder andere wird stabil auf eine GUID abgebildet.
+// Der Name selbst bleibt unangetastet — er ist es, was in den Properties steht
+// und was gespeichert wird.
+function channelGuid(name) {
+  name = String(name)
+  if (isValidGuid(name)) {
+    return name.toLowerCase()
   }
+  return generateStringGuid(name)
+}
+
+// Zeichnet den Fingerabdruck eines Kanals: die 16 Bytes seiner Kennung als
+// 4x4-Feld aus Farben. Erwartet eine fertige Kennung aus channelGuid.
+function channelDisplay(guid, p5ctx) {
   guid = guid.replace(/-/g, '').toLowerCase()
 
   const parts = []
@@ -73,7 +86,9 @@ const Op_NetSender = register(
     constructor(x = 0, y = 0) {
       super(x, y)
 
+      // Gespeichert und angezeigt wird der Name, verbunden wird über seine Kennung
       this.channel = NewId()
+      this._channelGuid = channelGuid(this.channel)
 
       this._connected = false
 
@@ -82,7 +97,7 @@ const Op_NetSender = register(
 
       this._lastT = false
 
-      this._ws = new ChannelSocket(this.channel, 'send')
+      this._ws = new ChannelSocket(this._channelGuid, 'send')
     }
 
     kill() {
@@ -100,12 +115,9 @@ const Op_NetSender = register(
     setConfig(conf, loaded = false) {
       super.setConfig(conf, loaded)
       if ('Channel' in conf) {
-        let channelValue = conf.Channel
-        if (!isValidGuid(channelValue)) {
-          channelValue = generateStringGuid(channelValue)
-        }
-        this.channel = channelValue
-        this._ws.setChannel(this.channel)
+        this.channel = String(conf.Channel)
+        this._channelGuid = channelGuid(this.channel)
+        this._ws.setChannel(this._channelGuid)
       }
     }
 
@@ -131,7 +143,7 @@ const Op_NetSender = register(
     doDraw(tick, p5ctx) {
       super.doDraw(tick, p5ctx)
 
-      channelDisplay(this.channel, p5ctx)
+      channelDisplay(this._channelGuid, p5ctx)
 
       p5ctx.push()
       if (this._connected) {
@@ -215,7 +227,9 @@ const Op_NetReceiver = register(
     constructor(x = 0, y = 0) {
       super(x, y)
 
+      // Gespeichert und angezeigt wird der Name, verbunden wird über seine Kennung
       this.channel = NewId()
+      this._channelGuid = channelGuid(this.channel)
 
       this._connected = false
 
@@ -226,7 +240,7 @@ const Op_NetReceiver = register(
 
       this._lastV = 0
 
-      this._ws = new ChannelSocket(this.channel, 'listen')
+      this._ws = new ChannelSocket(this._channelGuid, 'listen')
       this._ws.onValue = (v) => { this.value = v }
     }
 
@@ -245,12 +259,9 @@ const Op_NetReceiver = register(
     setConfig(conf, loaded = false) {
       super.setConfig(conf, loaded)
       if ('Channel' in conf) {
-        let channelValue = conf.Channel
-        if (!isValidGuid(channelValue)) {
-          channelValue = generateStringGuid(channelValue)
-        }
-        this.channel = channelValue
-        this._ws.setChannel(this.channel)
+        this.channel = String(conf.Channel)
+        this._channelGuid = channelGuid(this.channel)
+        this._ws.setChannel(this._channelGuid)
       }
     }
 
@@ -274,7 +285,7 @@ const Op_NetReceiver = register(
     doDraw(tick, p5ctx) {
       super.doDraw(tick, p5ctx)
 
-      channelDisplay(this.channel, p5ctx)
+      channelDisplay(this._channelGuid, p5ctx)
 
       p5ctx.push()
 

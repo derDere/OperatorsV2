@@ -114,6 +114,12 @@ Takt verrechnet (gleichzeitige Sender überlagern sich per bitweisem ODER); Wert
 an alle Horcher; ohne Sendungen verklingt das Signal auf 0. Die Stellschrauben (`TICK_RATE`,
 `DECAY_TICKS`) stehen am Dateianfang.
 
+Der Kanal wird unter einem frei wählbaren Namen eingestellt: Dieser Name steht in der Config
+(`Channel`) und ist damit das, was das Properties-Panel zeigt und was gespeichert wird. Auf die
+Leitung geht nur seine Kennung — `channelGuid()` gibt eine als GUID geschriebene Eingabe
+unverändert weiter und bildet jede andere per `generateStringGuid()` stabil auf eine GUID ab.
+Aus derselben Kennung zeichnet `channelDisplay()` den 4×4-Farbabdruck auf dem Baustein.
+
 ### Wiki (Doku mit Live-Demos)
 
 - **Zielgruppe und Schreibstandard:** Das Wiki ist der Lehrteil des Projekts. Es richtet
@@ -183,9 +189,9 @@ an alle Horcher; ohne Sendungen verklingt das Signal auf 0. Die Stellschrauben (
 - Es gibt **zwei Touren**, in `welcome_texts.js` die Listen `tour` und `tourAdvanced`:
   - Die **Grundtour** (elf Schritte) erklärt den Editor; dabei baut der Leser einen Zähler aus
     Switch, Slider, Clock, Counter8 und Byte-Anzeige.
-  - Die **erweiterte Tour** (sechzehn Schritte) setzt das voraus und baut eine Funkstation:
+  - Die **erweiterte Tour** (siebzehn Schritte) setzt das voraus und baut eine Funkstation:
     Text Input → Funkkanal → Fernschreiber (Terminal Display), dazu ein Sichtgerät auf dem Line
-    Display, verteilt über Portale. Ergebnis: `dev/Funkschaltung.json`. Drei Stellen darin sind
+    Display, verteilt über Portale. Ergebnis: `dev/Funkschaltung.json`. Vier Stellen darin sind
     keine Willkür, sondern Bedingung:
     - Der **Enter-Riegel**: `P` des Text Input hängt nicht am Dauerstrom, sondern an einem RS
       FlipFlop, das `N` (Enter) setzt und `Not(W)` wieder löscht. Nur so bleibt der getippte
@@ -194,8 +200,13 @@ an alle Horcher; ohne Sendungen verklingt das Signal auf 0. Die Stellschrauben (
     - Das **Kennbit**: T FlipFlop + Select + 128, per ODER auf denselben Sender-Eingang wie das
       Zeichen gelegt. Es hält aufeinanderfolgende gleiche Zeichen unterscheidbar, weil der
       Funkkanal nur Wertänderungen meldet.
-    - Ein **`Pipe 1`** gleicht die Tick-Zahl von Auslöser und Byte an, damit beide zusammen am
-      Terminal ankommen.
+    - Die **Nullsperre**: Ein `Equals` (Byte gegen den offenen, also 0 zählenden zweiten
+      Eingang) gibt über `!O` ein „ist nicht 0" aus, das ein `And` vor den Schreib-Auslöser des
+      Terminals legt. Ohne sie schreibt jede 0 auf dem Kanal ein leeres Zeichen — und eine 0
+      kommt regelmäßig: beim Verklingen des Signals und bei zwei Stationen auch mitten in der
+      Überlagerung, wenn nur noch das Kennbit übrig bleibt.
+    - Zwei **`Pipe 1`** gleichen die Tick-Zahl von Auslöser und Byte an, damit beide zusammen am
+      Terminal ankommen — je einer hinter dem Portal-Auslöser und hinter dem `Modulo`.
   - Angeboten wird die erweiterte Tour über einen eigenen Knopf, den nur der letzte Schritt der
     Grundtour einblendet.
 - Alle Texte stehen zweisprachig in `www/js/welcome_texts.js`, beide Sprachen mit gleich vielen
