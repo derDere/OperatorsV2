@@ -4,7 +4,7 @@
 
 File Output is the **file writer**: It collects byte by byte whatever
 the circuit hands it — and offers the collection as a **download link**
-on the panel area to the right of the editor. Every time `T` switches
+on the panel area to the left of the editor. Every time `T` switches
 from off to on — that moment is called a **rising edge** (see
 [Edges and Clock](../../grundlagen/flanken-und-takt.md)) —, the block
 appends the current value of `V` to the file. File name and file type

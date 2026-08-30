@@ -10,7 +10,7 @@ Strich eine Zeichnung. `G`, `D` und `C` reagieren dabei jeweils auf eine
 **steigende Flanke**: den Moment, in dem der jeweilige Eingang von aus
 auf an wechselt (mehr dazu unter
 [Flanken und Takt](../../grundlagen/flanken-und-takt.md)). Die
-eigentliche Zeichenfläche erscheint auf der Panelfläche rechts im
+eigentliche Zeichenfläche erscheint auf der Panelfläche links im
 Editor; ihre Anzeigegröße stellst du in den Properties ein.
 
 ## Anschlüsse

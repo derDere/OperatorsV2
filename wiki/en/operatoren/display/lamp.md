@@ -3,7 +3,7 @@
 [Operator Reference](../index.md) · Category: **Display**
 
 The Lamp is the **light bulb** of the circuit: It lights up while its input
-is on. On the panel area to the right of the editor it additionally appears
+is on. On the panel area to the left of the editor it additionally appears
 as a bulb with a glow; you pick the color in the Properties — the settings
 window that opens when you click the block.
 

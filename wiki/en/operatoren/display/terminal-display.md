@@ -10,7 +10,7 @@ because every letter is assigned a fixed number; that assignment is
 called **ASCII** (see
 [Bits and Bytes](../../grundlagen/bits-und-bytes.md)). The terminal
 writes the matching letter at the cursor position and moves on. The
-actual screen appears on the panel area to the right of the editor,
+actual screen appears on the panel area to the left of the editor,
 styled like a flip display, the kind you see on departure boards at
 train stations: new characters visibly flip into place. Width and height
 of the grid are set in the Properties.

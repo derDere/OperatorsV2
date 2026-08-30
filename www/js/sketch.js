@@ -39,6 +39,7 @@ function main_setup(p5ctx) {
 	createTableOfElements()
 	initMenu()
 	initDatAnchors()
+	initWelcome()
 }
 
 function doubleClicked(event, p5ctx) {

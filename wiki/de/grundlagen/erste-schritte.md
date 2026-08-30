@@ -16,9 +16,9 @@ Lampe heißt **Lamp**.
 Der Editor ist die Bau-Seite von OperatorsV2 — die Startseite der Anwendung
 (die Adresse ohne `/wiki.html` am Ende). Du siehst dort:
 
-- links eine große **Zeichenfläche** mit Karo-Raster — hier entsteht die
+- rechts eine große **Zeichenfläche** mit Karo-Raster — hier entsteht die
   Schaltung,
-- rechts eine helle **Panelfläche** — hier erscheint alles zum Bedienen und
+- links eine helle **Panelfläche** — hier erscheint alles zum Bedienen und
   Ablesen: Schalter, Lampen, Anzeigen,
 - am Rand kleine aufklappbare Fenster: **🏠 Menu** (Speichern & Laden) und
   **🛠️ Properties** — dort stehen die Einstellungen des Bausteins, den du
@@ -29,9 +29,10 @@ Der Editor ist die Bau-Seite von OperatorsV2 — die Startseite der Anwendung
 Mache einen **Doppelklick** — also zweimal schnell hintereinander klicken —
 auf eine freie Stelle der Zeichenfläche. Es öffnet sich ein Auswahlfenster
 mit allen Bausteinen, sortiert in Gruppen; diese Gruppen heißen
-**Kategorien**. Oben kannst du tippen, um zu suchen. Klicke auf **Switch**
-(Kategorie *User Input* — dort stehen die Bausteine, die du selbst
-bedienst). Der Schalter liegt damit auf der Fläche.
+**Kategorien**. Unten im Fenster sitzt das Suchfeld; es ist gleich aktiv,
+du kannst also sofort lostippen. Klicke auf **Switch** (Kategorie
+*User Input* — dort stehen die Bausteine, die du selbst bedienst). Der
+Schalter liegt damit auf der Fläche.
 
 ## Schritt 2: Eine Lampe platzieren
 

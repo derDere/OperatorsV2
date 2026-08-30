@@ -3,7 +3,7 @@
 [Operator-Lexikon](../index.md) · Kategorie: **User Input**
 
 File Input öffnet der Schaltung die Tür zu **echten Dateien**: Auf der
-Panelfläche rechts im Editor gehört zu ihm ein „Datei auswählen"-Feld.
+Panelfläche links im Editor gehört zu ihm ein „Datei auswählen"-Feld.
 Die hochgeladene Datei liegt dann als lange Byte-Kette bereit — denn jede
 Datei ist am Ende nichts anderes als eine Folge von Bytes (siehe
 [Bits und Bytes](../../grundlagen/bits-und-bytes.md)). Jedes Mal, wenn

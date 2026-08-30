@@ -9,7 +9,7 @@ gewohnte Zahl, als reine Kette aus Nullen und Einsen, als kurzen
 **Hex-Code** aus Ziffern und Buchstaben (ausführlich erklärt in
 [Bits und Bytes](../../grundlagen/bits-und-bytes.md)) — und sogar als
 Zeichen, denn jeder Buchstabe hat eine feste Zahl; diese Zuordnung heißt
-**ASCII**. Auf der Panelfläche rechts im Editor erscheint der Wert groß
+**ASCII**. Auf der Panelfläche links im Editor erscheint der Wert groß
 und lässt sich gestalten (Schriftart, Größe, Farben); welche
 Schreibweisen gleichzeitig zu sehen sind, wählst du in den Properties
 per Häkchen aus.

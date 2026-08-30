@@ -3,7 +3,7 @@
 [Operator Reference](../index.md) · Category: **User Input**
 
 Text Input is the **keyboard** of the circuit: On the panel area to the
-right of the editor it comes with a real input field. Whatever you type
+left of the editor it comes with a real input field. Whatever you type
 there is instantly translated into numbers: every letter has a fixed
 number — the capital A, for example, is 65. That number for one
 character is called its **character code**, and the whole numbered list

@@ -12,6 +12,9 @@ Verbindungslinien verdrahtet; Werte (Booleans oder Bytes) fließen pro Frame dur
 
 - `www/` — das statische Frontend (die eigentliche Anwendung).
 - `wiki/` — die Dokumentation als Markdown-Dateistruktur (siehe Abschnitt Wiki).
+- `dev/` — Arbeitsmaterial, das nicht ausgeliefert wird: Schaltungen im Speicherformat, die
+  hinter einem Bild oder einer Doku-Stelle stehen und für eine Neuauflage wieder ladbar sein
+  müssen (`welcome-preview-circuit.json` ist die Schaltung auf `www/gfx/welcome-preview.png`).
 - `server/` — schlanker Node-Webserver, der `www/` ausliefert. Zentrale Verteilstelle ist
   `handleRequest` in `server/server.js`: weitere Routen klinken sich dort über ihr Pfad-Präfix
   ein — so machen es die Wiki-Route (`server/wiki.js`, Präfix `/wiki/`) und die Such-Route
@@ -136,8 +139,9 @@ an alle Horcher; ohne Sendungen verklingt das Signal auf 0. Die Stellschrauben (
   Markdown. In der Kopfleiste sitzen ein Zurück-Knopf (`history.back()` — das Wiki-Fenster
   öffnet oft ohne Browser-Menüleiste), die Volltextsuche und die Sprachwahl.
 - Sprachwahl: Das erste Hash-Segment ist die Sprache; Hashes ohne Sprachsegment bekommen die
-  erkannte Sprache vorangestellt (gemerkte Dropdown-Wahl aus localStorage, sonst
-  Browsersprache, Fallback en). `wiki.js` hält das `lang`-Attribut der Seite auf der
+  erkannte Sprache vorangestellt (`detectLanguage` in `www/js/lang.js`, das Wiki und Editor
+  gemeinsam laden: gemerkte Dropdown-Wahl aus localStorage, sonst Browsersprache, Fallback
+  en). `wiki.js` hält das `lang`-Attribut der Seite auf der
   angezeigten Sprache und übersetzt die Wrapper-Texte (`WIKI_STRINGS`); das Dropdown wechselt
   auf denselben Seitenpfad im anderen Sprachbaum — deshalb müssen beide Bäume dieselben
   Datei-Pfade tragen.
@@ -164,6 +168,26 @@ an alle Horcher; ohne Sendungen verklingt das Signal auf 0. Die Stellschrauben (
   sichert ihn am Ende zurück; `updateControls`/`drawControls` nehmen dafür optional einen
   eigenen Control-Satz entgegen. Demos sind nicht editierbar (kein Verschieben, kein Verdrahten).
 
+### Willkommen & Tour
+
+- Beim Laden des Editors erscheint mittig eine Begrüßung (`www/js/welcome.js`): Vorschaubild
+  einer fertigen Schaltung, Knopf für die Tour, Wiki-Link und das Ankreuzfeld „Nicht wieder
+  anzeigen". Ein Klick daneben, auf „Nein, danke" oder auf das × schließt sie; gemerkt wird
+  (localStorage `operatorsv2-welcome-hidden`) allein der Stand des Ankreuzfeldes **beim
+  Schließen** — er lässt sich dort auch wieder aufheben. Der Menüpunkt **👋 Welcome** öffnet
+  die Begrüßung jederzeit erneut.
+- Die Tour lässt dasselbe Fenster nach unten links wandern und führt in elf Schritten durch den
+  Editor; dabei baut der Leser selbst einen Zähler aus Switch, Slider, Clock, Counter8 und
+  Byte-Anzeige. Das Fenster ist ein reines DOM-Overlay, die Seite darunter bleibt voll
+  bedienbar — seine Mausereignisse stoppt es, damit die Zeichenfläche sie nicht ebenfalls
+  auswertet (die p5-Handler horchen am `window`).
+- Alle Texte stehen zweisprachig in `www/js/welcome_texts.js`, beide Sprachen mit gleich vielen
+  Schritten. Der Editor hat bewusst **keine eigene Sprachwahl**: Er folgt über
+  `www/js/lang.js` der Wiki-Sprache und stellt sich per `storage`-Ereignis sofort um, wenn sie
+  im geöffneten Wiki-Fenster gewechselt wird. Seine übrige Oberfläche bleibt englisch.
+- Das Vorschaubild `www/gfx/welcome-preview.png` ist ein Bildschirmfoto des Editors; die darauf
+  laufende Schaltung liegt als `dev/welcome-preview-circuit.json` zum Nachladen bereit.
+
 ### GUI-Schicht
 
 - **www/libs/dat.gui.js ist ein im Projekt gepflegter Fork** von dat.gui 0.7.x — erweitert um
@@ -171,8 +195,8 @@ an alle Horcher; ohne Sendungen verklingt das Signal auf 0. Die Stellschrauben (
   Die vollständige API-Doku steht im Kopfkommentar der Datei; Testseite: `www/dev/dat-gui-test.html`.
 - `DatBlocker` (www/js/properties.js) legt ein unsichtbares Control über jedes dat.GUI-Panel, damit
   die Canvas darunter keine Mausereignisse bekommt.
-- Splitscreen (www/js/splitscreen.js): links die Canvas, rechts das `appgui`-Panel mit der
-  Placeable-Tabelle, dazwischen ein ziehbarer Splitter.
+- Splitscreen (www/js/splitscreen.js): links das `appgui`-Panel mit der Placeable-Tabelle,
+  rechts die Canvas, dazwischen ein ziehbarer Splitter.
 
 ## Stil
 

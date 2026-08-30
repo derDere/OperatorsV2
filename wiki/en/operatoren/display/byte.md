@@ -9,7 +9,7 @@ plain string of zeros and ones, as a short **hex code** made of digits
 and letters (explained in full on
 [Bits and Bytes](../../grundlagen/bits-und-bytes.md)) — and even as a
 character, because every letter has a fixed number; that assignment is
-called **ASCII**. On the panel area to the right of the editor the value
+called **ASCII**. On the panel area to the left of the editor the value
 appears large and can be styled (font, size, colors); which notations are
 shown at once is picked in the Properties with checkboxes.
 

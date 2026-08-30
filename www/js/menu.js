@@ -26,7 +26,8 @@ function _rebuildMenu() {
     "📂 Open File": _loadFile,
     "📤 Export": _exportFile,
     "📥 Import": _importFile,
-    "🌐 Wiki": _gotoWiki
+    "🌐 Wiki": openWikiWindow,
+    "👋 Welcome": showWelcome
   }
 
   let definitions = {}
@@ -77,7 +78,9 @@ function _loadExample(fileName) {
     .catch((err) => alert('Loading the example failed: ' + err.message))
 }
 
-function _gotoWiki() {
+// Oeffnet das Wiki in einem eigenen Fenster ohne Browser-Menueleiste; auch die
+// Willkommens-Meldung (js/welcome.js) verlinkt darauf
+function openWikiWindow() {
   const zielUrl = "/wiki.html"
   const fensterName = "Operator V2 - Wiki"
   const einstellungen = "width=1000,height=1000,menubar=no,toolbar=no,location=no,status=no,scrollbars=yes"

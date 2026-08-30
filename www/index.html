@@ -11,6 +11,7 @@
 	<link rel="stylesheet" type="text/css" href="libs/dat-gui-light-theme.css">
 	<link rel="stylesheet" type="text/css" href="css/style.css">
 	<link rel="stylesheet" type="text/css" href="css/app.css">
+	<link rel="stylesheet" type="text/css" href="css/welcome.css">
 	<meta charset="utf-8" />
 
 </head>
@@ -30,6 +31,35 @@
 			<div id="dialog-info-box-body">sdfgsd fgsdfgsdfgs dfgsdfgdsfg sdfg sdfg ssdfgsdfg sd sdfgsd fsdfg sdfg sdfgsdf gsdfg sdfg dfg sdfg </div>
 		</div>
 	</dialog>
+	<!-- Willkommens-Meldung und Tour (js/welcome.js). Die Texte setzt das Skript
+	     in der Sprache, die auch das Wiki zeigt; Platz und Sichtbarkeit der
+	     Bereiche wechseln zwischen Begruessung und Tour-Schritt. -->
+	<div id="welcomeBackdrop" hidden></div>
+	<div id="welcomeBox" hidden>
+		<button id="welcomeClose" type="button">&times;</button>
+		<div id="welcomePreview">
+			<img id="welcomePreviewImage" src="gfx/welcome-preview.png" width="1360" height="690" alt="">
+		</div>
+		<h2 id="welcomeTitle"></h2>
+		<div id="welcomeText"></div>
+		<div id="welcomeStep" hidden></div>
+		<div id="welcomeIntroActions">
+			<button id="welcomeStart" type="button" class="welcome-button welcome-primary"></button>
+			<button id="welcomeDecline" type="button" class="welcome-button"></button>
+		</div>
+		<div id="welcomeTourActions" hidden>
+			<button id="welcomeBack" type="button" class="welcome-button"></button>
+			<button id="welcomeNext" type="button" class="welcome-button welcome-primary"></button>
+		</div>
+		<div id="welcomeFooter">
+			<label id="welcomeAgain">
+				<input id="welcomeAgainBox" type="checkbox">
+				<span id="welcomeAgainLabel"></span>
+			</label>
+			<a id="welcomeWiki" href="wiki.html"></a>
+		</div>
+	</div>
+	<script src="js/lang.js"></script>
 	<script src="js/splitscreen.js"></script>
 	<script src="js/ws.js"></script>
 	<script src="js/control.js"></script>
@@ -61,6 +91,8 @@
 	<script src="js/operators/file.js"></script>
 	<script src="js/gui.js"></script>
 	<script src="js/menu.js"></script>
+	<script src="js/welcome_texts.js"></script>
+	<script src="js/welcome.js"></script>
 	<script src="js/rect_selection.js"></script>
 	<script src="js/sketch.js"></script>
 </body>

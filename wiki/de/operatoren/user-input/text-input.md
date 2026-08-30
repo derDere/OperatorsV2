@@ -3,7 +3,7 @@
 [Operator-Lexikon](../index.md) · Kategorie: **User Input**
 
 Text Input ist die **Tastatur** der Schaltung: Auf der Panelfläche
-rechts im Editor gehört zu ihm ein echtes Eingabefeld. Was du dort
+links im Editor gehört zu ihm ein echtes Eingabefeld. Was du dort
 tippst, wird sofort in Zahlen übersetzt: Jedem Buchstaben ist eine feste
 Nummer zugeordnet, das große A ist zum Beispiel die 65. Diese Nummer
 nennt man den **Zeichencode** eines Zeichens, die ganze Liste dahinter

@@ -5,7 +5,7 @@
 Der Slider ist der **Schieberegler** für Zahlen — wie der
 Lautstärkeregler einer Stereoanlage, den man hin- und herschiebt. Er
 liefert einen von Hand einstellbaren Wert von 0 bis 255. Bedient wird er
-im Editor über den echten Schieberegler auf der Panelfläche rechts; der
+im Editor über den echten Schieberegler auf der Panelfläche links; der
 Baustein auf der Zeichenfläche zeigt die aktuelle Stellung an.
 
 ## Anschlüsse

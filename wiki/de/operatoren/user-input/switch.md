@@ -7,7 +7,7 @@ an, der nächste wieder aus. Er ist die einfachste Art, von Hand ein
 an/aus-Signal zu erzeugen.
 
 Der Switch lebt doppelt: als klickbarer Baustein auf der Zeichenfläche
-**und** als richtiger Kippschalter auf der Panelfläche rechts im Editor
+**und** als richtiger Kippschalter auf der Panelfläche links im Editor
 (Position dort über `col`/`row` in den Properties — siehe
 [Steuerung](../../grundlagen/steuerung.md)).
 

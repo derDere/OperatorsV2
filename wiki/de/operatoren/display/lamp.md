@@ -3,7 +3,7 @@
 [Operator-Lexikon](../index.md) · Kategorie: **Display**
 
 Die Lamp ist die **Glühbirne** der Schaltung: Sie leuchtet, solange ihr
-Eingang an ist. Auf der Panelfläche rechts im Editor erscheint sie
+Eingang an ist. Auf der Panelfläche links im Editor erscheint sie
 zusätzlich als Leuchte mit Schein; die Farbe stellst du in den Properties
 ein — dem Einstellungs-Fenster, das sich öffnet, wenn du den Baustein
 anklickst.

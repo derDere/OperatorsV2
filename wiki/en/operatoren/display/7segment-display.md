@@ -10,7 +10,7 @@ lights up exactly where you tell it to. Which segments must light up for
 which digit is worked out by the
 [4bit to 7 Segment decoder](../converter/4bit-zu-7segment.md).
 
-On the panel area to the right of the editor the display appears large, in
+On the panel area to the left of the editor the display appears large, in
 retro style.
 
 ## Pins

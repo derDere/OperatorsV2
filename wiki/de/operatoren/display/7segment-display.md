@@ -10,7 +10,7 @@ selbst nichts aus, sie leuchtet genau dort, wo du es ihr sagst. Welche
 Segmente für welche Ziffer leuchten müssen, rechnet der
 [4bit to 7 Segment decoder](../converter/4bit-zu-7segment.md) aus.
 
-Auf der Panelfläche rechts im Editor erscheint die Anzeige groß im
+Auf der Panelfläche links im Editor erscheint die Anzeige groß im
 Retro-Look.
 
 ## Anschlüsse

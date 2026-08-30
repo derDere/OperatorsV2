@@ -76,14 +76,14 @@ top right corner of a block shows whose settings are currently displayed.
 
 Blocks with a panel control (switches, lamps, displays …) additionally have
 the fields `col`, `row`, `colSpan` and `rowSpan`: `col` is the column,
-`row` the row — they determine in which field of the right panel area the
+`row` the row — they determine in which field of the left panel area the
 control appears. With `colSpan` and `rowSpan` it may grow several fields
 wide or tall.
 
-## The panel area on the right
+## The panel area on the left
 
 Some blocks live twice: as a box on the canvas **and** as a control on the
-panel area to the right — that is where you click the real switch, watch the
+panel area to the left — that is where you click the real switch, watch the
 real lamp or read the display. The panel area is laid out like a table;
 position and size of each control are set via the Properties. The divider
 between canvas and panel area can be dragged with the mouse.

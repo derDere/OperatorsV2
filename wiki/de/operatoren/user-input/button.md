@@ -15,7 +15,7 @@ Einschaltens warten — diesen Moment nennt man eine **steigende Flanke**
 Eingänge heißen oft `T`, kurz für **Trigger** (Auslöser).
 
 Wie alle Eingabe-Bausteine erscheint der Button im Editor zusätzlich als
-echte Schaltfläche auf der Panelfläche rechts; die Aufschrift lässt sich
+echte Schaltfläche auf der Panelfläche links; die Aufschrift lässt sich
 in den Properties ändern.
 
 ## Anschlüsse

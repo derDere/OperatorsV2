@@ -1,0 +1,197 @@
+/* Willkommens-Meldung und Tour-Hinweise (js/welcome.js).
+
+   Das Fenster sitzt immer per left/bottom in Fensterkoordinaten — beide Werte
+   setzt das Skript. Dadurch ist der Weg von der Bildmitte (Begruessung) nach
+   unten links (Tour) eine weiche Bewegung, und in der Tour bleibt die
+   Unterkante stehen, waehrend die Schritte unterschiedlich hoch werden. */
+
+#welcomeBackdrop {
+	position: fixed;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	z-index: 1000000;
+	background: #00000030;
+	backdrop-filter: blur(1px);
+	-webkit-backdrop-filter: blur(1px);
+}
+
+#welcomeBox {
+	position: fixed;
+	z-index: 1000001;
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	max-height: calc(100vh - 32px);
+	padding: 20px;
+	background: #fff;
+	border: 1px solid #999;
+	border-radius: 10px;
+	box-shadow: 0 4px 24px #00000038;
+	font-family: Arial, Helvetica, sans-serif;
+	color: #333;
+	transition: left 0.35s ease, bottom 0.35s ease;
+}
+
+/* Die Flex-Anzeigen dieser Datei wuerden das hidden-Attribut sonst uebergehen */
+#welcomeBox[hidden],
+#welcomeBackdrop[hidden],
+#welcomeBox [hidden] {
+	display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	#welcomeBox {
+		transition: none;
+	}
+}
+
+#welcomeClose {
+	position: absolute;
+	top: 6px;
+	right: 8px;
+	width: 24px;
+	height: 24px;
+	padding: 0;
+	line-height: 20px;
+	font-size: 18px;
+	color: #888;
+	background: transparent;
+	border: 0 none;
+	border-radius: 4px;
+	cursor: pointer;
+}
+
+#welcomeClose:hover {
+	color: #222;
+	background: #eee;
+}
+
+/* In einem niedrigen Fenster gibt zuerst das Bild nach: Es wird beschnitten
+   statt verzerrt, danach bekommt der Text seinen eigenen Rollbereich. */
+#welcomePreview {
+	flex: 0 1 auto;
+	min-height: 0;
+	margin: 0 0 16px 0;
+	line-height: 0;
+	overflow: hidden;
+}
+
+#welcomePreview img {
+	display: block;
+	width: 100%;
+	height: auto;
+	max-height: 38vh;
+	object-fit: cover;
+	object-position: center top;
+	border: 1px solid #ddd;
+	border-radius: 6px;
+}
+
+#welcomeTitle {
+	flex: 0 0 auto;
+	margin: 0 24px 10px 0;
+	font-size: 17px;
+	font-weight: bold;
+	color: #222;
+}
+
+#welcomeText {
+	flex: 1 1 auto;
+	min-height: 0;
+	overflow: auto;
+	font-size: 13px;
+	line-height: 1.55;
+}
+
+#welcomeText code {
+	padding: 1px 5px;
+	font-family: 'Courier New', Courier, monospace;
+	font-size: 12px;
+	background: #eef4ff;
+	border: 1px solid #d4e2f7;
+	border-radius: 3px;
+}
+
+#welcomeStep {
+	flex: 0 0 auto;
+	margin: 14px 0 0 0;
+	font-size: 11px;
+	color: #888;
+}
+
+#welcomeIntroActions,
+#welcomeTourActions {
+	flex: 0 0 auto;
+	display: flex;
+	gap: 8px;
+	margin: 16px 0 0 0;
+}
+
+#welcomeTourActions {
+	justify-content: space-between;
+}
+
+#welcomeBox button.welcome-button {
+	padding: 7px 14px;
+	font-family: inherit;
+	font-size: 13px;
+	color: #333;
+	background: #f4f4f4;
+	border: 1px solid #aaa;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+#welcomeBox button.welcome-button:hover {
+	background: #fff;
+}
+
+#welcomeBox button.welcome-button:disabled {
+	color: #aaa;
+	background: #f4f4f4;
+	border-color: #ddd;
+	cursor: default;
+}
+
+#welcomeBox button.welcome-primary {
+	color: #fff;
+	background: #0080ff;
+	border-color: #0069d1;
+}
+
+#welcomeBox button.welcome-primary:hover {
+	background: #2b96ff;
+}
+
+#welcomeFooter {
+	flex: 0 0 auto;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	margin: 16px 0 0 0;
+	padding: 12px 0 0 0;
+	border-top: 1px solid #eee;
+	font-size: 12px;
+}
+
+#welcomeAgain {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	color: #666;
+	cursor: pointer;
+	user-select: none;
+}
+
+#welcomeWiki {
+	color: #0069d1;
+	text-decoration: none;
+	white-space: nowrap;
+}
+
+#welcomeWiki:hover {
+	text-decoration: underline;
+}

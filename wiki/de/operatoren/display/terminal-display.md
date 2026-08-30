@@ -10,7 +10,7 @@ Zahlen, denn jedem Buchstaben ist eine feste Zahl zugeordnet; diese
 Zuordnung heißt **ASCII** (siehe
 [Bits und Bytes](../../grundlagen/bits-und-bytes.md)). Das Terminal
 schreibt den passenden Buchstaben an die Cursor-Stelle und rückt weiter.
-Der eigentliche Bildschirm erscheint auf der Panelfläche rechts im
+Der eigentliche Bildschirm erscheint auf der Panelfläche links im
 Editor im Stil einer Klapp-Anzeige, wie man sie von Bahnhofstafeln
 kennt: Neue Zeichen blättern sichtbar um. Breite und Höhe des Rasters
 stellst du in den Properties ein.

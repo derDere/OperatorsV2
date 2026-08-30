@@ -8,17 +8,14 @@
 // Baum (wiki/de/**, wiki/en/**) mit identischen Datei-Pfaden — das erste
 // Segment des Hashs wählt den Baum. Hash-Links ohne Sprachsegment bekommen
 // die erkannte Sprache vorangestellt: gespeicherte Auswahl aus dem
-// Dropdown der Kopfleiste, sonst die Browsersprache. Das lang-Attribut der
-// Seite folgt immer der angezeigten Seite — daran orientiert sich auch die
-// Suche (wiki_search.js wählt darüber den Pagefind-Sprachindex).
+// Dropdown der Kopfleiste, sonst die Browsersprache (js/lang.js). Das
+// lang-Attribut der Seite folgt immer der angezeigten Seite — daran
+// orientiert sich auch die Suche (wiki_search.js wählt darüber den
+// Pagefind-Sprachindex).
 //
 // Nach jedem Laden werden die Demo-Container (.operator-demo, erzeugt vom
 // Server aus operatorsv2-Codeblöcken) mit OperatorDemo-Instanzen belebt und
 // beim Seitenwechsel wieder abgeräumt.
-
-const WIKI_LANGUAGES = ['de', 'en']
-const WIKI_LANGUAGE_FALLBACK = 'en'
-const WIKI_LANGUAGE_STORAGE_KEY = 'operatorsv2-wiki-lang'
 
 // Oberflächentexte des Wrappers je Sprache
 const WIKI_STRINGS = {
@@ -46,25 +43,6 @@ var wikiLangOptionsEle = null
 var activeDemos = []
 var wikiLoadCounter = 0
 
-// Erkennt die gewünschte Sprache: gemerkte Dropdown-Wahl vor Browsersprache
-function detectLanguage() {
-	let stored = null
-	try {
-		stored = localStorage.getItem(WIKI_LANGUAGE_STORAGE_KEY)
-	}
-	catch { }
-	if (WIKI_LANGUAGES.includes(stored)) {
-		return stored
-	}
-	for (const nav of (navigator.languages || [navigator.language || ''])) {
-		let short = String(nav).toLowerCase().split('-')[0]
-		if (WIKI_LANGUAGES.includes(short)) {
-			return short
-		}
-	}
-	return WIKI_LANGUAGE_FALLBACK
-}
-
 // Seitenpfad aus dem Hash, immer mit Sprachsegment: "de/operatoren/index".
 // Sprachlose Hashes (leer oder Links aus alten Lesezeichen) bekommen die
 // erkannte Sprache vorangestellt.
@@ -87,10 +65,7 @@ function pageLanguage(page) {
 
 // Wechselt auf denselben Seitenpfad im anderen Sprachbaum und merkt sich die Wahl
 function switchLanguage(newLang) {
-	try {
-		localStorage.setItem(WIKI_LANGUAGE_STORAGE_KEY, newLang)
-	}
-	catch { }
+	storeLanguage(newLang)
 	let rest = currentHashPage().split('/').slice(1).join('/')
 	location.hash = '#' + newLang + '/' + rest
 }

@@ -5,7 +5,7 @@
 The Slider is the **slide control** for numbers — like the volume slider
 on a stereo that you push back and forth. It delivers a hand-adjustable
 value from 0 to 255. In the editor it is operated via the real slider on
-the panel area to the right; the block on the canvas shows the current
+the panel area to the left; the block on the canvas shows the current
 position.
 
 ## Pins

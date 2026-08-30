@@ -77,14 +77,14 @@ wessen Einstellungen gerade angezeigt werden.
 
 Bausteine mit Bedienelement (Schalter, Lampen, Anzeigen …) haben zusätzlich
 die Felder `col`, `row`, `colSpan` und `rowSpan`: `col` ist die Spalte,
-`row` die Zeile — sie bestimmen, in welchem Feld der rechten Panelfläche das
+`row` die Zeile — sie bestimmen, in welchem Feld der linken Panelfläche das
 Element erscheint. Mit `colSpan` und `rowSpan` darf es mehrere Felder breit
 oder hoch werden.
 
-## Die Panelfläche rechts
+## Die Panelfläche links
 
 Manche Bausteine leben doppelt: als Kästchen auf der Zeichenfläche **und**
-als Bedienelement auf der Panelfläche rechts — dort klickt man den echten
+als Bedienelement auf der Panelfläche links — dort klickt man den echten
 Schalter, sieht die echte Lampe oder die Anzeige. Die Panelfläche ist wie
 eine Tabelle aufgebaut; Position und Größe je Element stellst du über die
 Properties ein. Den Trennbalken zwischen Zeichen- und Panelfläche kannst du

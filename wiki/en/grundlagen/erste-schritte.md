@@ -15,9 +15,9 @@ names to look for in the editor.
 The editor is the building page of OperatorsV2 — the start page of the
 application (the address without `/wiki.html` at the end). There you see:
 
-- on the left a large **canvas** with a grid pattern — this is where the
+- on the right a large **canvas** with a grid pattern — this is where the
   circuit is built,
-- on the right a bright **panel area** — everything for operating and
+- on the left a bright **panel area** — everything for operating and
   reading appears here: switches, lamps, displays,
 - small collapsible windows at the edges: **🏠 Menu** (saving & loading) and
   **🛠️ Properties** — the settings of the block you clicked show up there.
@@ -26,8 +26,9 @@ application (the address without `/wiki.html` at the end). There you see:
 
 **Double-click** — that is, click twice quickly in a row — on an empty spot
 of the canvas. A selection window opens with all building blocks, sorted
-into groups; these groups are called **categories**. You can type at the top
-to search. Click **Switch** (category *User Input* — that is where the
+into groups; these groups are called **categories**. The search field sits at
+the bottom of the window and is active right away, so you can start typing
+immediately. Click **Switch** (category *User Input* — that is where the
 blocks you operate yourself live). The switch then sits on the canvas.
 
 ## Step 2: Place a lamp

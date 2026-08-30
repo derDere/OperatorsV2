@@ -9,7 +9,7 @@ line there” (`D`). Stroke by stroke, a drawing emerges. `G`, `D` and `C`
 each trigger on a **rising edge**: the moment the respective input
 switches from off to on (more on that on
 [Edges and Clock](../../grundlagen/flanken-und-takt.md)). The actual
-drawing surface appears on the panel area to the right of the editor; its
+drawing surface appears on the panel area to the left of the editor; its
 display size is set in the Properties.
 
 ## Pins

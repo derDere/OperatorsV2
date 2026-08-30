@@ -14,7 +14,7 @@ of switching on — that moment is called a **rising edge** (see
 often named `T`, short for **trigger**.
 
 Like all input blocks, the Button additionally appears as a real push
-button on the panel area to the right of the editor; its caption can be
+button on the panel area to the left of the editor; its caption can be
 changed in the Properties.
 
 ## Pins

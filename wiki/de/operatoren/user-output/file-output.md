@@ -4,7 +4,7 @@
 
 File Output ist der **Datei-Schreiber**: Er sammelt Byte für Byte ein,
 was die Schaltung ihm übergibt — und bietet das Gesammelte auf der
-Panelfläche rechts im Editor als **Download-Link** an. Jedes Mal, wenn
+Panelfläche links im Editor als **Download-Link** an. Jedes Mal, wenn
 `T` von aus auf an wechselt — diesen Moment nennt man eine **steigende
 Flanke** (siehe
 [Flanken und Takt](../../grundlagen/flanken-und-takt.md)) —, hängt der

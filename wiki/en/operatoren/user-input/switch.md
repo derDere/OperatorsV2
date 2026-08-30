@@ -7,7 +7,7 @@ the next one off again. It is the simplest way to produce an on/off signal
 by hand.
 
 The Switch lives twice: as a clickable block on the canvas **and** as a
-proper toggle on the panel area to the right of the editor (positioned
+proper toggle on the panel area to the left of the editor (positioned
 there via `col`/`row` in the Properties — see
 [Editor Controls](../../grundlagen/steuerung.md)).
 

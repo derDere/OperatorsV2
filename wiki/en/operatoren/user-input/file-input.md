@@ -3,7 +3,7 @@
 [Operator Reference](../index.md) · Category: **User Input**
 
 File Input opens the circuit's door to **real files**: On the panel area
-to the right of the editor it comes with a “choose file” field. The
+to the left of the editor it comes with a “choose file” field. The
 uploaded file then sits ready as a long chain of bytes — because in the
 end, every file is nothing but a sequence of bytes (see
 [Bits and Bytes](../../grundlagen/bits-und-bytes.md)). Every time `T`
