@@ -33,22 +33,19 @@ class DatBlocker extends Control {
 		let canvasBounds = p5ctx.canvas.getBoundingClientRect()
 		let guiBounds = this.dgui.bounds
 
-		this.width = guiBounds.width + 2
-		this.height = guiBounds.height + 2
+		// Das Panel liegt in Bildpunkten, der Blocker ist ein Control in
+		// Weltkoordinaten: Groesse und Mitte werden daher durch den Zoom geteilt
+		let boxWidth = guiBounds.width + 2
+		let boxHeight = guiBounds.height + 2
 
-		let x = p5ctx.floor(-(p5ctx.width / 2) + (this.width / 2))
-		let y = p5ctx.floor(-(p5ctx.height / 2) + (this.height / 2))
+		this.width = boxWidth / zoomScale
+		this.height = boxHeight / zoomScale
 
-		x -= dragOffset.x
-		y -= dragOffset.y
+		let x = p5ctx.floor((guiBounds.left - canvasBounds.left) + (boxWidth / 2)) - 0.5
+		let y = p5ctx.floor((guiBounds.top - canvasBounds.top) + (boxHeight / 2))
 
-		x -= 0.5
-
-		x += (guiBounds.left - canvasBounds.left)
-		y += (guiBounds.top - canvasBounds.top)
-
-		this.pos.x = x
-		this.pos.y = y
+		this.pos.x = (x - (p5ctx.width / 2) - dragOffset.x) / zoomScale
+		this.pos.y = (y - (p5ctx.height / 2) - dragOffset.y) / zoomScale
 	}
 }
 

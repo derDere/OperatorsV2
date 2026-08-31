@@ -54,7 +54,7 @@ function drawSelection(p5ctx) {
 
   p5ctx.push()
   p5ctx.stroke('#0080ff')
-  p5ctx.strokeWeight(2)
+  p5ctx.strokeWeight(2 / zoomScale)
 
   p5ctx.fill('#0080ff40')
 

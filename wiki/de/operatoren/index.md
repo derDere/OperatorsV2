@@ -104,6 +104,7 @@ Zeichenfläche).
 
 | Baustein | Kurz gesagt |
 | --- | --- |
+| [Sound](user-output/sound.md) | Lautsprecher: spielt einen Ton, dessen Höhe, Länge und Klangfarbe die Schaltung bestimmt |
 | [File Output](user-output/file-output.md) | Sammelt Bytes und bietet sie als Datei zum Speichern an |
 
 ## Network — über den Server hinweg

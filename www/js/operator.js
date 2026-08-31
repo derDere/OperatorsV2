@@ -386,6 +386,7 @@ function allOperatorsToJson() {
 
 	let data = {
 		doff: [dragOffset.x, dragOffset.y],
+		zoom: zoomScale,
 		opAll: all,
 		conAll: lines
 	}
@@ -401,8 +402,11 @@ function loadJsonToAll(jj) {
 	let data = JSON.parse(jj)
 
 	let [dragOffX, dragOffY] = data.doff
-	dragOffset.x = dragOffX
-	dragOffset.y = dragOffY
+	dragOffset.x = Math.round(dragOffX)
+	dragOffset.y = Math.round(dragOffY)
+	// Speicherdateien ohne Zoomstand zeigen die Schaltung im Massstab 1:1;
+	// ein gespeicherter Stand rastet wie beim Zoomen auf ganze Rasterzellen ein
+	zoomScale = ('zoom' in data) ? snapZoom(data.zoom) : 1
 
 	for (const opc of data.opAll) {
 		let entryName = opc[CONSTRUCTOR_KEY]
@@ -457,6 +461,7 @@ function operatorsToJsonData(ops) {
 
 	return {
 		doff: [dragOffset.x, dragOffset.y],
+		zoom: zoomScale,
 		opAll: all,
 		conAll: lines
 	}
@@ -527,9 +532,11 @@ function addJsonDataCentered(data, extraOffset = 0) {
 		maxY = Math.max(maxY, opc._y)
 	}
 
-	// die Bildmitte liegt in Weltkoordinaten bei -dragOffset
-	let offsetX = Math.round((-dragOffset.x - ((minX + maxX) / 2)) / 20) * 20 + extraOffset
-	let offsetY = Math.round((-dragOffset.y - ((minY + maxY) / 2)) / 20) * 20 + extraOffset
+	// die Bildmitte liegt in Weltkoordinaten bei -dragOffset / Zoom
+	let centerX = -dragOffset.x / zoomScale
+	let centerY = -dragOffset.y / zoomScale
+	let offsetX = Math.round((centerX - ((minX + maxX) / 2)) / 20) * 20 + extraOffset
+	let offsetY = Math.round((centerY - ((minY + maxY) / 2)) / 20) * 20 + extraOffset
 
 	return addJsonDataToAll(data, offsetX, offsetY)
 }

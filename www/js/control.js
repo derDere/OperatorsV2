@@ -252,8 +252,11 @@ class Control {
 	}
 
 	isInFrame(p5ctx) {
+		// Weltkoordinaten in Bildpunkte umrechnen: erst der Zoom, dann die
+		// Bildmitte und die Verschiebung der Flaeche
 		let ap = this.actualPos
 
+		ap = ap.mult(zoomScale)
 		ap = ap.add(p5ctx.width / 2, p5ctx.height / 2)
 		ap = ap.add(dragOffset)
 
@@ -261,11 +264,11 @@ class Control {
 		let yOff = 0
 
 		if (this.hasRectBounds) {
-			xOff = (this.width + this.borderWeight) / 2
-			yOff = (this.height + this.borderWeight) / 2
+			xOff = ((this.width + this.borderWeight) / 2) * zoomScale
+			yOff = ((this.height + this.borderWeight) / 2) * zoomScale
 		} else {
-			xOff = (this.radius + this.borderWeight) / 2
-			yOff = (this.radius + this.borderWeight) / 2
+			xOff = ((this.radius + this.borderWeight) / 2) * zoomScale
+			yOff = ((this.radius + this.borderWeight) / 2) * zoomScale
 		}
 
 		if (ap.x < -xOff) return false

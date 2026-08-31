@@ -23,9 +23,21 @@ find the same categories in the [Operator Reference](../operatoren/index.md).
 | Action | How |
 | --- | --- |
 | Pan the canvas | Hold the **right mouse button** and drag |
+| Move closer and away again | Turn the **mouse wheel** — zooming always goes towards the mouse pointer |
+| Reset the scale | **Ctrl + 0** brings back normal size; the visible section stays where it is |
 | Read the position | Two numbers at the bottom center show where you are — such location numbers are called coordinates |
 | Find the zero point | Two thin gray lines cross exactly where both location numbers are 0 |
 | Bookmark places | [Anchor](../operatoren/organisation/anchor.md) blocks appear in the 📘 bookmarks window and jump there on click |
+
+How large everything is drawn right now is shown in the top left as **Zoom**
+in percent: 100% is normal size, 400% four times as large, 12.5% an eighth —
+and those two values are as far as it goes.
+
+The grid in the background does not simply grow along, it **changes its
+spacing** so its lines never merge into noise: at normal size a line sits
+every 20 steps, further out every 40 or 80, up close every 10. Blocks always
+snap to 20 steps — on the coarser grid every other block therefore sits
+between two lines.
 
 ## Moving and selecting blocks
 

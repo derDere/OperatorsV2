@@ -137,6 +137,7 @@ function _newFile() {
   updateProps(null)
   dragOffset.x = 0
   dragOffset.y = 0
+  zoomScale = 1
 }
 
 function _saveFile() {

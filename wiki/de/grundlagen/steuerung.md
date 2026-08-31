@@ -24,9 +24,22 @@ wieder.
 | Aktion | So geht's |
 | --- | --- |
 | Fläche verschieben | **Rechte Maustaste** gedrückt halten und ziehen |
+| Näher heran und wieder weg | Am **Mausrad** drehen — vergrößert wird immer auf den Mauszeiger zu |
+| Maßstab zurücksetzen | **Strg + 0** stellt wieder die Normalgröße her; der Bildausschnitt bleibt, wo er ist |
 | Position ablesen | Unten in der Mitte zeigen zwei Zahlen, wo du gerade bist — solche Orts-Zahlen nennt man Koordinaten |
 | Den Nullpunkt finden | Zwei dünne graue Linien kreuzen sich dort, wo beide Orts-Zahlen 0 sind |
 | Orte merken | [Anchor](../operatoren/organisation/anchor.md)-Bausteine erscheinen im 📘-Bookmarks-Fenster und springen per Klick dorthin |
+
+Wie groß gerade alles dargestellt wird, steht oben links als **Zoom** in
+Prozent: 100 % ist die Normalgröße, 400 % das Vierfache, 12,5 % ein Achtel
+— weiter als bis zu diesen beiden Werten geht es nicht.
+
+Das Raster im Hintergrund wächst nicht einfach mit, sondern **wechselt
+seinen Abstand**, damit die Linien nie zu Rauschen verschmelzen: Bei
+Normalgröße liegt eine Linie alle 20 Schritte, weiter weg alle 40 oder 80,
+ganz nah heran alle 10. Eingerastet werden die Bausteine dabei immer auf 20
+Schritte — beim gröberen Raster sitzt also jeder zweite Baustein zwischen
+zwei Linien.
 
 ## Bausteine bewegen und auswählen
 

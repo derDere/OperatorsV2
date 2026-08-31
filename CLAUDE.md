@@ -49,6 +49,49 @@ die Draw-Phase auf. Alles wird jeden Frame komplett neu gezeichnet (Immediate Mo
 Weltkoordinaten haben ihren Ursprung in der Canvas-Mitte plus `dragOffset` (Rechtsklick-Drag
 verschiebt die Fläche); das Global `mousePos` ist bereits in Weltkoordinaten.
 
+### Ansicht: Verschieben und Zoomen (www/js/sketch.js)
+
+Die Ansicht steckt in zwei Globals: `dragOffset` (in **Bildpunkten**, deshalb bleibt
+Rechtsklick-Ziehen 1:1) und `zoomScale`. `setCanvasPosition` setzt sie in dieser Reihenfolge um:
+`translate(Mitte)` → `translate(dragOffset)` → `scale(zoomScale)`. Welt → Bildschirm ist damit
+`welt * zoomScale + mitte + dragOffset`, Bildschirm → Welt die Umkehrung — nach dieser Formel
+rechnen `mousePos`, `Control.isInFrame`, der `DatBlocker` (www/js/properties.js), die
+Ausschnitts- und Trefferprüfung der Linien (`isBoxInView` / `hitTolerance` in
+`lines/connection_line.js`, von allen Linienarten benutzt), `Anchor.goto` und das mittige
+Einfügen (`addJsonDataCentered`).
+
+Das Mausrad ruft `zoomAt(screenX, screenY, factor, p5ctx)`: Der Faktor multipliziert den Maßstab
+(gleicher prozentualer Schritt auf jeder Stufe), danach zieht `dragOffset` so nach, dass der
+Weltpunkt unter dem Ankerpunkt stehen bleibt. Die Grenzen und die Schrittweite stehen als
+`ZOOM_MIN` / `ZOOM_MAX` / `ZOOM_STEP` am Dateianfang; Strg+0 ruft dieselbe Funktion mit der
+Bildmitte als Anker. Über den dat.GUI-Panels und bei offenem Bausteindialog bleibt das Rad
+wirkungslos (p5 horcht am `window`, deshalb prüft `mouseWheel` das Ereignisziel).
+
+Faustregel beim Zeichnen: Bausteine und Verbindungen skalieren mit — sie sind Inhalt. Reine
+Hilfslinien (Nullpunkt-Kreuz, Auswahlrechteck, Schnittlinie) bekommen `strokeWeight(x / zoomScale)`
+und bleiben dadurch bildschirm-dünn.
+
+Das Hintergrundraster baut `updateGridBackground` als Inline-SVG (data-URI, `GRID_*`-Konstanten).
+Die Zellweite ist eine der Stufen aus `GRID_STEPS` (10/20/40/80 Welt-Einheiten) — genommen wird die
+feinste, deren Zelle noch mindestens `GRID_MIN_CELL` Bildpunkte misst, sodass das Raster auf jeder
+Zoomstufe lesbar bleibt statt zu verschwinden. Die Linien bleiben einen Bildpunkt dünn, weil die
+SVG-Fläche unskaliert gezeichnet wird; neu gebaut wird das SVG nur bei einer echten Änderung der
+Zellweite. Die Linien liegen auf `GRID_LINE_ORIGIN` (Weltkoordinate im Abstand der Zellweite) —
+dort sitzen auch die Ränder eingerasteter Bausteine.
+
+**`snapZoom` ist Bedingung, nicht Kosmetik:** Der Maßstab rastet so ein, dass eine Rasterzelle
+genau eine ganze Zahl von Bildpunkten breit ist. Der Browser legt die Kachelweite eines
+Hintergrundbildes in Bruchteilen eines Bildpunktes ab und rundet dabei; bei krummer Weite läuft
+dieser Rest über die Kacheln auf — weit weg von der Bildmitte liegt das Raster dann sichtbar neben
+den Bausteinen, und benachbarte Kacheln runden auf dieselbe Pixelspalte, wodurch einzelne Linien
+ausfallen. Aus demselben Grund hält `zoomAt` `dragOffset` auf ganzen Bildpunkten (der Ankerpunkt
+wandert dafür um höchstens einen halben), und `setCanvasPosition` holt die Kachelposition per
+Modulo in die Nähe des Bildrands, statt sie beim weit entfernten Nullpunkt zu lassen.
+
+Der Zoomstand steht neben `doff` in der Speicherdatei (Schlüssel `zoom`); Dateien ohne den Wert
+laden im Maßstab 1:1, ein gespeicherter Wert läuft beim Laden durch `snapZoom`. Die Wiki-Demos
+(www/js/op_demo.js) halten `zoomScale` fest auf 1.
+
 ### Klassenhierarchie
 
 - **`Control`** (www/js/control.js) — Basis aller Canvas-Elemente: `id` (UUID), `pos`,
@@ -119,6 +162,32 @@ Der Kanal wird unter einem frei wählbaren Namen eingestellt: Dieser Name steht 
 Leitung geht nur seine Kennung — `channelGuid()` gibt eine als GUID geschriebene Eingabe
 unverändert weiter und bildet jede andere per `generateStringGuid()` stabil auf eine GUID ab.
 Aus derselben Kennung zeichnet `channelDisplay()` den 4×4-Farbabdruck auf dem Baustein.
+
+### Klang (Sound-Operator)
+
+Der Operator „Sound" (www/js/operators/sound.js) piept; die Klangtechnik dahinter steckt in
+www/js/audio.js (reines Web Audio, **nicht** p5.sound). Der Aufbau entspricht dem Paar
+`ws.js` / `network.js`: eine Klasse `BeepVoice` (ein dauerhaft laufender Oszillator plus eigener
+Lautstärkeregler) und darüber der Operator, der Bytes in Klang übersetzt. Alle Stimmen hängen an
+einer gemeinsamen Summenschiene mit Kompressor — gleichzeitige Töne übersteuern einander dadurch
+nicht. Je Sound-Baustein gibt es genau eine Stimme; mehrstimmig wird es über mehrere Bausteine.
+
+- **Alles ist Eingang:** `N` Note, `V` Lautstärke, `L` Länge (× 10 ms), `W` Wellenform, `T`
+  Trigger, `P` Dauerton, `M` Stumm. Die Ausgänge `O`/`N`/`V`/`W` melden, was gerade klingt.
+- **Die Tonhöhe ist eine Notennummer** (MIDI-Zählung, `noteToFrequency`), keine Frequenz: Gleiche
+  Schritte ergeben gleiche musikalische Abstände, was eine gerade Hertz-Skala nicht leistet und
+  ohne das keine Melodie baubar wäre.
+- **Ein Eingang ohne Leitung meldet `false`** und benutzt dann seinen Standardwert
+  (`SOUND_DEFAULT_*`); zusammen ergeben sie den Piepton eines Rechners ohne weitere Angaben.
+- **Trigger-Ton gegen Dauerton:** Bei einer steigenden Flanke an `T` werden Note, Lautstärke und
+  Wellenform festgehalten (ein weiterlaufender Stapel verbiegt den Ton also nicht mitten im
+  Klingen), der `P`-Dauerton folgt den Eingängen dagegen live. Die Länge zählt echte Zeit
+  (`performance.now()`), weil die Fläche mit der Bildwiederholrate läuft und ein Tick kein Zeitmaß
+  ist.
+- **Lazy und aufräumbar:** Oszillator und AudioContext entstehen erst beim ersten Ton, `kill()`
+  blendet aus und trennt die Knoten. Beides ist Bedingung, weil der Bausteindialog jede
+  Operator-Klasse zur Vorschau einmal anlegt und sofort wieder wegwirft — und weil Browser Klang
+  erst nach einer Eingabe des Benutzers zulassen (`unlockAudio`).
 
 ### Wiki (Doku mit Live-Demos)
 

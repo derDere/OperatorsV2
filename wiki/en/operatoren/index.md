@@ -103,6 +103,7 @@ into in the editor's selection window (double-click on the canvas).
 
 | Block | In short |
 | --- | --- |
+| [Sound](user-output/sound.md) | Loudspeaker: plays a tone whose pitch, length and timbre the circuit decides |
 | [File Output](user-output/file-output.md) | Collects bytes and offers them as a file to save |
 
 ## Network — across the server

@@ -33,7 +33,8 @@ body {
 	user-select: none;
 	-webkit-user-select: none;
 
-	background: url(/gfx/grid-bg.png);
+	/* Das Hintergrundraster setzt sketch.js als Inline-SVG, damit die
+	   Zellgroesse dem Zoom folgen kann (updateGridBackground). */
 
 	image-rendering: -moz-crisp-edges;
 	image-rendering: -webkit-crisp-edges;

@@ -139,7 +139,7 @@ class Bezier extends ConnectionLine {
 			return false
 		}
 
-		const tolerance = this.mouseOverWeight / 2
+		const tolerance = this.hitTolerance
 
 		// Grobe Vorprüfung über das umschließende Rechteck der vier
 		// Kurvenpunkte — die Kurve liegt vollständig in deren konvexer Hülle.
@@ -201,16 +201,7 @@ class Bezier extends ConnectionLine {
 			if (point.y > bottom) bottom = point.y
 		}
 
-		const viewLeft = -(p5ctx.width / 2) - dragOffset.x - padding
-		const viewTop = -(p5ctx.height / 2) - dragOffset.y - padding
-		const viewRight = viewLeft + p5ctx.width + (2 * padding)
-		const viewBottom = viewTop + p5ctx.height + (2 * padding)
-
-		if (right < viewLeft) return false
-		if (left > viewRight) return false
-		if (bottom < viewTop) return false
-		if (top > viewBottom) return false
-		return true
+		return this.isBoxInView(left, top, right, bottom, padding, p5ctx)
 	}
 
 	/** Zeichnet die Kurve, bei Maus-über mit Hervorhebung darunter. */

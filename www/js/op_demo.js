@@ -20,6 +20,7 @@ var mainP5 = null // gesetzt von der versteckten Hilfsinstanz unten
 var tooltip = ""
 var mousePos = null
 var dragOffset = null
+var zoomScale = 1 // Demos sind Anschauungsstuecke und werden nicht gezoomt
 var lastOperator = null
 var shiftPressed = false
 var ctrlPressed = false

@@ -45,6 +45,36 @@ class ConnectionLine {
 		return false
 	}
 
+	/**
+	 * Trefferradius um die Linie, in Weltkoordinaten.
+	 *
+	 * Gedacht ist die Toleranz in Bildpunkten. Geteilt durch den Zoom bleibt
+	 * eine Linie dadurch auf jeder Maßstabsstufe gleich gut greifbar — sonst
+	 * wäre sie weit herausgezoomt kaum noch zu treffen.
+	 */
+	get hitTolerance() {
+		return (this.mouseOverWeight / 2) / zoomScale
+	}
+
+	/**
+	 * Berührt das Rechteck (Weltkoordinaten) den sichtbaren Ausschnitt?
+	 *
+	 * @param padding Zuschlag rund um den Ausschnitt, in Bildpunkten.
+	 */
+	isBoxInView(left, top, right, bottom, padding, p5ctx) {
+		const pad = padding / zoomScale
+		const viewLeft = ((-(p5ctx.width / 2) - dragOffset.x) / zoomScale) - pad
+		const viewTop = ((-(p5ctx.height / 2) - dragOffset.y) / zoomScale) - pad
+		const viewRight = viewLeft + (p5ctx.width / zoomScale) + (2 * pad)
+		const viewBottom = viewTop + (p5ctx.height / zoomScale) + (2 * pad)
+
+		if (right < viewLeft) return false
+		if (left > viewRight) return false
+		if (bottom < viewTop) return false
+		if (top > viewBottom) return false
+		return true
+	}
+
 	/** Zeichnet die Linie; die Geometrie liefern die Unterklassen. */
 	draw(tick, p5ctx) {
 	}

@@ -424,7 +424,7 @@ class SimpleBezier extends ConnectionLine {
 		}
 
 		// Grobe Vorprüfung gegen das umschließende Rechteck des Wegs.
-		const tolerance = this.mouseOverWeight / 2
+		const tolerance = this.hitTolerance
 		const box = this._box
 		if (ap.x < (box.left - tolerance)) return false
 		if (ap.x > (box.right + tolerance)) return false
@@ -458,16 +458,7 @@ class SimpleBezier extends ConnectionLine {
 
 	/** Berührt das umschließende Rechteck des Wegs den sichtbaren Ausschnitt? */
 	_isInFrame(box, padding, p5ctx) {
-		const viewLeft = -(p5ctx.width / 2) - dragOffset.x - padding
-		const viewTop = -(p5ctx.height / 2) - dragOffset.y - padding
-		const viewRight = viewLeft + p5ctx.width + (2 * padding)
-		const viewBottom = viewTop + p5ctx.height + (2 * padding)
-
-		if (box.right < viewLeft) return false
-		if (box.left > viewRight) return false
-		if (box.bottom < viewTop) return false
-		if (box.top > viewBottom) return false
-		return true
+		return this.isBoxInView(box.left, box.top, box.right, box.bottom, padding, p5ctx)
 	}
 
 	/** Zeichnet die Linie, bei Maus-über mit Hervorhebung darunter. */

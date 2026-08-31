@@ -198,14 +198,18 @@ const Op_Anchor = register(
       p5ctx.textSize(this.size)
     }
 
+    // Die Verschiebung, die diesen Anchor an den linken unteren Rand der
+    // Ansicht holt. Die Position ist eine Weltkoordinate und wird deshalb
+    // mit dem Zoom multipliziert, die Randabstaende sind Bildpunkte.
     getDragPos() {
-      let x = -(this.pos.x - (this.width / 2))
-      let y = -(this.pos.y + (this.height / 2))
+      let x = -((this.pos.x - (this.width / 2)) * zoomScale)
+      let y = -((this.pos.y + (this.height / 2)) * zoomScale)
 
       x -= (mainP5.width / 2) - 2
       y += (mainP5.height / 2) - 1
 
-      return [x, y]
+      // ganze Bildpunkte, sonst liegt das Raster nach dem Sprung neben den Bausteinen
+      return [Math.round(x), Math.round(y)]
     }
 
     doUpdate(tick, p5ctx) {

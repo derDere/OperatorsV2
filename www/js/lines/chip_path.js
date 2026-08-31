@@ -55,16 +55,7 @@ class ChipPath extends ConnectionLine {
 			if (point.y > bottom) bottom = point.y
 		}
 
-		const viewLeft = -(p5ctx.width / 2) - dragOffset.x - padding
-		const viewTop = -(p5ctx.height / 2) - dragOffset.y - padding
-		const viewRight = viewLeft + p5ctx.width + (2 * padding)
-		const viewBottom = viewTop + p5ctx.height + (2 * padding)
-
-		if (right < viewLeft) return false
-		if (left > viewRight) return false
-		if (bottom < viewTop) return false
-		if (top > viewBottom) return false
-		return true
+		return this.isBoxInView(left, top, right, bottom, padding, p5ctx)
 	}
 
 	/** Liegt der Punkt `ap` (Weltkoordinaten) auf dem Weg? */
@@ -78,8 +69,8 @@ class ChipPath extends ConnectionLine {
 			return false
 		}
 
-		const tolerance = this.mouseOverWeight / 2
-		if (!this.isInFrame(points, tolerance, p5ctx)) {
+		const tolerance = this.hitTolerance
+		if (!this.isInFrame(points, this.mouseOverWeight, p5ctx)) {
 			return false
 		}
 
