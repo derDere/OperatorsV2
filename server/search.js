@@ -74,11 +74,15 @@ async function _collectMarkdownFiles(dir, relPrefix = '') {
 }
 
 /** Baut den Suchindex über alle Wiki-Seiten auf; Fehler lassen den Server weiterlaufen.
- *  Liefert { ok, pages, files, reason } — der Aufrufer kann das melden. */
+ *  Liefert { ok, pages, files, reason, busy } — der Aufrufer kann das melden. */
 async function buildIndex() {
 	if (_building) {
-		// Zwei Aufbauten gleichzeitig würden sich nur behindern.
-		return { ok: false, reason: 'Ein Indexaufbau läuft bereits' }
+		// Zwei Aufbauten gleichzeitig würden sich nur behindern. busy trennt
+		// diesen Fall vom echten Fehler: der Aufrufer soll es später erneut
+		// versuchen, statt Alarm zu schlagen. Tritt regelmäßig auf, wenn kurz
+		// nach dem Serverstart neu indexiert wird — der Startaufbau läuft dann
+		// noch.
+		return { ok: false, busy: true, reason: 'Ein Indexaufbau läuft bereits' }
 	}
 	_building = true
 	try {
@@ -161,6 +165,13 @@ async function _handleReindex(req, res) {
 	// Synchron antworten: der Aufrufer (make server_refresh) soll am Ergebnis
 	// erkennen, ob der Index wirklich steht — nicht nur, dass der Auftrag ankam.
 	let result = await buildIndex()
+	if (result.busy) {
+		// 503 + Retry-After: derselbe Umgang wie bei einer Suchanfrage, solange
+		// der Index noch nicht steht. Kein Fehler, sondern "gleich nochmal".
+		res.writeHead(503, { 'Content-Type': 'application/json; charset=utf-8', 'Retry-After': '2' })
+		res.end(JSON.stringify(result))
+		return
+	}
 	res.writeHead(result.ok ? 200 : 500, { 'Content-Type': 'application/json; charset=utf-8' })
 	res.end(JSON.stringify(result))
 }

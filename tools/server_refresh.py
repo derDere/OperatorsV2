@@ -24,6 +24,7 @@ import argparse
 import json
 import subprocess
 import sys
+import time
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -64,14 +65,19 @@ def markdown_page_count() -> int:
     return sum(1 for _ in WIKI_DIR.rglob("*.md"))
 
 
-def trigger_reindex(container: str, port: int, timeout: int) -> tuple[int, str]:
-    """Ruft /admin/reindex im Container auf. Liefert (Exitcode, Ausgabe)."""
+def _post_once(container: str, port: int, timeout: int) -> tuple[int, str]:
+    """Ein einzelner Aufruf von /admin/reindex im Container.
+
+    Zwei Exitcodes bedeuten "spaeter erneut versuchen":
+      2 -- der Server war nicht erreichbar (Verbindung abgelehnt),
+      3 -- der Server ist beschaeftigt (HTTP 503, es laeuft schon ein Aufbau).
+    """
     url = f"http://127.0.0.1:{port}{ADMIN_ROUTE}"
     # Node bringt fetch mit; ein zusaetzliches Werkzeug im Image braucht es nicht.
     script = (
         f"fetch({url!r}, {{ method: 'POST' }})"
         ".then(async r => { console.log(await r.text());"
-        " process.exit(r.ok ? 0 : 1) })"
+        " process.exit(r.ok ? 0 : (r.status === 503 ? 3 : 1)) })"
         ".catch(e => { console.error(String(e)); process.exit(2) })"
     )
     try:
@@ -79,6 +85,33 @@ def trigger_reindex(container: str, port: int, timeout: int) -> tuple[int, str]:
     except subprocess.TimeoutExpired:
         return 124, f"Zeitgrenze von {timeout}s ueberschritten."
     return result.returncode, (result.stdout + result.stderr).strip()
+
+
+def trigger_reindex(container: str, port: int, timeout: int) -> tuple[int, str]:
+    """Ruft /admin/reindex auf und wartet dabei auf einen startenden Server.
+
+    Wichtig fuer den automatischen Betrieb: das woechentliche Update ruft
+    `make server_refresh` unmittelbar nach `docker compose up -d` auf. Wurde der
+    Container dabei ersetzt, gilt er sofort als "running", lauscht aber noch
+    nicht -- und selbst wenn er lauscht, baut er direkt nach dem Start erst
+    einmal seinen eigenen Index auf und weist einen zweiten Aufbau ab. Ein
+    einzelner Versuch wuerde in beiden Faellen scheitern und einen Fehlalarm
+    ausloesen. Darum wird bis zur Zeitgrenze wiederholt, aber nur bei genau
+    diesen zwei Fehlerbildern: eine echte Fehlermeldung des Servers wird sofort
+    durchgereicht.
+    """
+    deadline = time.monotonic() + timeout
+    attempt = 0
+    while True:
+        attempt += 1
+        remaining = max(1, int(deadline - time.monotonic()))
+        code, output = _post_once(container, port, remaining)
+        if code not in (2, 3) or time.monotonic() >= deadline:
+            if attempt > 1 and code == 0:
+                print(f"Erfolgreich im {attempt}. Versuch -- der Server war noch beschaeftigt.")
+            return code, output
+        # Nicht erreichbar oder beschaeftigt -- kurz warten und erneut versuchen.
+        time.sleep(2)
 
 
 def refresh(container: str, timeout: int) -> int:
