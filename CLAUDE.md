@@ -27,7 +27,9 @@ Verbindungslinien verdrahtet; Werte (Booleans oder Bytes) fließen pro Frame dur
 - Betrieb über Docker Compose (Service `web`; `www/` und `wiki/` werden read-only gemountet),
   gesteuert **ausschließlich über das Makefile** — Docker Desktop muss bereits laufen:
   `make start` (legt `.env` aus `env.example` an, falls sie fehlt), `make wait`, `make open`,
-  `make logs`, `make stop`; bloßes `make` zeigt die Befehlsübersicht.
+  `make logs`, `make stop`, `make server_refresh`; bloßes `make` zeigt die Befehlsübersicht.
+  Der Interpreter kommt aus der Variablen `PYTHON`, die `python` bzw. `python3` selbst findet —
+  auf einem nackten Ubuntu/Debian gibt es nur `python3`.
 - Es gibt **kein Build-System, keine Tests, keinen Linter**; das Frontend kommt ohne
   Paketmanager aus. `www/index.html` funktioniert auch direkt im Browser geöffnet (es werden
   keine Assets per Skript nachgeladen); `www/wiki.html` braucht den laufenden Server.
@@ -224,14 +226,27 @@ nicht. Je Sound-Baustein gibt es genau eine Stimme; mehrstimmig wird es über me
 - Die Suche basiert auf Pagefind: `server/search.js` rendert beim Serverstart alle
   Wiki-Seiten über `renderMarkdown` (Export von `server/wiki.js`) und baut daraus per
   Pagefind-Node-API einen Index **im Speicher**, ausgeliefert unter `/pagefind/` (die Mounts
-  bleiben read-only, ein Build-Schritt entfällt; Wiki-Änderungen erscheinen in der Suche nach
-  einem Server-Neustart). Das erste Pfadsegment jeder Seite bestimmt ihr `lang`-Attribut —
+  bleiben read-only, ein Build-Schritt entfällt). Das erste Pfadsegment jeder Seite bestimmt ihr `lang`-Attribut —
   Pagefind baut daraus **je Sprache einen eigenen Teilindex** samt passender
   Wortstamm-Erkennung. `www/js/wiki_search.js` lädt `/pagefind/pagefind.js` bei der ersten
   Eingabe, wählt den Sprachindex über das `lang`-Attribut der Seite (bei einem Sprachwechsel
   zieht es per `pagefind.destroy()`/`init()` um — gefunden wird immer nur die gerade gelesene
   Sprache) und übersetzt Treffer-URLs in Hash-Links. Demo-Codeblöcke tragen
   `data-pagefind-ignore` und bleiben dadurch aus dem Index.
+- **Neu-Indexierung im Betrieb** (`make server_refresh`): Der Index entsteht beim Serverstart,
+  `wiki/` ist aber ein Mount. Ändert sich dort nur Inhalt — auf einem Server z. B. durch einen
+  `git pull` —, sind die Seiten sofort abrufbar, der Index kennt sie aber nicht, und weil sich am
+  Image nichts geändert hat, wird der Container auch nicht ersetzt. Dafür gibt es die Route
+  `/admin/reindex` (POST): sie baut den Index neu auf und antwortet erst, wenn er steht
+  (`{ok, pages, files}`). `buildIndex` baut dabei in eine eigene Map und tauscht sie am Ende in
+  einem Zug ein — bis dahin bedient die Suche weiter den alten, vollständigen Index, und
+  gelöschte Seiten verschwinden statt liegen zu bleiben. Ein zweiter gleichzeitiger Aufbau wird
+  abgelehnt. Die Route ist **nur von innerhalb des Containers über Loopback** erreichbar
+  (geprüft wird die Socket-Adresse, kein Header — `X-Forwarded-For` kann jeder setzen); durch
+  einen Reverse Proxy oder einen veröffentlichten Docker-Port kommt man nicht durch. Deshalb
+  ruft `tools/server_refresh.py` sie per `docker exec` auf und vergleicht danach die gemeldete
+  Seitenzahl mit der Zahl der `.md`-Dateien auf der Platte — ein unvollständiger Aufbau fällt so
+  auf, statt still durchzugehen.
 - Codeblöcke der Sprache `operatorsv2` enthalten einen gespeicherten Aufbau als JSON (Format wie
   beim Editor-Speichern) und werden zu Live-Demos: `OperatorDemo` (`www/js/op_demo.js`) lädt das
   JSON in ein eigenes kleines p5-Canvas, die Logik läuft echt. Unverdrahtete IOs erscheinen als
