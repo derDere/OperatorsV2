@@ -391,7 +391,7 @@ function allOperatorsToJson() {
 		conAll: lines
 	}
 
-	return JSON.stringify(data)
+	return JSON.stringify(data, null, 2)
 }
 
 function loadJsonToAll(jj) {

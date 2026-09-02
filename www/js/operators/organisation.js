@@ -289,10 +289,22 @@ const Op_Label = register(
       }
     }
 
+    _jj_text(text) {
+      let jj = JSON.stringify(text)
+      jj = jj.substring(1,jj.length-1)
+      return jj
+    }
+
+    _unjj_text(text) {
+      let jj = "\"" + text + "\""
+      let ujj = JSON.parse(jj)
+      return ujj
+    }
+
     getConfig() {
       return {
         ...super.getConfig(),
-        Text: this.text,
+        Text: this._jj_text(this.text),
         Href: this.href,
         "Font Family": this.fontFamily,
         "Font Size": this.fontSize,
@@ -304,7 +316,7 @@ const Op_Label = register(
     setConfig(conf, loaded = false) {
       super.setConfig(conf, loaded)
       if ('Text' in conf) {
-        this.text = conf.Text
+        this.text = this._unjj_text(conf.Text)
       }
       if ('Href' in conf) {
         this.href = conf.Href
