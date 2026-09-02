@@ -1,7 +1,7 @@
 {
   "doff": [
-    319,
-    -84
+    95,
+    -91
   ],
   "zoom": 1,
   "opAll": [
@@ -83,18 +83,9 @@
     },
     {
       "_#new": "Value",
-      "_id": "basValV",
-      "_x": -130,
-      "_y": 220,
-      "Order": 100,
-      "binary": false,
-      "value": 170
-    },
-    {
-      "_#new": "Value",
       "_id": "basValW",
-      "_x": -60,
-      "_y": 460,
+      "_x": -110,
+      "_y": 520,
       "Order": 100,
       "binary": false,
       "value": 3
@@ -136,15 +127,6 @@
       "_x": 120,
       "_y": 800,
       "Order": 100
-    },
-    {
-      "_#new": "Value",
-      "_id": "cmpValV",
-      "_x": -110,
-      "_y": 640,
-      "Order": 100,
-      "binary": false,
-      "value": 110
     },
     {
       "_#new": "Value",
@@ -237,20 +219,6 @@
       "Show Dec": true,
       "Show Hex": false,
       "Show Char": false
-    },
-    {
-      "_#new": "Scale",
-      "_id": "aeb7f6f9-5059-4b21-948c-b2cb32094f46",
-      "_x": -10,
-      "_y": 140,
-      "Order": 100
-    },
-    {
-      "_#new": "Scale",
-      "_id": "51d6fd72-fe61-4ae2-abcc-7a908a707c66",
-      "_x": -10,
-      "_y": 620,
-      "Order": 100
     },
     {
       "_#new": "Pipe 1",
@@ -420,22 +388,6 @@
       "e": "cmpSnd_in_W"
     },
     {
-      "s": "basValV_out_V",
-      "e": "aeb7f6f9-5059-4b21-948c-b2cb32094f46_in_B2"
-    },
-    {
-      "s": "aeb7f6f9-5059-4b21-948c-b2cb32094f46_out_R",
-      "e": "basSnd_in_V"
-    },
-    {
-      "s": "cmpValV_out_V",
-      "e": "51d6fd72-fe61-4ae2-abcc-7a908a707c66_in_B2"
-    },
-    {
-      "s": "51d6fd72-fe61-4ae2-abcc-7a908a707c66_out_R",
-      "e": "cmpSnd_in_V"
-    },
-    {
       "s": "5ae44b10-dee3-4f5d-bfe3-ba0d8eec8ea4_out_OUT0",
       "e": "melTime_in_R"
     },
@@ -496,14 +448,6 @@
       "e": "melSnd_in_V"
     },
     {
-      "s": "89e0510f-42cf-4c81-b246-4e264e4cb68b_out_OUT0",
-      "e": "aeb7f6f9-5059-4b21-948c-b2cb32094f46_in_B1"
-    },
-    {
-      "s": "89e0510f-42cf-4c81-b246-4e264e4cb68b_out_OUT0",
-      "e": "51d6fd72-fe61-4ae2-abcc-7a908a707c66_in_B1"
-    },
-    {
       "s": "675e6846-057f-4511-9563-14277714a8fd_out_V",
       "e": "89e0510f-42cf-4c81-b246-4e264e4cb68b_in_IN0"
     },
@@ -526,6 +470,14 @@
     {
       "s": "15edcfac-1847-4993-ae86-0a125fde4afb_out_O",
       "e": "75f8732b-6705-4a8d-8726-b53ef3f17ef7_in_R"
+    },
+    {
+      "s": "89e0510f-42cf-4c81-b246-4e264e4cb68b_out_OUT0",
+      "e": "basSnd_in_V"
+    },
+    {
+      "s": "89e0510f-42cf-4c81-b246-4e264e4cb68b_out_OUT0",
+      "e": "cmpSnd_in_V"
     }
   ]
 }
