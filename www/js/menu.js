@@ -2,6 +2,9 @@ var datMenu = null
 var datMenuObj = null
 var datMenuBlocker = null
 
+// Quelltext des Projekts; ueber den Menuepunkt erreichbar
+const GITHUB_REPO_URL = "https://github.com/derDere/OperatorsV2"
+
 // zuletzt vom Server geholte Beispiel-Dateinamen (www/examples/*.json)
 var exampleFileNames = []
 
@@ -27,7 +30,8 @@ function _rebuildMenu() {
     "📤 Export": _exportFile,
     "📥 Import": _importFile,
     "🌐 Wiki": openWikiWindow,
-    "👋 Welcome": showWelcome
+    "👋 Welcome": showWelcome,
+    "⭐ GitHub": openGitHubRepo
   }
 
   let definitions = {}
@@ -85,6 +89,11 @@ function openWikiWindow() {
   const fensterName = "Operator V2 - Wiki"
   const einstellungen = "width=1000,height=1000,menubar=no,toolbar=no,location=no,status=no,scrollbars=yes"
   window.open(zielUrl, fensterName, einstellungen);
+}
+
+// Oeffnet das Projekt-Repository in einem eigenen Tab
+function openGitHubRepo() {
+  window.open(GITHUB_REPO_URL, "_blank", "noopener")
 }
 
 function _downloadJson(jj, fileName) {
