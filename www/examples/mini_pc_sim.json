@@ -1,1 +1,3097 @@
-{"doff":[-2026,-218],"zoom":1,"opAll":[{"_#new":"Portal 1 Entry","_id":"alu_p_a","_x":-470,"_y":-240,"Order":100,"Name":"A"},{"_#new":"Portal 1 Entry","_id":"alu_p_b","_x":-470,"_y":-120,"Order":100,"Name":"B"},{"_#new":"Portal 1 Entry","_id":"alu_p_op","_x":-470,"_y":0,"Order":100,"Name":"OP"},{"_#new":"Portal 1 Entry","_id":"alu_p_r","_x":310,"_y":-200,"Order":100,"Name":"R"},{"_#new":"Portal 1 Entry","_id":"alu_p_z","_x":310,"_y":-80,"Order":100,"Name":"Z"},{"_#new":"Portal 1 Entry","_id":"alu_p_c","_x":310,"_y":40,"Order":100,"Name":"C"},{"_#new":"Portal 1 Entry","_id":"alu_p_n","_x":310,"_y":160,"Order":100,"Name":"N"},{"_#new":"Value","_id":"alu_v_zero","_x":-30,"_y":340,"Order":100,"binary":false,"value":0},{"_#new":"Portal Exit","_id":"alu_x_a","_x":-330,"_y":-240,"Order":100,"Origin":"alu_p_a"},{"_#new":"Portal Exit","_id":"alu_x_b","_x":-330,"_y":-120,"Order":100,"Origin":"alu_p_b"},{"_#new":"Portal Exit","_id":"alu_x_op","_x":-330,"_y":0,"Order":100,"Origin":"alu_p_op"},{"_#new":"Portal Exit","_id":"alu_x_r","_x":470,"_y":-200,"Order":100,"Origin":"alu_p_r"},{"_#new":"Portal Exit","_id":"alu_x_z","_x":470,"_y":-80,"Order":100,"Origin":"alu_p_z"},{"_#new":"Portal Exit","_id":"alu_x_c","_x":470,"_y":40,"Order":100,"Origin":"alu_p_c"},{"_#new":"Portal Exit","_id":"alu_x_n","_x":470,"_y":160,"Order":100,"Origin":"alu_p_n"},{"_#new":"Byte to 8bit decoder","_id":"alu_dec","_x":-330,"_y":200,"Order":100},{"_#new":"Add","_id":"alu_add","_x":-150,"_y":-400,"Order":100},{"_#new":"Subtract","_id":"alu_sub","_x":-150,"_y":-260,"Order":100},{"_#new":"And","_id":"alu_and","_x":-150,"_y":-140,"Order":100,"Mode":"bitwise","Variant":"combined"},{"_#new":"Or","_id":"alu_or","_x":-150,"_y":-40,"Order":100,"Mode":"bitwise","Variant":"combined"},{"_#new":"Xor","_id":"alu_xor","_x":-150,"_y":60,"Order":100,"Mode":"bitwise","Variant":"combined"},{"_#new":"Not","_id":"alu_not","_x":-150,"_y":160,"Order":100,"Mode":"bitwise"},{"_#new":"Select","_id":"alu_sel1","_x":110,"_y":-320,"Order":100},{"_#new":"Select","_id":"alu_sel2","_x":110,"_y":-100,"Order":100},{"_#new":"And","_id":"alu_and_c","_x":110,"_y":120,"Order":100,"Mode":"bit","Variant":"combined"},{"_#new":"And","_id":"alu_and_n","_x":110,"_y":220,"Order":100,"Mode":"bit","Variant":"combined"},{"_#new":"Equals","_id":"alu_eq","_x":110,"_y":340,"Order":100},{"_#new":"Comment","_id":"alu_c_rig","_x":-620,"_y":-380,"Order":100,"Comment":"ALU operands from the CPU:\\nACC → A, argument → B,\\nthe decoder sets OP (1 = add, 2 = sub)","Font Size":14},{"_#new":"Comment","_id":"alu_c_units","_x":-150,"_y":-530,"Order":100,"Comment":"ALU core:\\nall units compute in parallel,\\nOP picks the result","Font Size":14},{"_#new":"Comment","_id":"alu_c_dec","_x":-330,"_y":360,"Order":100,"Comment":"OP decoder (one-hot):\\n1=ADD  2=SUB  4=AND\\n8=OR  16=XOR  32=NOT A","Font Size":14},{"_#new":"Comment","_id":"alu_c_mux","_x":100,"_y":-470,"Order":100,"Comment":"Result mux:\\nboth Select outputs\\nOR-merge into R","Font Size":14},{"_#new":"Comment","_id":"alu_c_flags","_x":320,"_y":350,"Order":100,"Comment":"Flags:\\nZ = result is zero\\nC = carry (ADD)\\nN = negative (SUB)","Font Size":14},{"_#new":"Comment","_id":"alu_c_out","_x":390,"_y":-310,"Order":100,"Comment":"ALU outputs:\\nR = result\\nZ, C, N = flags","Font Size":14},{"_#new":"Anchor","_id":"alu_anchor","_x":-930,"_y":530,"Order":100,"Title":"ALU","Font Size":14},{"_#new":"Portal 1 Entry","_id":"port_ph1","_x":610,"_y":-1840,"Order":100,"Name":"PH1"},{"_#new":"Portal 1 Entry","_id":"port_ph3","_x":610,"_y":-1760,"Order":100,"Name":"PH3"},{"_#new":"Portal 1 Entry","_id":"port_ph5","_x":610,"_y":-1680,"Order":100,"Name":"PH5"},{"_#new":"Portal 1 Entry","_id":"port_halt","_x":610,"_y":-1600,"Order":100,"Name":"HALT"},{"_#new":"Portal 1 Entry","_id":"port_la","_x":-1390,"_y":-240,"Order":100,"Name":"LA"},{"_#new":"Portal 1 Entry","_id":"port_lb","_x":-1390,"_y":-160,"Order":100,"Name":"LB"},{"_#new":"Portal 1 Entry","_id":"port_lwo","_x":-1390,"_y":-80,"Order":100,"Name":"LWO"},{"_#new":"Portal 1 Entry","_id":"port_lwa","_x":-1390,"_y":0,"Order":100,"Name":"LWA"},{"_#new":"Portal 1 Entry","_id":"port_loading","_x":-1390,"_y":80,"Order":100,"Name":"LOADING"},{"_#new":"Portal 1 Entry","_id":"port_rst","_x":-1390,"_y":160,"Order":100,"Name":"RST"},{"_#new":"Portal 1 Entry","_id":"port_pc","_x":-1390,"_y":1440,"Order":100,"Name":"PC"},{"_#new":"Portal 1 Entry","_id":"port_opc","_x":-1390,"_y":1520,"Order":100,"Name":"OPC"},{"_#new":"Portal 1 Entry","_id":"port_arg","_x":-1390,"_y":1600,"Order":100,"Name":"ARG"},{"_#new":"Portal 1 Entry","_id":"port_acc","_x":690,"_y":1280,"Order":100,"Name":"ACC"},{"_#new":"Portal 1 Entry","_id":"port_aluop","_x":690,"_y":1360,"Order":100,"Name":"ALUOP"},{"_#new":"Portal 1 Entry","_id":"port_pci","_x":690,"_y":1440,"Order":100,"Name":"PCI"},{"_#new":"Portal 1 Entry","_id":"port_pcl","_x":690,"_y":1520,"Order":100,"Name":"PCL"},{"_#new":"Portal 1 Entry","_id":"port_mw","_x":690,"_y":1600,"Order":100,"Name":"MW"},{"_#new":"Portal 1 Entry","_id":"port_tw","_x":690,"_y":1680,"Order":100,"Name":"TW"},{"_#new":"Portal 1 Entry","_id":"port_hlts","_x":690,"_y":1760,"Order":100,"Name":"HLTS"},{"_#new":"Portal 1 Entry","_id":"port_mem","_x":2590,"_y":1600,"Order":100,"Name":"MEM"},{"_#new":"Portal 1 Entry","_id":"port_runsw","_x":-1790,"_y":-1840,"Order":100,"Name":"RUNSW"},{"_#new":"Portal 1 Entry","_id":"port_rstbtn","_x":-1790,"_y":-1760,"Order":100,"Name":"RSTBTN"},{"_#new":"Portal Exit","_id":"pnl_x_pc","_x":-2550,"_y":-1900,"Order":100,"Origin":"port_pc"},{"_#new":"Portal Exit","_id":"pnl_x_opc","_x":-2550,"_y":-1800,"Order":100,"Origin":"port_opc"},{"_#new":"Portal Exit","_id":"pnl_x_arg","_x":-2550,"_y":-1700,"Order":100,"Origin":"port_arg"},{"_#new":"Portal Exit","_id":"pnl_x_acc","_x":-2550,"_y":-1600,"Order":100,"Origin":"port_acc"},{"_#new":"Portal Exit","_id":"pnl_x_loading","_x":-2550,"_y":-1500,"Order":100,"Origin":"port_loading"},{"_#new":"Portal Exit","_id":"pnl_x_halt","_x":-2550,"_y":-1400,"Order":100,"Origin":"port_halt"},{"_#new":"Byte","_id":"pnl_b_pc","_x":-2350,"_y":-1900,"Order":1,"col":0,"row":4,"colSpan":1,"rowSpan":1,"Font Family":"Courier New","Font Size":18,"color":"#000000","Background":"#ffffff","Advanced Display":true,"Show Leading Zeros":true,"Seperator":"\\n","Show Bin":false,"Show Oct":false,"Show Dec":false,"Show Hex":true,"Show Char":false},{"_#new":"Byte","_id":"pnl_b_opc","_x":-2350,"_y":-1800,"Order":1,"col":1,"row":4,"colSpan":1,"rowSpan":1,"Font Family":"Courier New","Font Size":18,"color":"#000000","Background":"#ffffff","Advanced Display":true,"Show Leading Zeros":true,"Seperator":"\\n","Show Bin":false,"Show Oct":false,"Show Dec":false,"Show Hex":true,"Show Char":false},{"_#new":"Byte","_id":"pnl_b_arg","_x":-2350,"_y":-1700,"Order":1,"col":2,"row":4,"colSpan":1,"rowSpan":1,"Font Family":"Courier New","Font Size":18,"color":"#000000","Background":"#ffffff","Advanced Display":true,"Show Leading Zeros":true,"Seperator":"\\n","Show Bin":false,"Show Oct":false,"Show Dec":false,"Show Hex":true,"Show Char":false},{"_#new":"Byte","_id":"pnl_b_acc","_x":-2350,"_y":-1600,"Order":1,"col":3,"row":4,"colSpan":1,"rowSpan":1,"Font Family":"Courier New","Font Size":18,"color":"#000000","Background":"#ffffff","Advanced Display":true,"Show Leading Zeros":true,"Seperator":"\\n","Show Bin":false,"Show Oct":false,"Show Dec":false,"Show Hex":true,"Show Char":true},{"_#new":"Lamp","_id":"pnl_lamp_load","_x":-2350,"_y":-1500,"Order":1,"col":0,"row":3,"colSpan":1,"rowSpan":1,"color":"#ffcc00"},{"_#new":"Lamp","_id":"pnl_lamp_halt","_x":-2350,"_y":-1400,"Order":1,"col":1,"row":3,"colSpan":1,"rowSpan":1,"color":"#ff3333"},{"_#new":"Switch","_id":"pnl_run","_x":-2090,"_y":-1900,"Order":1,"col":2,"row":2,"colSpan":1,"rowSpan":1,"state":false},{"_#new":"Button","_id":"pnl_rst","_x":-2090,"_y":-1760,"Order":1,"col":3,"row":2,"colSpan":1,"rowSpan":1,"text":"Reset"},{"_#new":"Label","_id":"pnl_l_title","_x":-1890,"_y":-1900,"Order":1,"col":0,"row":0,"colSpan":4,"rowSpan":1,"Text":"8-BIT MINI PC","Href":"","Font Family":"Arial","Font Size":16,"color":"#ffffff","Background":"#223344"},{"_#new":"Label","_id":"pnl_l_load","_x":-1890,"_y":-1800,"Order":1,"col":0,"row":3,"colSpan":1,"rowSpan":1,"Text":"LOAD","Href":"","Font Family":"Arial","Font Size":14,"color":"#000000","Background":"#ffffff"},{"_#new":"Label","_id":"pnl_l_halt","_x":-1890,"_y":-1700,"Order":1,"col":1,"row":3,"colSpan":1,"rowSpan":1,"Text":"HALT","Href":"","Font Family":"Arial","Font Size":14,"color":"#000000","Background":"#ffffff"},{"_#new":"Label","_id":"pnl_l_pc","_x":-1890,"_y":-1600,"Order":1,"col":0,"row":4,"colSpan":1,"rowSpan":1,"Text":"PC","Href":"","Font Family":"Arial","Font Size":14,"color":"#000000","Background":"#ffffff"},{"_#new":"Label","_id":"pnl_l_opc","_x":-1890,"_y":-1500,"Order":1,"col":1,"row":4,"colSpan":1,"rowSpan":1,"Text":"OP","Href":"","Font Family":"Arial","Font Size":14,"color":"#000000","Background":"#ffffff"},{"_#new":"Label","_id":"pnl_l_arg","_x":-1890,"_y":-1400,"Order":1,"col":2,"row":4,"colSpan":1,"rowSpan":1,"Text":"ARG","Href":"","Font Family":"Arial","Font Size":14,"color":"#000000","Background":"#ffffff"},{"_#new":"Label","_id":"pnl_l_acc","_x":-1890,"_y":-1300,"Order":1,"col":3,"row":4,"colSpan":1,"rowSpan":1,"Text":"ACC","Href":"","Font Family":"Arial","Font Size":14,"color":"#000000","Background":"#ffffff"},{"_#new":"Comment","_id":"pnl_c","_x":-2400,"_y":-2050,"Order":100,"Comment":"Front panel:\\nRUN switch starts the CPU, Reset homes it.\\nUpload a .bin program via the file input.\\nStatus: PC, OP, ARG, ACC + load/halt lamps","Font Size":14},{"_#new":"Anchor","_id":"pnl_anchor","_x":-2870,"_y":-1090,"Order":100,"Title":"Front Panel","Font Size":14},{"_#new":"Portal Exit","_id":"ctl_x_runsw","_x":-590,"_y":-1900,"Order":100,"Origin":"port_runsw"},{"_#new":"Portal Exit","_id":"ctl_x_loading","_x":-590,"_y":-1800,"Order":100,"Origin":"port_loading"},{"_#new":"Portal Exit","_id":"ctl_x_hlts","_x":-590,"_y":-1700,"Order":100,"Origin":"port_hlts"},{"_#new":"Portal Exit","_id":"ctl_x_rst","_x":-590,"_y":-1600,"Order":100,"Origin":"port_rst"},{"_#new":"RS FlipFlop","_id":"ctl_ff_halt","_x":-390,"_y":-1640,"Order":100},{"_#new":"Not","_id":"ctl_not_loading","_x":-390,"_y":-1780,"Order":100,"Mode":"bit"},{"_#new":"And","_id":"ctl_and_run1","_x":-230,"_y":-1900,"Order":100,"Mode":"bit","Variant":"combined"},{"_#new":"And","_id":"ctl_and_run2","_x":-90,"_y":-1820,"Order":100,"Mode":"bit","Variant":"combined"},{"_#new":"Value","_id":"ctl_v_interval","_x":-90,"_y":-1960,"Order":100,"binary":false,"value":6},{"_#new":"Clock","_id":"ctl_clk","_x":70,"_y":-1880,"Order":100},{"_#new":"Counter4","_id":"ctl_cnt","_x":210,"_y":-1780,"Order":100},{"_#new":"4bit to byte decoder","_id":"ctl_phb","_x":350,"_y":-1780,"Order":100},{"_#new":"Value","_id":"ctl_v1","_x":210,"_y":-2040,"Order":100,"binary":false,"value":1},{"_#new":"Value","_id":"ctl_v3","_x":350,"_y":-2040,"Order":100,"binary":false,"value":3},{"_#new":"Value","_id":"ctl_v5","_x":490,"_y":-2040,"Order":100,"binary":false,"value":5},{"_#new":"Value","_id":"ctl_v6","_x":630,"_y":-2040,"Order":100,"binary":false,"value":6},{"_#new":"Equals","_id":"ctl_eq1","_x":490,"_y":-1940,"Order":100},{"_#new":"Equals","_id":"ctl_eq3","_x":490,"_y":-1840,"Order":100},{"_#new":"Equals","_id":"ctl_eq5","_x":490,"_y":-1740,"Order":100},{"_#new":"Equals","_id":"ctl_eq6","_x":490,"_y":-1560,"Order":100},{"_#new":"Comment","_id":"ctl_c1","_x":-40,"_y":-2150,"Order":100,"Comment":"Control unit:\\nclock runs while RUN & !HALT & !LOADING.\\nPhase counter cycles 1..6 per instruction:\\n1 = latch instruction, 3 = execute, 5 = advance PC\\n(2, 4 and 6 give signals time to settle,\\n6 also resets the phase counter).\\nThe interval value sets the CPU speed —\\nbelow ~5 signals no longer settle in time.","Font Size":14},{"_#new":"Comment","_id":"ctl_c2","_x":-390,"_y":-1480,"Order":100,"Comment":"HALT flipflop: set by the\\nHLT instruction, cleared by Reset","Font Size":14},{"_#new":"Anchor","_id":"ctl_anchor","_x":-830,"_y":-1210,"Order":100,"Title":"Control Unit","Font Size":14},{"_#new":"Portal 1 Entry","_id":"port_newf","_x":-1390,"_y":240,"Order":100,"Name":"NEWF"},{"_#new":"File Input","_id":"ldr_fi","_x":-2590,"_y":-100,"Order":100,"col":0,"row":2,"colSpan":2,"rowSpan":1},{"_#new":"Value","_id":"ldr_v8","_x":-2390,"_y":-260,"Order":100,"binary":false,"value":5},{"_#new":"Not","_id":"ldr_not_e","_x":-2390,"_y":-100,"Order":100,"Mode":"bit"},{"_#new":"Value","_id":"ldr_v30","_x":-2390,"_y":60,"Order":100,"binary":false,"value":30},{"_#new":"Repeater","_id":"ldr_rpt_load","_x":-2230,"_y":-20,"Order":100},{"_#new":"Clock","_id":"ldr_clk","_x":-2090,"_y":-200,"Order":100},{"_#new":"T FlipFlop","_id":"ldr_ff","_x":-1930,"_y":-280,"Order":100},{"_#new":"And","_id":"ldr_and_wo","_x":-1750,"_y":-140,"Order":100,"Mode":"bit","Variant":"combined"},{"_#new":"And","_id":"ldr_and_wa","_x":-1750,"_y":-20,"Order":100,"Mode":"bit","Variant":"combined"},{"_#new":"Value","_id":"ldr_v4","_x":-1930,"_y":120,"Order":100,"binary":false,"value":4},{"_#new":"Repeater","_id":"ldr_rpt_inc","_x":-1750,"_y":120,"Order":100},{"_#new":"Counter8","_id":"ldr_cnt","_x":-1590,"_y":-280,"Order":100},{"_#new":"Portal Exit","_id":"ldr_x_rstbtn","_x":-1750,"_y":260,"Order":100,"Origin":"port_rstbtn"},{"_#new":"Or","_id":"ldr_or_rst","_x":-1590,"_y":200,"Order":100,"Mode":"bit","Variant":"combined"},{"_#new":"Comment","_id":"ldr_c1","_x":-2250,"_y":-480,"Order":100,"Comment":"Loader: reads the uploaded file, two bytes\\nper instruction (opcode, argument).\\nThe flipflop toggles per byte read and routes\\neven bytes to the opcode ROM, odd bytes to\\nthe argument ROM. The counter is the target\\naddress. LOADING pauses the CPU clock,\\nthe repeater keeps it alive for the last write.","Font Size":14},{"_#new":"Comment","_id":"ldr_c2","_x":-1660,"_y":380,"Order":100,"Comment":"RST pulses on file upload or Reset button:\\nclears PC, HALT, data RAM and the screen","Font Size":14},{"_#new":"Anchor","_id":"ldr_anchor","_x":-2870,"_y":530,"Order":100,"Title":"Loader","Font Size":14},{"_#new":"Portal Exit","_id":"prg_x_loading","_x":-2650,"_y":1340,"Order":100,"Origin":"port_loading"},{"_#new":"Portal Exit","_id":"prg_x_la","_x":-2650,"_y":1420,"Order":100,"Origin":"port_la"},{"_#new":"Portal Exit","_id":"prg_x_lb","_x":-2650,"_y":1500,"Order":100,"Origin":"port_lb"},{"_#new":"Portal Exit","_id":"prg_x_lwo","_x":-2650,"_y":1580,"Order":100,"Origin":"port_lwo"},{"_#new":"Portal Exit","_id":"prg_x_lwa","_x":-2650,"_y":1660,"Order":100,"Origin":"port_lwa"},{"_#new":"Portal Exit","_id":"prg_x_newf","_x":-2650,"_y":1740,"Order":100,"Origin":"port_newf"},{"_#new":"Portal Exit","_id":"prg_x_ph1","_x":-2650,"_y":1820,"Order":100,"Origin":"port_ph1"},{"_#new":"Portal Exit","_id":"prg_x_pci","_x":-2650,"_y":1900,"Order":100,"Origin":"port_pci"},{"_#new":"Portal Exit","_id":"prg_x_pcl","_x":-2650,"_y":1980,"Order":100,"Origin":"port_pcl"},{"_#new":"Portal Exit","_id":"prg_x_rst","_x":-2650,"_y":2060,"Order":100,"Origin":"port_rst"},{"_#new":"Not","_id":"prg_not_loading","_x":-2430,"_y":1360,"Order":100,"Mode":"bit"},{"_#new":"Select","_id":"prg_sel_addr","_x":-2270,"_y":1440,"Order":100},{"_#new":"Counter8","_id":"prg_pc","_x":-2430,"_y":1940,"Order":100},{"_#new":"Register","_id":"prg_rom_op","_x":-2090,"_y":1400,"Order":100},{"_#new":"Register","_id":"prg_rom_arg","_x":-2090,"_y":1660,"Order":100},{"_#new":"Memory (1 byte)","_id":"prg_ir_op","_x":-1890,"_y":1400,"Order":100},{"_#new":"Memory (1 byte)","_id":"prg_ir_arg","_x":-1890,"_y":1660,"Order":100},{"_#new":"Comment","_id":"prg_c1","_x":-2190,"_y":1200,"Order":100,"Comment":"Program memory: two ROMs share one address —\\none holds opcodes, the other arguments.\\nWhile LOADING the address comes from the loader,\\notherwise from the program counter.\\nA new upload clears both ROMs first.","Font Size":14},{"_#new":"Comment","_id":"prg_c2","_x":-1890,"_y":1840,"Order":100,"Comment":"Instruction register: phase 1\\nlatches opcode + argument","Font Size":14},{"_#new":"Comment","_id":"prg_c3","_x":-2430,"_y":2120,"Order":100,"Comment":"Program counter: phase 5 increments,\\na taken jump loads the argument instead,\\nReset starts over at 0","Font Size":14},{"_#new":"Anchor","_id":"prg_anchor","_x":-2970,"_y":2330,"Order":100,"Title":"Program Memory","Font Size":14},{"_#new":"Repeater","_id":"ldr_rpt_wp","_x":-1930,"_y":-140,"Order":100},{"_#new":"Portal Exit","_id":"mem_x_arg","_x":1490,"_y":1460,"Order":100,"Origin":"port_arg"},{"_#new":"Portal Exit","_id":"mem_x_acc","_x":1490,"_y":1540,"Order":100,"Origin":"port_acc"},{"_#new":"Portal Exit","_id":"mem_x_mw","_x":1490,"_y":1620,"Order":100,"Origin":"port_mw"},{"_#new":"Portal Exit","_id":"mem_x_rst","_x":1490,"_y":1700,"Order":100,"Origin":"port_rst"},{"_#new":"Register","_id":"mem_ram","_x":1790,"_y":1560,"Order":100},{"_#new":"Comment","_id":"mem_c","_x":1790,"_y":1370,"Order":100,"Comment":"Data memory (RAM):\\naddress = instruction argument,\\nSTA stores the accumulator there,\\nLDA reads it back, Reset clears all","Font Size":14},{"_#new":"Anchor","_id":"mem_anchor","_x":1120,"_y":2170,"Order":100,"Title":"Data Memory","Font Size":14},{"_#new":"Portal Exit","_id":"term_x_acc","_x":1590,"_y":-140,"Order":100,"Origin":"port_acc"},{"_#new":"Portal Exit","_id":"term_x_tw","_x":1590,"_y":-60,"Order":100,"Origin":"port_tw"},{"_#new":"Portal Exit","_id":"term_x_rst","_x":1590,"_y":20,"Order":100,"Origin":"port_rst"},{"_#new":"Terminal Display","_id":"term_term","_x":1900,"_y":-60,"Order":100,"col":0,"row":1,"colSpan":4,"rowSpan":1,"Terminal Width":20,"Terminal Height":8,"Show Cursor":true,"Fill random on Clear":false},{"_#new":"Comment","_id":"term_c","_x":1900,"_y":-290,"Order":100,"Comment":"Terminal: the OUT instruction prints the\\naccumulator as an ASCII character,\\nbyte 10 = newline, Reset clears the screen","Font Size":14},{"_#new":"Anchor","_id":"term_anchor","_x":1160,"_y":850,"Order":100,"Title":"Terminal","Font Size":14},{"_#new":"Portal Exit","_id":"dec_x_opc","_x":-710,"_y":1200,"Order":100,"Origin":"port_opc"},{"_#new":"Portal Exit","_id":"dec_x_arg","_x":-710,"_y":1300,"Order":100,"Origin":"port_arg"},{"_#new":"Portal Exit","_id":"dec_x_ph3","_x":-710,"_y":1400,"Order":100,"Origin":"port_ph3"},{"_#new":"Portal Exit","_id":"dec_x_ph5","_x":-710,"_y":1500,"Order":100,"Origin":"port_ph5"},{"_#new":"Portal Exit","_id":"dec_x_alur","_x":-710,"_y":1600,"Order":100,"Origin":"alu_p_r"},{"_#new":"Portal Exit","_id":"dec_x_mem","_x":-710,"_y":1700,"Order":100,"Origin":"port_mem"},{"_#new":"Value","_id":"dec_v_ldi","_x":-530,"_y":1080,"Order":100,"binary":false,"value":1},{"_#new":"Equals","_id":"dec_eq_ldi","_x":-390,"_y":1080,"Order":100},{"_#new":"Value","_id":"dec_v_add","_x":-530,"_y":1180,"Order":100,"binary":false,"value":2},{"_#new":"Equals","_id":"dec_eq_add","_x":-390,"_y":1180,"Order":100},{"_#new":"Value","_id":"dec_v_sub","_x":-530,"_y":1280,"Order":100,"binary":false,"value":3},{"_#new":"Equals","_id":"dec_eq_sub","_x":-390,"_y":1280,"Order":100},{"_#new":"Value","_id":"dec_v_lda","_x":-530,"_y":1380,"Order":100,"binary":false,"value":4},{"_#new":"Equals","_id":"dec_eq_lda","_x":-390,"_y":1380,"Order":100},{"_#new":"Value","_id":"dec_v_sta","_x":-530,"_y":1480,"Order":100,"binary":false,"value":5},{"_#new":"Equals","_id":"dec_eq_sta","_x":-390,"_y":1480,"Order":100},{"_#new":"Value","_id":"dec_v_jmp","_x":-530,"_y":1580,"Order":100,"binary":false,"value":6},{"_#new":"Equals","_id":"dec_eq_jmp","_x":-390,"_y":1580,"Order":100},{"_#new":"Value","_id":"dec_v_jz","_x":-530,"_y":1680,"Order":100,"binary":false,"value":7},{"_#new":"Equals","_id":"dec_eq_jz","_x":-390,"_y":1680,"Order":100},{"_#new":"Value","_id":"dec_v_jnz","_x":-530,"_y":1780,"Order":100,"binary":false,"value":8},{"_#new":"Equals","_id":"dec_eq_jnz","_x":-390,"_y":1780,"Order":100},{"_#new":"Value","_id":"dec_v_out","_x":-530,"_y":1880,"Order":100,"binary":false,"value":9},{"_#new":"Equals","_id":"dec_eq_out","_x":-390,"_y":1880,"Order":100},{"_#new":"Value","_id":"dec_v_hlt","_x":-530,"_y":1980,"Order":100,"binary":false,"value":10},{"_#new":"Equals","_id":"dec_eq_hlt","_x":-390,"_y":1980,"Order":100},{"_#new":"Or","_id":"dec_or_accload","_x":-170,"_y":1200,"Order":100,"Mode":"nibble","Variant":"combined"},{"_#new":"And","_id":"dec_and_acct","_x":-10,"_y":1240,"Order":100,"Mode":"bit","Variant":"combined"},{"_#new":"Or","_id":"dec_or_addsub","_x":-170,"_y":1360,"Order":100,"Mode":"bit","Variant":"combined"},{"_#new":"Select","_id":"dec_sel_accsrc","_x":-30,"_y":1420,"Order":100},{"_#new":"Memory (1 byte)","_id":"dec_acc","_x":150,"_y":1300,"Order":100},{"_#new":"Equals","_id":"dec_eq_zero","_x":330,"_y":1300,"Order":100},{"_#new":"Value","_id":"dec_v_alu_add","_x":-170,"_y":1520,"Order":100,"binary":false,"value":1},{"_#new":"Value","_id":"dec_v_alu_sub","_x":-170,"_y":1620,"Order":100,"binary":false,"value":2},{"_#new":"Select","_id":"dec_sel_aluop","_x":-30,"_y":1720,"Order":100},{"_#new":"And","_id":"dec_and_jz","_x":110,"_y":1620,"Order":100,"Mode":"bit","Variant":"combined"},{"_#new":"And","_id":"dec_and_jnz","_x":110,"_y":1720,"Order":100,"Mode":"bit","Variant":"combined"},{"_#new":"Or","_id":"dec_or_jtk","_x":270,"_y":1680,"Order":100,"Mode":"nibble","Variant":"combined"},{"_#new":"And","_id":"dec_and_pci","_x":430,"_y":1620,"Order":100,"Mode":"bit","Variant":"combined"},{"_#new":"And","_id":"dec_and_pcl","_x":430,"_y":1740,"Order":100,"Mode":"bit","Variant":"combined"},{"_#new":"And","_id":"dec_and_mw","_x":110,"_y":1480,"Order":100,"Mode":"bit","Variant":"combined"},{"_#new":"And","_id":"dec_and_tw","_x":110,"_y":1900,"Order":100,"Mode":"bit","Variant":"combined"},{"_#new":"And","_id":"dec_and_hlts","_x":110,"_y":2000,"Order":100,"Mode":"bit","Variant":"combined"},{"_#new":"Comment","_id":"dec_c1","_x":-420,"_y":930,"Order":100,"Comment":"Instruction decoder: the opcode is compared\\nagainst every instruction, exactly one line fires:\\n01 LDI  02 ADD  03 SUB  04 LDA  05 STA\\n06 JMP  07 JZ  08 JNZ  09 OUT  0A HLT  0B IN","Font Size":14},{"_#new":"Comment","_id":"dec_c2","_x":200,"_y":1140,"Order":100,"Comment":"Accumulator: phase 3 latches the selected\\nsource — argument (LDI), ALU result\\n(ADD/SUB) or data memory (LDA).\\nZF checks 'ACC == 0' live\\n(the open input reads as 0)","Font Size":14},{"_#new":"Comment","_id":"dec_c3","_x":-170,"_y":1800,"Order":100,"Comment":"ALU op code:\\n1 = add, 2 = subtract","Font Size":14},{"_#new":"Comment","_id":"dec_c4","_x":410,"_y":1940,"Order":100,"Comment":"Jumps: on JMP, JZ (ZF set) or JNZ (ZF clear)\\nphase 5 loads the PC with the argument,\\notherwise the PC increments","Font Size":14},{"_#new":"Anchor","_id":"dec_anchor","_x":-760,"_y":2140,"Order":100,"Title":"Decoder + ACC","Font Size":14},{"_#new":"Portal Exit","_id":"alu_x_acc","_x":-650,"_y":-240,"Order":100,"Origin":"port_acc"},{"_#new":"Portal Exit","_id":"alu_x_arg","_x":-630,"_y":-120,"Order":100,"Origin":"port_arg"},{"_#new":"Portal Exit","_id":"alu_x_op2","_x":-650,"_y":0,"Order":100,"Origin":"port_aluop"},{"_#new":"Value","_id":"ctl_v15","_x":-90,"_y":-1700,"Order":100,"binary":false,"value":10},{"_#new":"Repeater","_id":"ctl_rpt_pwr","_x":50,"_y":-1740,"Order":100},{"_#new":"Pulse","_id":"ctl_pulse_hlts","_x":-510,"_y":-1700,"Order":100},{"_#new":"Comment","_id":"pnl_c2","_x":-1720,"_y":-2070,"Order":100,"Comment":"Program file format (.bin):\\ntwo bytes per instruction: opcode, argument\\n01 LDI n   02 ADD n   03 SUB n   04 LDA a\\n05 STA a   06 JMP i   07 JZ i   08 JNZ i\\n09 OUT     0A HLT     0B IN     00 NOP\\n(jump targets count instructions, not bytes)","Font Size":14},{"_#new":"Portal 1 Entry","_id":"port_int","_x":690,"_y":1840,"Order":100,"Name":"INT"},{"_#new":"Portal 1 Entry","_id":"port_inb","_x":2170,"_y":460,"Order":100,"Name":"INB"},{"_#new":"Tick","_id":"lib_tick","_x":1510,"_y":-1800,"Order":100},{"_#new":"Stack Input","_id":"lib_rom_hello","_x":1750,"_y":-1900,"Order":100,"Values":"01, 48, 09, 00, 01, 65, 09, 00, 01, 6c, 09, 00, 01, 6c, 09, 00, 01, 6f, 09, 00, 01, 20, 09, 00, 01, 57, 09, 00, 01, 6f, 09, 00, 01, 72, 09, 00, 01, 6c, 09, 00, 01, 64, 09, 00, 01, 21, 09, 00, 01, 0a, 09, 00, 01, 05, 05, 00, 04, 00, 07, 23, 03, 01, 05, 00, 01, 2a, 09, 00, 06, 1c, 0a, 00"},{"_#new":"File Output","_id":"lib_fo_hello","_x":2010,"_y":-1900,"Order":100,"col":0,"row":6,"colSpan":1,"rowSpan":1,"Filename":"hello_world.bin","Mimetype":"application/octet-stream","Link Text":"hello_world.bin"},{"_#new":"Stack Input","_id":"lib_rom_count","_x":1750,"_y":-1760,"Order":100,"Values":"01, 30, 05, 00, 04, 00, 09, 00, 02, 01, 05, 00, 03, 3a, 07, 09, 06, 02, 0a, 00"},{"_#new":"File Output","_id":"lib_fo_count","_x":2010,"_y":-1760,"Order":100,"col":1,"row":6,"colSpan":1,"rowSpan":1,"Filename":"count.bin","Mimetype":"application/octet-stream","Link Text":"count.bin"},{"_#new":"Stack Input","_id":"lib_rom_cowsay","_x":1750,"_y":-1620,"Order":100,"Values":"01, 48, 09, 00, 01, 65, 09, 00, 01, 6c, 09, 00, 01, 6c, 09, 00, 01, 6f, 09, 00, 01, 20, 09, 00, 0b, 00, 07, 10, 09, 00, 06, 0c, 01, 21, 09, 00, 01, 0a, 09, 00, 01, 20, 09, 00, 01, 20, 09, 00, 01, 5c, 09, 00, 01, 0a, 09, 00, 01, 20, 09, 00, 01, 20, 09, 00, 01, 20, 09, 00, 01, 5c, 09, 00, 01, 20, 09, 00, 01, 20, 09, 00, 01, 28, 09, 00, 01, 6f, 09, 00, 01, 6f, 09, 00, 01, 29, 09, 00, 01, 0a, 09, 00, 01, 20, 09, 00, 01, 20, 09, 00, 01, 20, 09, 00, 01, 20, 09, 00, 01, 20, 09, 00, 01, 20, 09, 00, 01, 28, 09, 00, 01, 5f, 09, 00, 01, 5f, 09, 00, 01, 29, 09, 00, 0a, 00"},{"_#new":"File Output","_id":"lib_fo_cowsay","_x":2010,"_y":-1620,"Order":100,"col":2,"row":6,"colSpan":1,"rowSpan":1,"Filename":"cowsay.bin","Mimetype":"application/octet-stream","Link Text":"cowsay.bin"},{"_#new":"Stack Input","_id":"lib_rom_calc","_x":1750,"_y":-1480,"Order":100,"Values":"0b, 00, 09, 00, 03, 30, 05, 00, 0b, 00, 09, 00, 05, 02, 0b, 00, 09, 00, 03, 30, 05, 01, 01, 3d, 09, 00, 04, 02, 03, 2b, 08, 18, 04, 00, 07, 22, 03, 01, 05, 00, 04, 01, 02, 01, 05, 01, 06, 10, 04, 01, 07, 20, 03, 01, 05, 01, 04, 00, 03, 01, 05, 00, 06, 18, 04, 00, 05, 01, 04, 01, 02, 30, 09, 00, 0a, 00"},{"_#new":"File Output","_id":"lib_fo_calc","_x":2010,"_y":-1480,"Order":100,"col":3,"row":6,"colSpan":1,"rowSpan":1,"Filename":"calc.bin","Mimetype":"application/octet-stream","Link Text":"calc.bin"},{"_#new":"Label","_id":"lib_l_lib","_x":2250,"_y":-1900,"Order":1,"col":0,"row":5,"colSpan":4,"rowSpan":1,"Text":"__________________________PROGRAM_LIBRARY__________________________","Href":"","Font Family":"Arial","Font Size":14,"color":"#ffffff","Background":"#223344"},{"_#new":"Comment","_id":"lib_c","_x":1910,"_y":-2090,"Order":100,"Comment":"Program library: every ROM streams its bytes\\ninto its download link once at startup.\\nDownload a .bin, then upload it via the file\\ninput on the front panel to run it.\\n\\nhello_world: prints text + a counted loop\\ncount: prints 0..9\\ncowsay: type a name first, then RUN\\ncalc: type e.g. 3+4 or 8-5 first, then RUN\\n(single digits; minus expects first >= second)","Font Size":14},{"_#new":"Anchor","_id":"lib_anchor","_x":1140,"_y":-1250,"Order":100,"Title":"Program Library","Font Size":14},{"_#new":"Portal Exit","_id":"inp_x_int","_x":1590,"_y":100,"Order":100,"Origin":"port_int"},{"_#new":"Value","_id":"inp_v_on","_x":1650,"_y":400,"Order":100,"binary":true,"value":1},{"_#new":"Text Input","_id":"inp_ti","_x":1810,"_y":400,"Order":100,"col":2,"row":3,"colSpan":2,"rowSpan":1,"eleWidth":165,"Text":""},{"_#new":"Memory (1 byte)","_id":"inp_latch","_x":1990,"_y":460,"Order":100},{"_#new":"And","_id":"inp_and_ef","_x":1810,"_y":560,"Order":100,"Mode":"bit","Variant":"combined"},{"_#new":"Comment","_id":"inp_c","_x":1940,"_y":700,"Order":100,"Comment":"Text input: the IN instruction (0B) flushes one\\ntyped character, the latch holds it for the CPU.\\nA flush on an empty buffer latches 0 —\\nprograms detect the end of input via JZ.\\nType the text before flipping RUN.","Font Size":14},{"_#new":"Value","_id":"dec_v_in","_x":-530,"_y":2080,"Order":100,"binary":false,"value":11},{"_#new":"Equals","_id":"dec_eq_in","_x":-390,"_y":2080,"Order":100},{"_#new":"And","_id":"dec_and_inr","_x":110,"_y":2100,"Order":100,"Mode":"bit","Variant":"combined"},{"_#new":"And","_id":"dec_and_int","_x":270,"_y":2020,"Order":100,"Mode":"bit","Variant":"combined"},{"_#new":"Portal Exit","_id":"dec_x_inb","_x":-710,"_y":1800,"Order":100,"Origin":"port_inb"},{"_#new":"Pulse","_id":"inp_pulse","_x":1670,"_y":560,"Order":100},{"_#new":"Label","_id":"60fb7e0b-89c1-4d7a-931f-673e60776309","_x":2250,"_y":-1620,"Order":100,"col":2,"row":7,"colSpan":2,"rowSpan":1,"Text":"Assembler","Href":"dev/assembler.html","Font Family":"Arial","Font Size":14,"color":"#0000ff","Background":"#ffffff"},{"_#new":"Label","_id":"f8590a6b-e91e-426b-97c7-884d71890e7c","_x":2250,"_y":-1760,"Order":100,"col":0,"row":7,"colSpan":2,"rowSpan":1,"Text":"Falls Sie in der Lage sind\\nAssembler Code selbst zu\\nschreiben. So finden sie hier\\nein Tool um eigene Programme\\nfür diesen PC-SIM zu schreiben","Href":"","Font Family":"Arial","Font Size":14,"color":"#000000","Background":"#ffffff"}],"conAll":[{"s":"alu_x_a_out_1","e":"alu_add_in_B1"},{"s":"alu_x_b_out_1","e":"alu_add_in_B2"},{"s":"alu_x_a_out_1","e":"alu_sub_in_B1"},{"s":"alu_x_b_out_1","e":"alu_sub_in_B2"},{"s":"alu_x_a_out_1","e":"alu_and_in_A"},{"s":"alu_x_b_out_1","e":"alu_and_in_B"},{"s":"alu_x_a_out_1","e":"alu_or_in_A"},{"s":"alu_x_b_out_1","e":"alu_or_in_B"},{"s":"alu_x_a_out_1","e":"alu_xor_in_A"},{"s":"alu_x_b_out_1","e":"alu_xor_in_B"},{"s":"alu_x_a_out_1","e":"alu_not_in_A"},{"s":"alu_x_op_out_1","e":"alu_dec_in_B"},{"s":"alu_dec_out_B0","e":"alu_sel1_in_E1"},{"s":"alu_dec_out_B1","e":"alu_sel1_in_E2"},{"s":"alu_dec_out_B2","e":"alu_sel1_in_E3"},{"s":"alu_dec_out_B3","e":"alu_sel1_in_E4"},{"s":"alu_dec_out_B4","e":"alu_sel2_in_E1"},{"s":"alu_dec_out_B5","e":"alu_sel2_in_E2"},{"s":"alu_add_out_R","e":"alu_sel1_in_B1"},{"s":"alu_sub_out_R","e":"alu_sel1_in_B2"},{"s":"alu_and_out_O","e":"alu_sel1_in_B3"},{"s":"alu_or_out_O","e":"alu_sel1_in_B4"},{"s":"alu_xor_out_O","e":"alu_sel2_in_B1"},{"s":"alu_not_out_!A","e":"alu_sel2_in_B2"},{"s":"alu_sel1_out_B","e":"alu_p_r_in_I1"},{"s":"alu_sel2_out_B","e":"alu_p_r_in_I1"},{"s":"alu_sel1_out_B","e":"alu_eq_in_B1"},{"s":"alu_sel2_out_B","e":"alu_eq_in_B1"},{"s":"alu_v_zero_out_V","e":"alu_eq_in_B2"},{"s":"alu_eq_out_O","e":"alu_p_z_in_I1"},{"s":"alu_add_out_O","e":"alu_and_c_in_I1"},{"s":"alu_dec_out_B0","e":"alu_and_c_in_I2"},{"s":"alu_and_c_out_O","e":"alu_p_c_in_I1"},{"s":"alu_sub_out_RN","e":"alu_and_n_in_I1"},{"s":"alu_dec_out_B1","e":"alu_and_n_in_I2"},{"s":"alu_and_n_out_O","e":"alu_p_n_in_I1"},{"s":"pnl_run_out_O","e":"port_runsw_in_I1"},{"s":"pnl_rst_out_O","e":"port_rstbtn_in_I1"},{"s":"pnl_x_pc_out_1","e":"pnl_b_pc_in_B"},{"s":"pnl_x_opc_out_1","e":"pnl_b_opc_in_B"},{"s":"pnl_x_arg_out_1","e":"pnl_b_arg_in_B"},{"s":"pnl_x_acc_out_1","e":"pnl_b_acc_in_B"},{"s":"pnl_x_loading_out_1","e":"pnl_lamp_load_in_I"},{"s":"pnl_x_halt_out_1","e":"pnl_lamp_halt_in_I"},{"s":"ctl_x_rst_out_1","e":"ctl_ff_halt_in_R"},{"s":"ctl_ff_halt_out_Q","e":"port_halt_in_I1"},{"s":"ctl_x_loading_out_1","e":"ctl_not_loading_in_A"},{"s":"ctl_x_runsw_out_1","e":"ctl_and_run1_in_I1"},{"s":"ctl_ff_halt_out_!Q","e":"ctl_and_run1_in_I2"},{"s":"ctl_and_run1_out_O","e":"ctl_and_run2_in_I1"},{"s":"ctl_not_loading_out_!A","e":"ctl_and_run2_in_I2"},{"s":"ctl_v_interval_out_V","e":"ctl_clk_in_B"},{"s":"ctl_clk_out_C","e":"ctl_cnt_in_I"},{"s":"ctl_cnt_out_B0","e":"ctl_phb_in_B0"},{"s":"ctl_cnt_out_B1","e":"ctl_phb_in_B1"},{"s":"ctl_cnt_out_B2","e":"ctl_phb_in_B2"},{"s":"ctl_cnt_out_B3","e":"ctl_phb_in_B3"},{"s":"ctl_phb_out_B","e":"ctl_eq1_in_B1"},{"s":"ctl_phb_out_B","e":"ctl_eq3_in_B1"},{"s":"ctl_phb_out_B","e":"ctl_eq5_in_B1"},{"s":"ctl_phb_out_B","e":"ctl_eq6_in_B1"},{"s":"ctl_v1_out_V","e":"ctl_eq1_in_B2"},{"s":"ctl_v3_out_V","e":"ctl_eq3_in_B2"},{"s":"ctl_v5_out_V","e":"ctl_eq5_in_B2"},{"s":"ctl_v6_out_V","e":"ctl_eq6_in_B2"},{"s":"ctl_eq1_out_O","e":"port_ph1_in_I1"},{"s":"ctl_eq3_out_O","e":"port_ph3_in_I1"},{"s":"ctl_eq5_out_O","e":"port_ph5_in_I1"},{"s":"ctl_eq6_out_O","e":"ctl_cnt_in_R"},{"s":"ctl_x_rst_out_1","e":"ctl_cnt_in_R"},{"s":"ldr_fi_out_E","e":"ldr_not_e_in_A"},{"s":"ldr_v30_out_V","e":"ldr_rpt_load_in_D"},{"s":"ldr_not_e_out_!A","e":"ldr_rpt_load_in_S"},{"s":"ldr_v8_out_V","e":"ldr_clk_in_B"},{"s":"ldr_rpt_load_out_O","e":"ldr_clk_in_P"},{"s":"ldr_clk_out_C","e":"ldr_fi_in_T"},{"s":"ldr_fi_out_T","e":"ldr_ff_in_T"},{"s":"ldr_ff_out_Q","e":"ldr_and_wo_in_I2"},{"s":"ldr_ff_out_!Q","e":"ldr_and_wa_in_I2"},{"s":"ldr_v4_out_V","e":"ldr_rpt_inc_in_D"},{"s":"ldr_and_wa_out_O","e":"ldr_rpt_inc_in_S"},{"s":"ldr_rpt_inc_out_O","e":"ldr_cnt_in_I"},{"s":"ldr_fi_out_N","e":"ldr_cnt_in_R"},{"s":"ldr_fi_out_N","e":"ldr_or_rst_in_I1"},{"s":"ldr_x_rstbtn_out_1","e":"ldr_or_rst_in_I2"},{"s":"ldr_cnt_out_B","e":"port_la_in_I1"},{"s":"ldr_fi_out_B","e":"port_lb_in_I1"},{"s":"ldr_and_wo_out_O","e":"port_lwo_in_I1"},{"s":"ldr_and_wa_out_O","e":"port_lwa_in_I1"},{"s":"ldr_rpt_load_out_O","e":"port_loading_in_I1"},{"s":"ldr_or_rst_out_O","e":"port_rst_in_I1"},{"s":"ldr_fi_out_N","e":"port_newf_in_I1"},{"s":"prg_x_loading_out_1","e":"prg_not_loading_in_A"},{"s":"prg_x_loading_out_1","e":"prg_sel_addr_in_E1"},{"s":"prg_x_la_out_1","e":"prg_sel_addr_in_B1"},{"s":"prg_not_loading_out_!A","e":"prg_sel_addr_in_E2"},{"s":"prg_pc_out_B","e":"prg_sel_addr_in_B2"},{"s":"prg_sel_addr_out_B","e":"prg_rom_op_in_A"},{"s":"prg_sel_addr_out_B","e":"prg_rom_arg_in_A"},{"s":"prg_x_lb_out_1","e":"prg_rom_op_in_B"},{"s":"prg_x_lb_out_1","e":"prg_rom_arg_in_B"},{"s":"prg_x_lwo_out_1","e":"prg_rom_op_in_W"},{"s":"prg_x_lwa_out_1","e":"prg_rom_arg_in_W"},{"s":"prg_x_newf_out_1","e":"prg_rom_op_in_C"},{"s":"prg_x_newf_out_1","e":"prg_rom_arg_in_C"},{"s":"prg_rom_op_out_B","e":"prg_ir_op_in_B"},{"s":"prg_rom_arg_out_B","e":"prg_ir_arg_in_B"},{"s":"prg_x_ph1_out_1","e":"prg_ir_op_in_T"},{"s":"prg_x_ph1_out_1","e":"prg_ir_arg_in_T"},{"s":"prg_x_pci_out_1","e":"prg_pc_in_I"},{"s":"prg_x_pcl_out_1","e":"prg_pc_in_L"},{"s":"prg_ir_arg_out_B","e":"prg_pc_in_B"},{"s":"prg_x_rst_out_1","e":"prg_pc_in_R"},{"s":"prg_pc_out_B","e":"port_pc_in_I1"},{"s":"prg_ir_op_out_B","e":"port_opc_in_I1"},{"s":"prg_ir_arg_out_B","e":"port_arg_in_I1"},{"s":"ldr_v8_out_V","e":"ldr_rpt_wp_in_D"},{"s":"ldr_fi_out_T","e":"ldr_rpt_wp_in_S"},{"s":"ldr_rpt_wp_out_O","e":"ldr_and_wo_in_I1"},{"s":"ldr_rpt_wp_out_O","e":"ldr_and_wa_in_I1"},{"s":"mem_x_arg_out_1","e":"mem_ram_in_A"},{"s":"mem_x_acc_out_1","e":"mem_ram_in_B"},{"s":"mem_x_mw_out_1","e":"mem_ram_in_W"},{"s":"mem_x_rst_out_1","e":"mem_ram_in_C"},{"s":"mem_ram_out_B","e":"port_mem_in_I1"},{"s":"term_x_acc_out_1","e":"term_term_in_B"},{"s":"term_x_tw_out_1","e":"term_term_in_W"},{"s":"term_x_rst_out_1","e":"term_term_in_C"},{"s":"dec_x_opc_out_1","e":"dec_eq_ldi_in_B1"},{"s":"dec_v_ldi_out_V","e":"dec_eq_ldi_in_B2"},{"s":"dec_x_opc_out_1","e":"dec_eq_add_in_B1"},{"s":"dec_v_add_out_V","e":"dec_eq_add_in_B2"},{"s":"dec_x_opc_out_1","e":"dec_eq_sub_in_B1"},{"s":"dec_v_sub_out_V","e":"dec_eq_sub_in_B2"},{"s":"dec_x_opc_out_1","e":"dec_eq_lda_in_B1"},{"s":"dec_v_lda_out_V","e":"dec_eq_lda_in_B2"},{"s":"dec_x_opc_out_1","e":"dec_eq_sta_in_B1"},{"s":"dec_v_sta_out_V","e":"dec_eq_sta_in_B2"},{"s":"dec_x_opc_out_1","e":"dec_eq_jmp_in_B1"},{"s":"dec_v_jmp_out_V","e":"dec_eq_jmp_in_B2"},{"s":"dec_x_opc_out_1","e":"dec_eq_jz_in_B1"},{"s":"dec_v_jz_out_V","e":"dec_eq_jz_in_B2"},{"s":"dec_x_opc_out_1","e":"dec_eq_jnz_in_B1"},{"s":"dec_v_jnz_out_V","e":"dec_eq_jnz_in_B2"},{"s":"dec_x_opc_out_1","e":"dec_eq_out_in_B1"},{"s":"dec_v_out_out_V","e":"dec_eq_out_in_B2"},{"s":"dec_x_opc_out_1","e":"dec_eq_hlt_in_B1"},{"s":"dec_v_hlt_out_V","e":"dec_eq_hlt_in_B2"},{"s":"dec_eq_ldi_out_O","e":"dec_or_accload_in_I1"},{"s":"dec_eq_add_out_O","e":"dec_or_accload_in_I2"},{"s":"dec_eq_sub_out_O","e":"dec_or_accload_in_I3"},{"s":"dec_eq_lda_out_O","e":"dec_or_accload_in_I4"},{"s":"dec_or_accload_out_O","e":"dec_and_acct_in_I1"},{"s":"dec_x_ph3_out_1","e":"dec_and_acct_in_I2"},{"s":"dec_eq_add_out_O","e":"dec_or_addsub_in_I1"},{"s":"dec_eq_sub_out_O","e":"dec_or_addsub_in_I2"},{"s":"dec_eq_ldi_out_O","e":"dec_sel_accsrc_in_E1"},{"s":"dec_x_arg_out_1","e":"dec_sel_accsrc_in_B1"},{"s":"dec_or_addsub_out_O","e":"dec_sel_accsrc_in_E2"},{"s":"dec_x_alur_out_1","e":"dec_sel_accsrc_in_B2"},{"s":"dec_eq_lda_out_O","e":"dec_sel_accsrc_in_E3"},{"s":"dec_x_mem_out_1","e":"dec_sel_accsrc_in_B3"},{"s":"dec_sel_accsrc_out_B","e":"dec_acc_in_B"},{"s":"dec_and_acct_out_O","e":"dec_acc_in_T"},{"s":"dec_acc_out_B","e":"dec_eq_zero_in_B1"},{"s":"dec_eq_add_out_O","e":"dec_sel_aluop_in_E1"},{"s":"dec_v_alu_add_out_V","e":"dec_sel_aluop_in_B1"},{"s":"dec_eq_sub_out_O","e":"dec_sel_aluop_in_E2"},{"s":"dec_v_alu_sub_out_V","e":"dec_sel_aluop_in_B2"},{"s":"dec_eq_jz_out_O","e":"dec_and_jz_in_I1"},{"s":"dec_eq_zero_out_O","e":"dec_and_jz_in_I2"},{"s":"dec_eq_jnz_out_O","e":"dec_and_jnz_in_I1"},{"s":"dec_eq_zero_out_!O","e":"dec_and_jnz_in_I2"},{"s":"dec_eq_jmp_out_O","e":"dec_or_jtk_in_I1"},{"s":"dec_and_jz_out_O","e":"dec_or_jtk_in_I2"},{"s":"dec_and_jnz_out_O","e":"dec_or_jtk_in_I3"},{"s":"dec_x_ph5_out_1","e":"dec_and_pci_in_I1"},{"s":"dec_or_jtk_out_!O","e":"dec_and_pci_in_I2"},{"s":"dec_x_ph5_out_1","e":"dec_and_pcl_in_I1"},{"s":"dec_or_jtk_out_O","e":"dec_and_pcl_in_I2"},{"s":"dec_x_ph3_out_1","e":"dec_and_mw_in_I1"},{"s":"dec_eq_sta_out_O","e":"dec_and_mw_in_I2"},{"s":"dec_x_ph3_out_1","e":"dec_and_tw_in_I1"},{"s":"dec_eq_out_out_O","e":"dec_and_tw_in_I2"},{"s":"dec_x_ph3_out_1","e":"dec_and_hlts_in_I1"},{"s":"dec_eq_hlt_out_O","e":"dec_and_hlts_in_I2"},{"s":"dec_acc_out_B","e":"port_acc_in_I1"},{"s":"dec_sel_aluop_out_B","e":"port_aluop_in_I1"},{"s":"dec_and_pci_out_O","e":"port_pci_in_I1"},{"s":"dec_and_pcl_out_O","e":"port_pcl_in_I1"},{"s":"dec_and_mw_out_O","e":"port_mw_in_I1"},{"s":"dec_and_tw_out_O","e":"port_tw_in_I1"},{"s":"dec_and_hlts_out_O","e":"port_hlts_in_I1"},{"s":"alu_x_acc_out_1","e":"alu_p_a_in_I1"},{"s":"alu_x_arg_out_1","e":"alu_p_b_in_I1"},{"s":"alu_x_op2_out_1","e":"alu_p_op_in_I1"},{"s":"ctl_v15_out_V","e":"ctl_rpt_pwr_in_D"},{"s":"ctl_and_run2_out_O","e":"ctl_rpt_pwr_in_S"},{"s":"ctl_rpt_pwr_out_O","e":"ctl_clk_in_P"},{"s":"ctl_x_loading_out_1","e":"ctl_cnt_in_R"},{"s":"ctl_x_hlts_out_1","e":"ctl_pulse_hlts_in_I"},{"s":"ctl_pulse_hlts_out_U","e":"ctl_ff_halt_in_S"},{"s":"lib_tick_out_T","e":"lib_rom_hello_in_T"},{"s":"lib_rom_hello_out_B","e":"lib_fo_hello_in_V"},{"s":"lib_rom_hello_out_T","e":"lib_fo_hello_in_T"},{"s":"lib_tick_out_T","e":"lib_rom_count_in_T"},{"s":"lib_rom_count_out_B","e":"lib_fo_count_in_V"},{"s":"lib_rom_count_out_T","e":"lib_fo_count_in_T"},{"s":"lib_tick_out_T","e":"lib_rom_cowsay_in_T"},{"s":"lib_rom_cowsay_out_B","e":"lib_fo_cowsay_in_V"},{"s":"lib_rom_cowsay_out_T","e":"lib_fo_cowsay_in_T"},{"s":"lib_tick_out_T","e":"lib_rom_calc_in_T"},{"s":"lib_rom_calc_out_B","e":"lib_fo_calc_in_V"},{"s":"lib_rom_calc_out_T","e":"lib_fo_calc_in_T"},{"s":"inp_v_on_out_V","e":"inp_ti_in_P"},{"s":"inp_x_int_out_1","e":"inp_ti_in_F"},{"s":"inp_ti_out_E","e":"inp_and_ef_in_I2"},{"s":"term_x_rst_out_1","e":"inp_ti_in_C"},{"s":"inp_ti_out_B","e":"inp_latch_in_B"},{"s":"inp_ti_out_T","e":"inp_latch_in_T"},{"s":"inp_and_ef_out_O","e":"inp_latch_in_T"},{"s":"inp_latch_out_B","e":"port_inb_in_I1"},{"s":"dec_x_opc_out_1","e":"dec_eq_in_in_B1"},{"s":"dec_v_in_out_V","e":"dec_eq_in_in_B2"},{"s":"dec_x_ph3_out_1","e":"dec_and_inr_in_I1"},{"s":"dec_eq_in_out_O","e":"dec_and_inr_in_I2"},{"s":"dec_and_inr_out_O","e":"port_int_in_I1"},{"s":"dec_x_ph5_out_1","e":"dec_and_int_in_I1"},{"s":"dec_eq_in_out_O","e":"dec_and_int_in_I2"},{"s":"dec_and_int_out_O","e":"dec_acc_in_T"},{"s":"dec_eq_in_out_O","e":"dec_sel_accsrc_in_E4"},{"s":"dec_x_inb_out_1","e":"dec_sel_accsrc_in_B4"},{"s":"inp_x_int_out_1","e":"inp_pulse_in_I"},{"s":"inp_pulse_out_U","e":"inp_and_ef_in_I1"}]}
+{
+  "doff": [
+    -2072,
+    1882
+  ],
+  "zoom": 1,
+  "opAll": [
+    {
+      "_#new": "Portal 1 Entry",
+      "_id": "alu_p_a",
+      "_x": -470,
+      "_y": -240,
+      "Order": 100,
+      "Name": "A"
+    },
+    {
+      "_#new": "Portal 1 Entry",
+      "_id": "alu_p_b",
+      "_x": -470,
+      "_y": -120,
+      "Order": 100,
+      "Name": "B"
+    },
+    {
+      "_#new": "Portal 1 Entry",
+      "_id": "alu_p_op",
+      "_x": -470,
+      "_y": 0,
+      "Order": 100,
+      "Name": "OP"
+    },
+    {
+      "_#new": "Portal 1 Entry",
+      "_id": "alu_p_r",
+      "_x": 310,
+      "_y": -200,
+      "Order": 100,
+      "Name": "R"
+    },
+    {
+      "_#new": "Portal 1 Entry",
+      "_id": "alu_p_z",
+      "_x": 310,
+      "_y": -80,
+      "Order": 100,
+      "Name": "Z"
+    },
+    {
+      "_#new": "Portal 1 Entry",
+      "_id": "alu_p_c",
+      "_x": 310,
+      "_y": 40,
+      "Order": 100,
+      "Name": "C"
+    },
+    {
+      "_#new": "Portal 1 Entry",
+      "_id": "alu_p_n",
+      "_x": 310,
+      "_y": 160,
+      "Order": 100,
+      "Name": "N"
+    },
+    {
+      "_#new": "Value",
+      "_id": "alu_v_zero",
+      "_x": -30,
+      "_y": 340,
+      "Order": 100,
+      "binary": false,
+      "value": 0
+    },
+    {
+      "_#new": "Portal Exit",
+      "_id": "alu_x_a",
+      "_x": -330,
+      "_y": -240,
+      "Order": 100,
+      "Origin": "alu_p_a"
+    },
+    {
+      "_#new": "Portal Exit",
+      "_id": "alu_x_b",
+      "_x": -330,
+      "_y": -120,
+      "Order": 100,
+      "Origin": "alu_p_b"
+    },
+    {
+      "_#new": "Portal Exit",
+      "_id": "alu_x_op",
+      "_x": -330,
+      "_y": 0,
+      "Order": 100,
+      "Origin": "alu_p_op"
+    },
+    {
+      "_#new": "Portal Exit",
+      "_id": "alu_x_r",
+      "_x": 470,
+      "_y": -200,
+      "Order": 100,
+      "Origin": "alu_p_r"
+    },
+    {
+      "_#new": "Portal Exit",
+      "_id": "alu_x_z",
+      "_x": 470,
+      "_y": -80,
+      "Order": 100,
+      "Origin": "alu_p_z"
+    },
+    {
+      "_#new": "Portal Exit",
+      "_id": "alu_x_c",
+      "_x": 470,
+      "_y": 40,
+      "Order": 100,
+      "Origin": "alu_p_c"
+    },
+    {
+      "_#new": "Portal Exit",
+      "_id": "alu_x_n",
+      "_x": 470,
+      "_y": 160,
+      "Order": 100,
+      "Origin": "alu_p_n"
+    },
+    {
+      "_#new": "Byte to 8bit decoder",
+      "_id": "alu_dec",
+      "_x": -330,
+      "_y": 200,
+      "Order": 100
+    },
+    {
+      "_#new": "Add",
+      "_id": "alu_add",
+      "_x": -150,
+      "_y": -400,
+      "Order": 100
+    },
+    {
+      "_#new": "Subtract",
+      "_id": "alu_sub",
+      "_x": -150,
+      "_y": -260,
+      "Order": 100
+    },
+    {
+      "_#new": "And",
+      "_id": "alu_and",
+      "_x": -150,
+      "_y": -140,
+      "Order": 100,
+      "Mode": "bitwise",
+      "Variant": "combined"
+    },
+    {
+      "_#new": "Or",
+      "_id": "alu_or",
+      "_x": -150,
+      "_y": -40,
+      "Order": 100,
+      "Mode": "bitwise",
+      "Variant": "combined"
+    },
+    {
+      "_#new": "Xor",
+      "_id": "alu_xor",
+      "_x": -150,
+      "_y": 60,
+      "Order": 100,
+      "Mode": "bitwise",
+      "Variant": "combined"
+    },
+    {
+      "_#new": "Not",
+      "_id": "alu_not",
+      "_x": -150,
+      "_y": 160,
+      "Order": 100,
+      "Mode": "bitwise"
+    },
+    {
+      "_#new": "Select",
+      "_id": "alu_sel1",
+      "_x": 110,
+      "_y": -320,
+      "Order": 100
+    },
+    {
+      "_#new": "Select",
+      "_id": "alu_sel2",
+      "_x": 110,
+      "_y": -100,
+      "Order": 100
+    },
+    {
+      "_#new": "And",
+      "_id": "alu_and_c",
+      "_x": 110,
+      "_y": 120,
+      "Order": 100,
+      "Mode": "bit",
+      "Variant": "combined"
+    },
+    {
+      "_#new": "And",
+      "_id": "alu_and_n",
+      "_x": 110,
+      "_y": 220,
+      "Order": 100,
+      "Mode": "bit",
+      "Variant": "combined"
+    },
+    {
+      "_#new": "Equals",
+      "_id": "alu_eq",
+      "_x": 110,
+      "_y": 340,
+      "Order": 100
+    },
+    {
+      "_#new": "Comment",
+      "_id": "alu_c_rig",
+      "_x": -620,
+      "_y": -380,
+      "Order": 100,
+      "Comment": "ALU operands from the CPU:\\nACC → A, argument → B,\\nthe decoder sets OP (1 = add, 2 = sub)",
+      "Font Size": 14
+    },
+    {
+      "_#new": "Comment",
+      "_id": "alu_c_units",
+      "_x": -150,
+      "_y": -530,
+      "Order": 100,
+      "Comment": "ALU core:\\nall units compute in parallel,\\nOP picks the result",
+      "Font Size": 14
+    },
+    {
+      "_#new": "Comment",
+      "_id": "alu_c_dec",
+      "_x": -330,
+      "_y": 360,
+      "Order": 100,
+      "Comment": "OP decoder (one-hot):\\n1=ADD  2=SUB  4=AND\\n8=OR  16=XOR  32=NOT A",
+      "Font Size": 14
+    },
+    {
+      "_#new": "Comment",
+      "_id": "alu_c_mux",
+      "_x": 100,
+      "_y": -470,
+      "Order": 100,
+      "Comment": "Result mux:\\nboth Select outputs\\nOR-merge into R",
+      "Font Size": 14
+    },
+    {
+      "_#new": "Comment",
+      "_id": "alu_c_flags",
+      "_x": 320,
+      "_y": 350,
+      "Order": 100,
+      "Comment": "Flags:\\nZ = result is zero\\nC = carry (ADD)\\nN = negative (SUB)",
+      "Font Size": 14
+    },
+    {
+      "_#new": "Comment",
+      "_id": "alu_c_out",
+      "_x": 390,
+      "_y": -310,
+      "Order": 100,
+      "Comment": "ALU outputs:\\nR = result\\nZ, C, N = flags",
+      "Font Size": 14
+    },
+    {
+      "_#new": "Anchor",
+      "_id": "alu_anchor",
+      "_x": -930,
+      "_y": 530,
+      "Order": 100,
+      "Title": "ALU",
+      "Font Size": 14
+    },
+    {
+      "_#new": "Portal 1 Entry",
+      "_id": "port_ph1",
+      "_x": 610,
+      "_y": -1840,
+      "Order": 100,
+      "Name": "PH1"
+    },
+    {
+      "_#new": "Portal 1 Entry",
+      "_id": "port_ph3",
+      "_x": 610,
+      "_y": -1760,
+      "Order": 100,
+      "Name": "PH3"
+    },
+    {
+      "_#new": "Portal 1 Entry",
+      "_id": "port_ph5",
+      "_x": 610,
+      "_y": -1680,
+      "Order": 100,
+      "Name": "PH5"
+    },
+    {
+      "_#new": "Portal 1 Entry",
+      "_id": "port_halt",
+      "_x": 610,
+      "_y": -1600,
+      "Order": 100,
+      "Name": "HALT"
+    },
+    {
+      "_#new": "Portal 1 Entry",
+      "_id": "port_la",
+      "_x": -1390,
+      "_y": -240,
+      "Order": 100,
+      "Name": "LA"
+    },
+    {
+      "_#new": "Portal 1 Entry",
+      "_id": "port_lb",
+      "_x": -1390,
+      "_y": -160,
+      "Order": 100,
+      "Name": "LB"
+    },
+    {
+      "_#new": "Portal 1 Entry",
+      "_id": "port_lwo",
+      "_x": -1390,
+      "_y": -80,
+      "Order": 100,
+      "Name": "LWO"
+    },
+    {
+      "_#new": "Portal 1 Entry",
+      "_id": "port_lwa",
+      "_x": -1390,
+      "_y": 0,
+      "Order": 100,
+      "Name": "LWA"
+    },
+    {
+      "_#new": "Portal 1 Entry",
+      "_id": "port_loading",
+      "_x": -1390,
+      "_y": 80,
+      "Order": 100,
+      "Name": "LOADING"
+    },
+    {
+      "_#new": "Portal 1 Entry",
+      "_id": "port_rst",
+      "_x": -1390,
+      "_y": 160,
+      "Order": 100,
+      "Name": "RST"
+    },
+    {
+      "_#new": "Portal 1 Entry",
+      "_id": "port_pc",
+      "_x": -1390,
+      "_y": 1440,
+      "Order": 100,
+      "Name": "PC"
+    },
+    {
+      "_#new": "Portal 1 Entry",
+      "_id": "port_opc",
+      "_x": -1390,
+      "_y": 1520,
+      "Order": 100,
+      "Name": "OPC"
+    },
+    {
+      "_#new": "Portal 1 Entry",
+      "_id": "port_arg",
+      "_x": -1390,
+      "_y": 1600,
+      "Order": 100,
+      "Name": "ARG"
+    },
+    {
+      "_#new": "Portal 1 Entry",
+      "_id": "port_acc",
+      "_x": 690,
+      "_y": 1280,
+      "Order": 100,
+      "Name": "ACC"
+    },
+    {
+      "_#new": "Portal 1 Entry",
+      "_id": "port_aluop",
+      "_x": 690,
+      "_y": 1360,
+      "Order": 100,
+      "Name": "ALUOP"
+    },
+    {
+      "_#new": "Portal 1 Entry",
+      "_id": "port_pci",
+      "_x": 690,
+      "_y": 1440,
+      "Order": 100,
+      "Name": "PCI"
+    },
+    {
+      "_#new": "Portal 1 Entry",
+      "_id": "port_pcl",
+      "_x": 690,
+      "_y": 1520,
+      "Order": 100,
+      "Name": "PCL"
+    },
+    {
+      "_#new": "Portal 1 Entry",
+      "_id": "port_mw",
+      "_x": 690,
+      "_y": 1600,
+      "Order": 100,
+      "Name": "MW"
+    },
+    {
+      "_#new": "Portal 1 Entry",
+      "_id": "port_tw",
+      "_x": 690,
+      "_y": 1680,
+      "Order": 100,
+      "Name": "TW"
+    },
+    {
+      "_#new": "Portal 1 Entry",
+      "_id": "port_hlts",
+      "_x": 690,
+      "_y": 1760,
+      "Order": 100,
+      "Name": "HLTS"
+    },
+    {
+      "_#new": "Portal 1 Entry",
+      "_id": "port_mem",
+      "_x": 2590,
+      "_y": 1600,
+      "Order": 100,
+      "Name": "MEM"
+    },
+    {
+      "_#new": "Portal 1 Entry",
+      "_id": "port_runsw",
+      "_x": -1790,
+      "_y": -1840,
+      "Order": 100,
+      "Name": "RUNSW"
+    },
+    {
+      "_#new": "Portal 1 Entry",
+      "_id": "port_rstbtn",
+      "_x": -1790,
+      "_y": -1760,
+      "Order": 100,
+      "Name": "RSTBTN"
+    },
+    {
+      "_#new": "Portal Exit",
+      "_id": "pnl_x_pc",
+      "_x": -2550,
+      "_y": -1900,
+      "Order": 100,
+      "Origin": "port_pc"
+    },
+    {
+      "_#new": "Portal Exit",
+      "_id": "pnl_x_opc",
+      "_x": -2550,
+      "_y": -1800,
+      "Order": 100,
+      "Origin": "port_opc"
+    },
+    {
+      "_#new": "Portal Exit",
+      "_id": "pnl_x_arg",
+      "_x": -2550,
+      "_y": -1700,
+      "Order": 100,
+      "Origin": "port_arg"
+    },
+    {
+      "_#new": "Portal Exit",
+      "_id": "pnl_x_acc",
+      "_x": -2550,
+      "_y": -1600,
+      "Order": 100,
+      "Origin": "port_acc"
+    },
+    {
+      "_#new": "Portal Exit",
+      "_id": "pnl_x_loading",
+      "_x": -2550,
+      "_y": -1500,
+      "Order": 100,
+      "Origin": "port_loading"
+    },
+    {
+      "_#new": "Portal Exit",
+      "_id": "pnl_x_halt",
+      "_x": -2550,
+      "_y": -1400,
+      "Order": 100,
+      "Origin": "port_halt"
+    },
+    {
+      "_#new": "Byte",
+      "_id": "pnl_b_pc",
+      "_x": -2350,
+      "_y": -1900,
+      "Order": 1,
+      "col": 0,
+      "row": 4,
+      "colSpan": 1,
+      "rowSpan": 1,
+      "Font Family": "Courier New",
+      "Font Size": 18,
+      "color": "#000000",
+      "Background": "#ffffff",
+      "Advanced Display": true,
+      "Show Leading Zeros": true,
+      "Seperator": "\\n",
+      "Show Bin": false,
+      "Show Oct": false,
+      "Show Dec": false,
+      "Show Hex": true,
+      "Show Char": false
+    },
+    {
+      "_#new": "Byte",
+      "_id": "pnl_b_opc",
+      "_x": -2350,
+      "_y": -1800,
+      "Order": 1,
+      "col": 1,
+      "row": 4,
+      "colSpan": 1,
+      "rowSpan": 1,
+      "Font Family": "Courier New",
+      "Font Size": 18,
+      "color": "#000000",
+      "Background": "#ffffff",
+      "Advanced Display": true,
+      "Show Leading Zeros": true,
+      "Seperator": "\\n",
+      "Show Bin": false,
+      "Show Oct": false,
+      "Show Dec": false,
+      "Show Hex": true,
+      "Show Char": false
+    },
+    {
+      "_#new": "Byte",
+      "_id": "pnl_b_arg",
+      "_x": -2350,
+      "_y": -1700,
+      "Order": 1,
+      "col": 2,
+      "row": 4,
+      "colSpan": 1,
+      "rowSpan": 1,
+      "Font Family": "Courier New",
+      "Font Size": 18,
+      "color": "#000000",
+      "Background": "#ffffff",
+      "Advanced Display": true,
+      "Show Leading Zeros": true,
+      "Seperator": "\\n",
+      "Show Bin": false,
+      "Show Oct": false,
+      "Show Dec": false,
+      "Show Hex": true,
+      "Show Char": false
+    },
+    {
+      "_#new": "Byte",
+      "_id": "pnl_b_acc",
+      "_x": -2350,
+      "_y": -1600,
+      "Order": 1,
+      "col": 3,
+      "row": 4,
+      "colSpan": 1,
+      "rowSpan": 1,
+      "Font Family": "Courier New",
+      "Font Size": 18,
+      "color": "#000000",
+      "Background": "#ffffff",
+      "Advanced Display": true,
+      "Show Leading Zeros": true,
+      "Seperator": "\\n",
+      "Show Bin": false,
+      "Show Oct": false,
+      "Show Dec": false,
+      "Show Hex": true,
+      "Show Char": true
+    },
+    {
+      "_#new": "Lamp",
+      "_id": "pnl_lamp_load",
+      "_x": -2350,
+      "_y": -1500,
+      "Order": 1,
+      "col": 0,
+      "row": 3,
+      "colSpan": 1,
+      "rowSpan": 1,
+      "color": "#ffcc00"
+    },
+    {
+      "_#new": "Lamp",
+      "_id": "pnl_lamp_halt",
+      "_x": -2350,
+      "_y": -1400,
+      "Order": 1,
+      "col": 1,
+      "row": 3,
+      "colSpan": 1,
+      "rowSpan": 1,
+      "color": "#ff3333"
+    },
+    {
+      "_#new": "Switch",
+      "_id": "pnl_run",
+      "_x": -2090,
+      "_y": -1900,
+      "Order": 1,
+      "col": 2,
+      "row": 2,
+      "colSpan": 1,
+      "rowSpan": 1,
+      "state": false
+    },
+    {
+      "_#new": "Button",
+      "_id": "pnl_rst",
+      "_x": -2090,
+      "_y": -1760,
+      "Order": 1,
+      "col": 3,
+      "row": 2,
+      "colSpan": 1,
+      "rowSpan": 1,
+      "text": "Reset"
+    },
+    {
+      "_#new": "Label",
+      "_id": "pnl_l_title",
+      "_x": -1890,
+      "_y": -1900,
+      "Order": 1,
+      "col": 0,
+      "row": 0,
+      "colSpan": 4,
+      "rowSpan": 1,
+      "Text": "8-BIT MINI PC",
+      "Href": "",
+      "Font Family": "Arial",
+      "Font Size": 16,
+      "color": "#ffffff",
+      "Background": "#223344"
+    },
+    {
+      "_#new": "Label",
+      "_id": "pnl_l_load",
+      "_x": -1890,
+      "_y": -1800,
+      "Order": 1,
+      "col": 0,
+      "row": 3,
+      "colSpan": 1,
+      "rowSpan": 1,
+      "Text": "LOAD",
+      "Href": "",
+      "Font Family": "Arial",
+      "Font Size": 14,
+      "color": "#000000",
+      "Background": "#ffffff"
+    },
+    {
+      "_#new": "Label",
+      "_id": "pnl_l_halt",
+      "_x": -1890,
+      "_y": -1700,
+      "Order": 1,
+      "col": 1,
+      "row": 3,
+      "colSpan": 1,
+      "rowSpan": 1,
+      "Text": "HALT",
+      "Href": "",
+      "Font Family": "Arial",
+      "Font Size": 14,
+      "color": "#000000",
+      "Background": "#ffffff"
+    },
+    {
+      "_#new": "Label",
+      "_id": "pnl_l_pc",
+      "_x": -1890,
+      "_y": -1600,
+      "Order": 1,
+      "col": 0,
+      "row": 4,
+      "colSpan": 1,
+      "rowSpan": 1,
+      "Text": "PC",
+      "Href": "",
+      "Font Family": "Arial",
+      "Font Size": 14,
+      "color": "#000000",
+      "Background": "#ffffff"
+    },
+    {
+      "_#new": "Label",
+      "_id": "pnl_l_opc",
+      "_x": -1890,
+      "_y": -1500,
+      "Order": 1,
+      "col": 1,
+      "row": 4,
+      "colSpan": 1,
+      "rowSpan": 1,
+      "Text": "OP",
+      "Href": "",
+      "Font Family": "Arial",
+      "Font Size": 14,
+      "color": "#000000",
+      "Background": "#ffffff"
+    },
+    {
+      "_#new": "Label",
+      "_id": "pnl_l_arg",
+      "_x": -1890,
+      "_y": -1400,
+      "Order": 1,
+      "col": 2,
+      "row": 4,
+      "colSpan": 1,
+      "rowSpan": 1,
+      "Text": "ARG",
+      "Href": "",
+      "Font Family": "Arial",
+      "Font Size": 14,
+      "color": "#000000",
+      "Background": "#ffffff"
+    },
+    {
+      "_#new": "Label",
+      "_id": "pnl_l_acc",
+      "_x": -1890,
+      "_y": -1300,
+      "Order": 1,
+      "col": 3,
+      "row": 4,
+      "colSpan": 1,
+      "rowSpan": 1,
+      "Text": "ACC",
+      "Href": "",
+      "Font Family": "Arial",
+      "Font Size": 14,
+      "color": "#000000",
+      "Background": "#ffffff"
+    },
+    {
+      "_#new": "Comment",
+      "_id": "pnl_c",
+      "_x": -2400,
+      "_y": -2050,
+      "Order": 100,
+      "Comment": "Front panel:\\nRUN switch starts the CPU, Reset homes it.\\nUpload a .bin program via the file input.\\nStatus: PC, OP, ARG, ACC + load/halt lamps",
+      "Font Size": 14
+    },
+    {
+      "_#new": "Anchor",
+      "_id": "pnl_anchor",
+      "_x": -2870,
+      "_y": -1090,
+      "Order": 100,
+      "Title": "Front Panel",
+      "Font Size": 14
+    },
+    {
+      "_#new": "Portal Exit",
+      "_id": "ctl_x_runsw",
+      "_x": -590,
+      "_y": -1900,
+      "Order": 100,
+      "Origin": "port_runsw"
+    },
+    {
+      "_#new": "Portal Exit",
+      "_id": "ctl_x_loading",
+      "_x": -590,
+      "_y": -1800,
+      "Order": 100,
+      "Origin": "port_loading"
+    },
+    {
+      "_#new": "Portal Exit",
+      "_id": "ctl_x_hlts",
+      "_x": -590,
+      "_y": -1700,
+      "Order": 100,
+      "Origin": "port_hlts"
+    },
+    {
+      "_#new": "Portal Exit",
+      "_id": "ctl_x_rst",
+      "_x": -590,
+      "_y": -1600,
+      "Order": 100,
+      "Origin": "port_rst"
+    },
+    {
+      "_#new": "RS FlipFlop",
+      "_id": "ctl_ff_halt",
+      "_x": -390,
+      "_y": -1640,
+      "Order": 100
+    },
+    {
+      "_#new": "Not",
+      "_id": "ctl_not_loading",
+      "_x": -390,
+      "_y": -1780,
+      "Order": 100,
+      "Mode": "bit"
+    },
+    {
+      "_#new": "And",
+      "_id": "ctl_and_run1",
+      "_x": -230,
+      "_y": -1900,
+      "Order": 100,
+      "Mode": "bit",
+      "Variant": "combined"
+    },
+    {
+      "_#new": "And",
+      "_id": "ctl_and_run2",
+      "_x": -90,
+      "_y": -1820,
+      "Order": 100,
+      "Mode": "bit",
+      "Variant": "combined"
+    },
+    {
+      "_#new": "Value",
+      "_id": "ctl_v_interval",
+      "_x": -90,
+      "_y": -1960,
+      "Order": 100,
+      "binary": false,
+      "value": 6
+    },
+    {
+      "_#new": "Clock",
+      "_id": "ctl_clk",
+      "_x": 70,
+      "_y": -1880,
+      "Order": 100
+    },
+    {
+      "_#new": "Counter4",
+      "_id": "ctl_cnt",
+      "_x": 210,
+      "_y": -1780,
+      "Order": 100
+    },
+    {
+      "_#new": "4bit to byte decoder",
+      "_id": "ctl_phb",
+      "_x": 350,
+      "_y": -1780,
+      "Order": 100
+    },
+    {
+      "_#new": "Value",
+      "_id": "ctl_v1",
+      "_x": 210,
+      "_y": -2040,
+      "Order": 100,
+      "binary": false,
+      "value": 1
+    },
+    {
+      "_#new": "Value",
+      "_id": "ctl_v3",
+      "_x": 350,
+      "_y": -2040,
+      "Order": 100,
+      "binary": false,
+      "value": 3
+    },
+    {
+      "_#new": "Value",
+      "_id": "ctl_v5",
+      "_x": 490,
+      "_y": -2040,
+      "Order": 100,
+      "binary": false,
+      "value": 5
+    },
+    {
+      "_#new": "Value",
+      "_id": "ctl_v6",
+      "_x": 630,
+      "_y": -2040,
+      "Order": 100,
+      "binary": false,
+      "value": 6
+    },
+    {
+      "_#new": "Equals",
+      "_id": "ctl_eq1",
+      "_x": 490,
+      "_y": -1940,
+      "Order": 100
+    },
+    {
+      "_#new": "Equals",
+      "_id": "ctl_eq3",
+      "_x": 490,
+      "_y": -1840,
+      "Order": 100
+    },
+    {
+      "_#new": "Equals",
+      "_id": "ctl_eq5",
+      "_x": 490,
+      "_y": -1740,
+      "Order": 100
+    },
+    {
+      "_#new": "Equals",
+      "_id": "ctl_eq6",
+      "_x": 490,
+      "_y": -1560,
+      "Order": 100
+    },
+    {
+      "_#new": "Comment",
+      "_id": "ctl_c1",
+      "_x": -40,
+      "_y": -2150,
+      "Order": 100,
+      "Comment": "Control unit:\\nclock runs while RUN & !HALT & !LOADING.\\nPhase counter cycles 1..6 per instruction:\\n1 = latch instruction, 3 = execute, 5 = advance PC\\n(2, 4 and 6 give signals time to settle,\\n6 also resets the phase counter).\\nThe interval value sets the CPU speed —\\nbelow ~5 signals no longer settle in time.",
+      "Font Size": 14
+    },
+    {
+      "_#new": "Comment",
+      "_id": "ctl_c2",
+      "_x": -390,
+      "_y": -1480,
+      "Order": 100,
+      "Comment": "HALT flipflop: set by the\\nHLT instruction, cleared by Reset",
+      "Font Size": 14
+    },
+    {
+      "_#new": "Anchor",
+      "_id": "ctl_anchor",
+      "_x": -830,
+      "_y": -1210,
+      "Order": 100,
+      "Title": "Control Unit",
+      "Font Size": 14
+    },
+    {
+      "_#new": "Portal 1 Entry",
+      "_id": "port_newf",
+      "_x": -1390,
+      "_y": 240,
+      "Order": 100,
+      "Name": "NEWF"
+    },
+    {
+      "_#new": "File Input",
+      "_id": "ldr_fi",
+      "_x": -2590,
+      "_y": -100,
+      "Order": 100,
+      "col": 0,
+      "row": 2,
+      "colSpan": 2,
+      "rowSpan": 1
+    },
+    {
+      "_#new": "Value",
+      "_id": "ldr_v8",
+      "_x": -2390,
+      "_y": -260,
+      "Order": 100,
+      "binary": false,
+      "value": 5
+    },
+    {
+      "_#new": "Not",
+      "_id": "ldr_not_e",
+      "_x": -2390,
+      "_y": -100,
+      "Order": 100,
+      "Mode": "bit"
+    },
+    {
+      "_#new": "Value",
+      "_id": "ldr_v30",
+      "_x": -2390,
+      "_y": 60,
+      "Order": 100,
+      "binary": false,
+      "value": 30
+    },
+    {
+      "_#new": "Repeater",
+      "_id": "ldr_rpt_load",
+      "_x": -2230,
+      "_y": -20,
+      "Order": 100
+    },
+    {
+      "_#new": "Clock",
+      "_id": "ldr_clk",
+      "_x": -2090,
+      "_y": -200,
+      "Order": 100
+    },
+    {
+      "_#new": "T FlipFlop",
+      "_id": "ldr_ff",
+      "_x": -1930,
+      "_y": -280,
+      "Order": 100
+    },
+    {
+      "_#new": "And",
+      "_id": "ldr_and_wo",
+      "_x": -1750,
+      "_y": -140,
+      "Order": 100,
+      "Mode": "bit",
+      "Variant": "combined"
+    },
+    {
+      "_#new": "And",
+      "_id": "ldr_and_wa",
+      "_x": -1750,
+      "_y": -20,
+      "Order": 100,
+      "Mode": "bit",
+      "Variant": "combined"
+    },
+    {
+      "_#new": "Value",
+      "_id": "ldr_v4",
+      "_x": -1930,
+      "_y": 120,
+      "Order": 100,
+      "binary": false,
+      "value": 4
+    },
+    {
+      "_#new": "Repeater",
+      "_id": "ldr_rpt_inc",
+      "_x": -1750,
+      "_y": 120,
+      "Order": 100
+    },
+    {
+      "_#new": "Counter8",
+      "_id": "ldr_cnt",
+      "_x": -1590,
+      "_y": -280,
+      "Order": 100
+    },
+    {
+      "_#new": "Portal Exit",
+      "_id": "ldr_x_rstbtn",
+      "_x": -1750,
+      "_y": 260,
+      "Order": 100,
+      "Origin": "port_rstbtn"
+    },
+    {
+      "_#new": "Or",
+      "_id": "ldr_or_rst",
+      "_x": -1590,
+      "_y": 200,
+      "Order": 100,
+      "Mode": "bit",
+      "Variant": "combined"
+    },
+    {
+      "_#new": "Comment",
+      "_id": "ldr_c1",
+      "_x": -2250,
+      "_y": -480,
+      "Order": 100,
+      "Comment": "Loader: reads the uploaded file, two bytes\\nper instruction (opcode, argument).\\nThe flipflop toggles per byte read and routes\\neven bytes to the opcode ROM, odd bytes to\\nthe argument ROM. The counter is the target\\naddress. LOADING pauses the CPU clock,\\nthe repeater keeps it alive for the last write.",
+      "Font Size": 14
+    },
+    {
+      "_#new": "Comment",
+      "_id": "ldr_c2",
+      "_x": -1660,
+      "_y": 380,
+      "Order": 100,
+      "Comment": "RST pulses on file upload or Reset button:\\nclears PC, HALT, data RAM and the screen",
+      "Font Size": 14
+    },
+    {
+      "_#new": "Anchor",
+      "_id": "ldr_anchor",
+      "_x": -2870,
+      "_y": 530,
+      "Order": 100,
+      "Title": "Loader",
+      "Font Size": 14
+    },
+    {
+      "_#new": "Portal Exit",
+      "_id": "prg_x_loading",
+      "_x": -2650,
+      "_y": 1340,
+      "Order": 100,
+      "Origin": "port_loading"
+    },
+    {
+      "_#new": "Portal Exit",
+      "_id": "prg_x_la",
+      "_x": -2650,
+      "_y": 1420,
+      "Order": 100,
+      "Origin": "port_la"
+    },
+    {
+      "_#new": "Portal Exit",
+      "_id": "prg_x_lb",
+      "_x": -2650,
+      "_y": 1500,
+      "Order": 100,
+      "Origin": "port_lb"
+    },
+    {
+      "_#new": "Portal Exit",
+      "_id": "prg_x_lwo",
+      "_x": -2650,
+      "_y": 1580,
+      "Order": 100,
+      "Origin": "port_lwo"
+    },
+    {
+      "_#new": "Portal Exit",
+      "_id": "prg_x_lwa",
+      "_x": -2650,
+      "_y": 1660,
+      "Order": 100,
+      "Origin": "port_lwa"
+    },
+    {
+      "_#new": "Portal Exit",
+      "_id": "prg_x_newf",
+      "_x": -2650,
+      "_y": 1740,
+      "Order": 100,
+      "Origin": "port_newf"
+    },
+    {
+      "_#new": "Portal Exit",
+      "_id": "prg_x_ph1",
+      "_x": -2650,
+      "_y": 1820,
+      "Order": 100,
+      "Origin": "port_ph1"
+    },
+    {
+      "_#new": "Portal Exit",
+      "_id": "prg_x_pci",
+      "_x": -2650,
+      "_y": 1900,
+      "Order": 100,
+      "Origin": "port_pci"
+    },
+    {
+      "_#new": "Portal Exit",
+      "_id": "prg_x_pcl",
+      "_x": -2650,
+      "_y": 1980,
+      "Order": 100,
+      "Origin": "port_pcl"
+    },
+    {
+      "_#new": "Portal Exit",
+      "_id": "prg_x_rst",
+      "_x": -2650,
+      "_y": 2060,
+      "Order": 100,
+      "Origin": "port_rst"
+    },
+    {
+      "_#new": "Not",
+      "_id": "prg_not_loading",
+      "_x": -2430,
+      "_y": 1360,
+      "Order": 100,
+      "Mode": "bit"
+    },
+    {
+      "_#new": "Select",
+      "_id": "prg_sel_addr",
+      "_x": -2270,
+      "_y": 1440,
+      "Order": 100
+    },
+    {
+      "_#new": "Counter8",
+      "_id": "prg_pc",
+      "_x": -2430,
+      "_y": 1940,
+      "Order": 100
+    },
+    {
+      "_#new": "Register",
+      "_id": "prg_rom_op",
+      "_x": -2090,
+      "_y": 1400,
+      "Order": 100
+    },
+    {
+      "_#new": "Register",
+      "_id": "prg_rom_arg",
+      "_x": -2090,
+      "_y": 1660,
+      "Order": 100
+    },
+    {
+      "_#new": "Memory (1 byte)",
+      "_id": "prg_ir_op",
+      "_x": -1890,
+      "_y": 1400,
+      "Order": 100
+    },
+    {
+      "_#new": "Memory (1 byte)",
+      "_id": "prg_ir_arg",
+      "_x": -1890,
+      "_y": 1660,
+      "Order": 100
+    },
+    {
+      "_#new": "Comment",
+      "_id": "prg_c1",
+      "_x": -2190,
+      "_y": 1200,
+      "Order": 100,
+      "Comment": "Program memory: two ROMs share one address —\\none holds opcodes, the other arguments.\\nWhile LOADING the address comes from the loader,\\notherwise from the program counter.\\nA new upload clears both ROMs first.",
+      "Font Size": 14
+    },
+    {
+      "_#new": "Comment",
+      "_id": "prg_c2",
+      "_x": -1890,
+      "_y": 1840,
+      "Order": 100,
+      "Comment": "Instruction register: phase 1\\nlatches opcode + argument",
+      "Font Size": 14
+    },
+    {
+      "_#new": "Comment",
+      "_id": "prg_c3",
+      "_x": -2430,
+      "_y": 2120,
+      "Order": 100,
+      "Comment": "Program counter: phase 5 increments,\\na taken jump loads the argument instead,\\nReset starts over at 0",
+      "Font Size": 14
+    },
+    {
+      "_#new": "Anchor",
+      "_id": "prg_anchor",
+      "_x": -2970,
+      "_y": 2330,
+      "Order": 100,
+      "Title": "Program Memory",
+      "Font Size": 14
+    },
+    {
+      "_#new": "Repeater",
+      "_id": "ldr_rpt_wp",
+      "_x": -1930,
+      "_y": -140,
+      "Order": 100
+    },
+    {
+      "_#new": "Portal Exit",
+      "_id": "mem_x_arg",
+      "_x": 1490,
+      "_y": 1460,
+      "Order": 100,
+      "Origin": "port_arg"
+    },
+    {
+      "_#new": "Portal Exit",
+      "_id": "mem_x_acc",
+      "_x": 1490,
+      "_y": 1540,
+      "Order": 100,
+      "Origin": "port_acc"
+    },
+    {
+      "_#new": "Portal Exit",
+      "_id": "mem_x_mw",
+      "_x": 1490,
+      "_y": 1620,
+      "Order": 100,
+      "Origin": "port_mw"
+    },
+    {
+      "_#new": "Portal Exit",
+      "_id": "mem_x_rst",
+      "_x": 1490,
+      "_y": 1700,
+      "Order": 100,
+      "Origin": "port_rst"
+    },
+    {
+      "_#new": "Register",
+      "_id": "mem_ram",
+      "_x": 1790,
+      "_y": 1560,
+      "Order": 100
+    },
+    {
+      "_#new": "Comment",
+      "_id": "mem_c",
+      "_x": 1790,
+      "_y": 1370,
+      "Order": 100,
+      "Comment": "Data memory (RAM):\\naddress = instruction argument,\\nSTA stores the accumulator there,\\nLDA reads it back, Reset clears all",
+      "Font Size": 14
+    },
+    {
+      "_#new": "Anchor",
+      "_id": "mem_anchor",
+      "_x": 1120,
+      "_y": 2170,
+      "Order": 100,
+      "Title": "Data Memory",
+      "Font Size": 14
+    },
+    {
+      "_#new": "Portal Exit",
+      "_id": "term_x_acc",
+      "_x": 1590,
+      "_y": -140,
+      "Order": 100,
+      "Origin": "port_acc"
+    },
+    {
+      "_#new": "Portal Exit",
+      "_id": "term_x_tw",
+      "_x": 1590,
+      "_y": -60,
+      "Order": 100,
+      "Origin": "port_tw"
+    },
+    {
+      "_#new": "Portal Exit",
+      "_id": "term_x_rst",
+      "_x": 1590,
+      "_y": 20,
+      "Order": 100,
+      "Origin": "port_rst"
+    },
+    {
+      "_#new": "Terminal Display",
+      "_id": "term_term",
+      "_x": 1900,
+      "_y": -60,
+      "Order": 100,
+      "col": 0,
+      "row": 1,
+      "colSpan": 4,
+      "rowSpan": 1,
+      "Terminal Width": 20,
+      "Terminal Height": 8,
+      "Show Cursor": true,
+      "Fill random on Clear": false
+    },
+    {
+      "_#new": "Comment",
+      "_id": "term_c",
+      "_x": 1900,
+      "_y": -290,
+      "Order": 100,
+      "Comment": "Terminal: the OUT instruction prints the\\naccumulator as an ASCII character,\\nbyte 10 = newline, Reset clears the screen",
+      "Font Size": 14
+    },
+    {
+      "_#new": "Anchor",
+      "_id": "term_anchor",
+      "_x": 1160,
+      "_y": 850,
+      "Order": 100,
+      "Title": "Terminal",
+      "Font Size": 14
+    },
+    {
+      "_#new": "Portal Exit",
+      "_id": "dec_x_opc",
+      "_x": -710,
+      "_y": 1200,
+      "Order": 100,
+      "Origin": "port_opc"
+    },
+    {
+      "_#new": "Portal Exit",
+      "_id": "dec_x_arg",
+      "_x": -710,
+      "_y": 1300,
+      "Order": 100,
+      "Origin": "port_arg"
+    },
+    {
+      "_#new": "Portal Exit",
+      "_id": "dec_x_ph3",
+      "_x": -710,
+      "_y": 1400,
+      "Order": 100,
+      "Origin": "port_ph3"
+    },
+    {
+      "_#new": "Portal Exit",
+      "_id": "dec_x_ph5",
+      "_x": -710,
+      "_y": 1500,
+      "Order": 100,
+      "Origin": "port_ph5"
+    },
+    {
+      "_#new": "Portal Exit",
+      "_id": "dec_x_alur",
+      "_x": -710,
+      "_y": 1600,
+      "Order": 100,
+      "Origin": "alu_p_r"
+    },
+    {
+      "_#new": "Portal Exit",
+      "_id": "dec_x_mem",
+      "_x": -710,
+      "_y": 1700,
+      "Order": 100,
+      "Origin": "port_mem"
+    },
+    {
+      "_#new": "Value",
+      "_id": "dec_v_ldi",
+      "_x": -530,
+      "_y": 1080,
+      "Order": 100,
+      "binary": false,
+      "value": 1
+    },
+    {
+      "_#new": "Equals",
+      "_id": "dec_eq_ldi",
+      "_x": -390,
+      "_y": 1080,
+      "Order": 100
+    },
+    {
+      "_#new": "Value",
+      "_id": "dec_v_add",
+      "_x": -530,
+      "_y": 1180,
+      "Order": 100,
+      "binary": false,
+      "value": 2
+    },
+    {
+      "_#new": "Equals",
+      "_id": "dec_eq_add",
+      "_x": -390,
+      "_y": 1180,
+      "Order": 100
+    },
+    {
+      "_#new": "Value",
+      "_id": "dec_v_sub",
+      "_x": -530,
+      "_y": 1280,
+      "Order": 100,
+      "binary": false,
+      "value": 3
+    },
+    {
+      "_#new": "Equals",
+      "_id": "dec_eq_sub",
+      "_x": -390,
+      "_y": 1280,
+      "Order": 100
+    },
+    {
+      "_#new": "Value",
+      "_id": "dec_v_lda",
+      "_x": -530,
+      "_y": 1380,
+      "Order": 100,
+      "binary": false,
+      "value": 4
+    },
+    {
+      "_#new": "Equals",
+      "_id": "dec_eq_lda",
+      "_x": -390,
+      "_y": 1380,
+      "Order": 100
+    },
+    {
+      "_#new": "Value",
+      "_id": "dec_v_sta",
+      "_x": -530,
+      "_y": 1480,
+      "Order": 100,
+      "binary": false,
+      "value": 5
+    },
+    {
+      "_#new": "Equals",
+      "_id": "dec_eq_sta",
+      "_x": -390,
+      "_y": 1480,
+      "Order": 100
+    },
+    {
+      "_#new": "Value",
+      "_id": "dec_v_jmp",
+      "_x": -530,
+      "_y": 1580,
+      "Order": 100,
+      "binary": false,
+      "value": 6
+    },
+    {
+      "_#new": "Equals",
+      "_id": "dec_eq_jmp",
+      "_x": -390,
+      "_y": 1580,
+      "Order": 100
+    },
+    {
+      "_#new": "Value",
+      "_id": "dec_v_jz",
+      "_x": -530,
+      "_y": 1680,
+      "Order": 100,
+      "binary": false,
+      "value": 7
+    },
+    {
+      "_#new": "Equals",
+      "_id": "dec_eq_jz",
+      "_x": -390,
+      "_y": 1680,
+      "Order": 100
+    },
+    {
+      "_#new": "Value",
+      "_id": "dec_v_jnz",
+      "_x": -530,
+      "_y": 1780,
+      "Order": 100,
+      "binary": false,
+      "value": 8
+    },
+    {
+      "_#new": "Equals",
+      "_id": "dec_eq_jnz",
+      "_x": -390,
+      "_y": 1780,
+      "Order": 100
+    },
+    {
+      "_#new": "Value",
+      "_id": "dec_v_out",
+      "_x": -530,
+      "_y": 1880,
+      "Order": 100,
+      "binary": false,
+      "value": 9
+    },
+    {
+      "_#new": "Equals",
+      "_id": "dec_eq_out",
+      "_x": -390,
+      "_y": 1880,
+      "Order": 100
+    },
+    {
+      "_#new": "Value",
+      "_id": "dec_v_hlt",
+      "_x": -530,
+      "_y": 1980,
+      "Order": 100,
+      "binary": false,
+      "value": 10
+    },
+    {
+      "_#new": "Equals",
+      "_id": "dec_eq_hlt",
+      "_x": -390,
+      "_y": 1980,
+      "Order": 100
+    },
+    {
+      "_#new": "Or",
+      "_id": "dec_or_accload",
+      "_x": -170,
+      "_y": 1200,
+      "Order": 100,
+      "Mode": "nibble",
+      "Variant": "combined"
+    },
+    {
+      "_#new": "And",
+      "_id": "dec_and_acct",
+      "_x": -10,
+      "_y": 1240,
+      "Order": 100,
+      "Mode": "bit",
+      "Variant": "combined"
+    },
+    {
+      "_#new": "Or",
+      "_id": "dec_or_addsub",
+      "_x": -170,
+      "_y": 1360,
+      "Order": 100,
+      "Mode": "bit",
+      "Variant": "combined"
+    },
+    {
+      "_#new": "Select",
+      "_id": "dec_sel_accsrc",
+      "_x": -30,
+      "_y": 1420,
+      "Order": 100
+    },
+    {
+      "_#new": "Memory (1 byte)",
+      "_id": "dec_acc",
+      "_x": 150,
+      "_y": 1300,
+      "Order": 100
+    },
+    {
+      "_#new": "Equals",
+      "_id": "dec_eq_zero",
+      "_x": 330,
+      "_y": 1300,
+      "Order": 100
+    },
+    {
+      "_#new": "Value",
+      "_id": "dec_v_alu_add",
+      "_x": -170,
+      "_y": 1520,
+      "Order": 100,
+      "binary": false,
+      "value": 1
+    },
+    {
+      "_#new": "Value",
+      "_id": "dec_v_alu_sub",
+      "_x": -170,
+      "_y": 1620,
+      "Order": 100,
+      "binary": false,
+      "value": 2
+    },
+    {
+      "_#new": "Select",
+      "_id": "dec_sel_aluop",
+      "_x": -30,
+      "_y": 1720,
+      "Order": 100
+    },
+    {
+      "_#new": "And",
+      "_id": "dec_and_jz",
+      "_x": 110,
+      "_y": 1620,
+      "Order": 100,
+      "Mode": "bit",
+      "Variant": "combined"
+    },
+    {
+      "_#new": "And",
+      "_id": "dec_and_jnz",
+      "_x": 110,
+      "_y": 1720,
+      "Order": 100,
+      "Mode": "bit",
+      "Variant": "combined"
+    },
+    {
+      "_#new": "Or",
+      "_id": "dec_or_jtk",
+      "_x": 270,
+      "_y": 1680,
+      "Order": 100,
+      "Mode": "nibble",
+      "Variant": "combined"
+    },
+    {
+      "_#new": "And",
+      "_id": "dec_and_pci",
+      "_x": 430,
+      "_y": 1620,
+      "Order": 100,
+      "Mode": "bit",
+      "Variant": "combined"
+    },
+    {
+      "_#new": "And",
+      "_id": "dec_and_pcl",
+      "_x": 430,
+      "_y": 1740,
+      "Order": 100,
+      "Mode": "bit",
+      "Variant": "combined"
+    },
+    {
+      "_#new": "And",
+      "_id": "dec_and_mw",
+      "_x": 110,
+      "_y": 1480,
+      "Order": 100,
+      "Mode": "bit",
+      "Variant": "combined"
+    },
+    {
+      "_#new": "And",
+      "_id": "dec_and_tw",
+      "_x": 110,
+      "_y": 1900,
+      "Order": 100,
+      "Mode": "bit",
+      "Variant": "combined"
+    },
+    {
+      "_#new": "And",
+      "_id": "dec_and_hlts",
+      "_x": 110,
+      "_y": 2000,
+      "Order": 100,
+      "Mode": "bit",
+      "Variant": "combined"
+    },
+    {
+      "_#new": "Comment",
+      "_id": "dec_c1",
+      "_x": -420,
+      "_y": 930,
+      "Order": 100,
+      "Comment": "Instruction decoder: the opcode is compared\\nagainst every instruction, exactly one line fires:\\n01 LDI  02 ADD  03 SUB  04 LDA  05 STA\\n06 JMP  07 JZ  08 JNZ  09 OUT  0A HLT  0B IN",
+      "Font Size": 14
+    },
+    {
+      "_#new": "Comment",
+      "_id": "dec_c2",
+      "_x": 200,
+      "_y": 1140,
+      "Order": 100,
+      "Comment": "Accumulator: phase 3 latches the selected\\nsource — argument (LDI), ALU result\\n(ADD/SUB) or data memory (LDA).\\nZF checks 'ACC == 0' live\\n(the open input reads as 0)",
+      "Font Size": 14
+    },
+    {
+      "_#new": "Comment",
+      "_id": "dec_c3",
+      "_x": -170,
+      "_y": 1800,
+      "Order": 100,
+      "Comment": "ALU op code:\\n1 = add, 2 = subtract",
+      "Font Size": 14
+    },
+    {
+      "_#new": "Comment",
+      "_id": "dec_c4",
+      "_x": 410,
+      "_y": 1940,
+      "Order": 100,
+      "Comment": "Jumps: on JMP, JZ (ZF set) or JNZ (ZF clear)\\nphase 5 loads the PC with the argument,\\notherwise the PC increments",
+      "Font Size": 14
+    },
+    {
+      "_#new": "Anchor",
+      "_id": "dec_anchor",
+      "_x": -760,
+      "_y": 2140,
+      "Order": 100,
+      "Title": "Decoder + ACC",
+      "Font Size": 14
+    },
+    {
+      "_#new": "Portal Exit",
+      "_id": "alu_x_acc",
+      "_x": -650,
+      "_y": -240,
+      "Order": 100,
+      "Origin": "port_acc"
+    },
+    {
+      "_#new": "Portal Exit",
+      "_id": "alu_x_arg",
+      "_x": -630,
+      "_y": -120,
+      "Order": 100,
+      "Origin": "port_arg"
+    },
+    {
+      "_#new": "Portal Exit",
+      "_id": "alu_x_op2",
+      "_x": -650,
+      "_y": 0,
+      "Order": 100,
+      "Origin": "port_aluop"
+    },
+    {
+      "_#new": "Value",
+      "_id": "ctl_v15",
+      "_x": -90,
+      "_y": -1700,
+      "Order": 100,
+      "binary": false,
+      "value": 10
+    },
+    {
+      "_#new": "Repeater",
+      "_id": "ctl_rpt_pwr",
+      "_x": 50,
+      "_y": -1740,
+      "Order": 100
+    },
+    {
+      "_#new": "Pulse",
+      "_id": "ctl_pulse_hlts",
+      "_x": -510,
+      "_y": -1700,
+      "Order": 100
+    },
+    {
+      "_#new": "Comment",
+      "_id": "pnl_c2",
+      "_x": -1720,
+      "_y": -2070,
+      "Order": 100,
+      "Comment": "Program file format (.bin):\\ntwo bytes per instruction: opcode, argument\\n01 LDI n   02 ADD n   03 SUB n   04 LDA a\\n05 STA a   06 JMP i   07 JZ i   08 JNZ i\\n09 OUT     0A HLT     0B IN     00 NOP\\n(jump targets count instructions, not bytes)",
+      "Font Size": 14
+    },
+    {
+      "_#new": "Portal 1 Entry",
+      "_id": "port_int",
+      "_x": 690,
+      "_y": 1840,
+      "Order": 100,
+      "Name": "INT"
+    },
+    {
+      "_#new": "Portal 1 Entry",
+      "_id": "port_inb",
+      "_x": 2170,
+      "_y": 460,
+      "Order": 100,
+      "Name": "INB"
+    },
+    {
+      "_#new": "Tick",
+      "_id": "lib_tick",
+      "_x": 1510,
+      "_y": -1800,
+      "Order": 100
+    },
+    {
+      "_#new": "Stack Input",
+      "_id": "lib_rom_hello",
+      "_x": 1750,
+      "_y": -1900,
+      "Order": 100,
+      "Values": "01, 48, 09, 00, 01, 65, 09, 00, 01, 6c, 09, 00, 01, 6c, 09, 00, 01, 6f, 09, 00, 01, 20, 09, 00, 01, 57, 09, 00, 01, 6f, 09, 00, 01, 72, 09, 00, 01, 6c, 09, 00, 01, 64, 09, 00, 01, 21, 09, 00, 01, 0a, 09, 00, 01, 05, 05, 00, 04, 00, 07, 23, 03, 01, 05, 00, 01, 2a, 09, 00, 06, 1c, 0a, 00"
+    },
+    {
+      "_#new": "File Output",
+      "_id": "lib_fo_hello",
+      "_x": 2010,
+      "_y": -1900,
+      "Order": 100,
+      "col": 0,
+      "row": 6,
+      "colSpan": 1,
+      "rowSpan": 1,
+      "Filename": "hello_world.bin",
+      "Mimetype": "application/octet-stream",
+      "Link Text": "hello_world.bin"
+    },
+    {
+      "_#new": "Stack Input",
+      "_id": "lib_rom_count",
+      "_x": 1750,
+      "_y": -1760,
+      "Order": 100,
+      "Values": "01, 30, 05, 00, 04, 00, 09, 00, 02, 01, 05, 00, 03, 3a, 07, 09, 06, 02, 0a, 00"
+    },
+    {
+      "_#new": "File Output",
+      "_id": "lib_fo_count",
+      "_x": 2010,
+      "_y": -1760,
+      "Order": 100,
+      "col": 1,
+      "row": 6,
+      "colSpan": 1,
+      "rowSpan": 1,
+      "Filename": "count.bin",
+      "Mimetype": "application/octet-stream",
+      "Link Text": "count.bin"
+    },
+    {
+      "_#new": "Stack Input",
+      "_id": "lib_rom_cowsay",
+      "_x": 1750,
+      "_y": -1620,
+      "Order": 100,
+      "Values": "01, 48, 09, 00, 01, 65, 09, 00, 01, 6c, 09, 00, 01, 6c, 09, 00, 01, 6f, 09, 00, 01, 20, 09, 00, 0b, 00, 07, 10, 09, 00, 06, 0c, 01, 21, 09, 00, 01, 0a, 09, 00, 01, 20, 09, 00, 01, 20, 09, 00, 01, 5c, 09, 00, 01, 0a, 09, 00, 01, 20, 09, 00, 01, 20, 09, 00, 01, 20, 09, 00, 01, 5c, 09, 00, 01, 20, 09, 00, 01, 20, 09, 00, 01, 28, 09, 00, 01, 6f, 09, 00, 01, 6f, 09, 00, 01, 29, 09, 00, 01, 0a, 09, 00, 01, 20, 09, 00, 01, 20, 09, 00, 01, 20, 09, 00, 01, 20, 09, 00, 01, 20, 09, 00, 01, 20, 09, 00, 01, 28, 09, 00, 01, 5f, 09, 00, 01, 5f, 09, 00, 01, 29, 09, 00, 0a, 00"
+    },
+    {
+      "_#new": "File Output",
+      "_id": "lib_fo_cowsay",
+      "_x": 2010,
+      "_y": -1620,
+      "Order": 100,
+      "col": 2,
+      "row": 6,
+      "colSpan": 1,
+      "rowSpan": 1,
+      "Filename": "cowsay.bin",
+      "Mimetype": "application/octet-stream",
+      "Link Text": "cowsay.bin"
+    },
+    {
+      "_#new": "Stack Input",
+      "_id": "lib_rom_calc",
+      "_x": 1750,
+      "_y": -1480,
+      "Order": 100,
+      "Values": "0b, 00, 09, 00, 03, 30, 05, 00, 0b, 00, 09, 00, 05, 02, 0b, 00, 09, 00, 03, 30, 05, 01, 01, 3d, 09, 00, 04, 02, 03, 2b, 08, 18, 04, 00, 07, 22, 03, 01, 05, 00, 04, 01, 02, 01, 05, 01, 06, 10, 04, 01, 07, 20, 03, 01, 05, 01, 04, 00, 03, 01, 05, 00, 06, 18, 04, 00, 05, 01, 04, 01, 02, 30, 09, 00, 0a, 00"
+    },
+    {
+      "_#new": "File Output",
+      "_id": "lib_fo_calc",
+      "_x": 2010,
+      "_y": -1480,
+      "Order": 100,
+      "col": 3,
+      "row": 6,
+      "colSpan": 1,
+      "rowSpan": 1,
+      "Filename": "calc.bin",
+      "Mimetype": "application/octet-stream",
+      "Link Text": "calc.bin"
+    },
+    {
+      "_#new": "Label",
+      "_id": "lib_l_lib",
+      "_x": 2250,
+      "_y": -1900,
+      "Order": 1,
+      "col": 0,
+      "row": 5,
+      "colSpan": 4,
+      "rowSpan": 1,
+      "Text": "__________________________PROGRAM_LIBRARY__________________________",
+      "Href": "",
+      "Font Family": "Arial",
+      "Font Size": 14,
+      "color": "#ffffff",
+      "Background": "#223344"
+    },
+    {
+      "_#new": "Comment",
+      "_id": "lib_c",
+      "_x": 1910,
+      "_y": -2090,
+      "Order": 100,
+      "Comment": "Program library: every ROM streams its bytes\\ninto its download link once at startup.\\nDownload a .bin, then upload it via the file\\ninput on the front panel to run it.\\n\\nhello_world: prints text + a counted loop\\ncount: prints 0..9\\ncowsay: type a name first, then RUN\\ncalc: type e.g. 3+4 or 8-5 first, then RUN\\n(single digits; minus expects first >= second)",
+      "Font Size": 14
+    },
+    {
+      "_#new": "Anchor",
+      "_id": "lib_anchor",
+      "_x": 1140,
+      "_y": -1250,
+      "Order": 100,
+      "Title": "Program Library",
+      "Font Size": 14
+    },
+    {
+      "_#new": "Portal Exit",
+      "_id": "inp_x_int",
+      "_x": 1590,
+      "_y": 100,
+      "Order": 100,
+      "Origin": "port_int"
+    },
+    {
+      "_#new": "Value",
+      "_id": "inp_v_on",
+      "_x": 1650,
+      "_y": 400,
+      "Order": 100,
+      "binary": true,
+      "value": 1
+    },
+    {
+      "_#new": "Text Input",
+      "_id": "inp_ti",
+      "_x": 1810,
+      "_y": 400,
+      "Order": 100,
+      "col": 2,
+      "row": 3,
+      "colSpan": 2,
+      "rowSpan": 1,
+      "eleWidth": 165,
+      "Text": ""
+    },
+    {
+      "_#new": "Memory (1 byte)",
+      "_id": "inp_latch",
+      "_x": 1990,
+      "_y": 460,
+      "Order": 100
+    },
+    {
+      "_#new": "And",
+      "_id": "inp_and_ef",
+      "_x": 1810,
+      "_y": 560,
+      "Order": 100,
+      "Mode": "bit",
+      "Variant": "combined"
+    },
+    {
+      "_#new": "Comment",
+      "_id": "inp_c",
+      "_x": 1940,
+      "_y": 700,
+      "Order": 100,
+      "Comment": "Text input: the IN instruction (0B) flushes one\\ntyped character, the latch holds it for the CPU.\\nA flush on an empty buffer latches 0 —\\nprograms detect the end of input via JZ.\\nType the text before flipping RUN.",
+      "Font Size": 14
+    },
+    {
+      "_#new": "Value",
+      "_id": "dec_v_in",
+      "_x": -530,
+      "_y": 2080,
+      "Order": 100,
+      "binary": false,
+      "value": 11
+    },
+    {
+      "_#new": "Equals",
+      "_id": "dec_eq_in",
+      "_x": -390,
+      "_y": 2080,
+      "Order": 100
+    },
+    {
+      "_#new": "And",
+      "_id": "dec_and_inr",
+      "_x": 110,
+      "_y": 2100,
+      "Order": 100,
+      "Mode": "bit",
+      "Variant": "combined"
+    },
+    {
+      "_#new": "And",
+      "_id": "dec_and_int",
+      "_x": 270,
+      "_y": 2020,
+      "Order": 100,
+      "Mode": "bit",
+      "Variant": "combined"
+    },
+    {
+      "_#new": "Portal Exit",
+      "_id": "dec_x_inb",
+      "_x": -710,
+      "_y": 1800,
+      "Order": 100,
+      "Origin": "port_inb"
+    },
+    {
+      "_#new": "Pulse",
+      "_id": "inp_pulse",
+      "_x": 1670,
+      "_y": 560,
+      "Order": 100
+    },
+    {
+      "_#new": "Label",
+      "_id": "60fb7e0b-89c1-4d7a-931f-673e60776309",
+      "_x": 2250,
+      "_y": -1620,
+      "Order": 100,
+      "col": 2,
+      "row": 7,
+      "colSpan": 2,
+      "rowSpan": 1,
+      "Text": "Assembler",
+      "Href": "dev/assembler.html",
+      "Font Family": "Arial",
+      "Font Size": 14,
+      "color": "#0000ff",
+      "Background": "#ffffff"
+    },
+    {
+      "_#new": "Label",
+      "_id": "f8590a6b-e91e-426b-97c7-884d71890e7c",
+      "_x": 2250,
+      "_y": -1760,
+      "Order": 100,
+      "col": 0,
+      "row": 7,
+      "colSpan": 2,
+      "rowSpan": 1,
+      "Text": "Falls Sie in der Lage sind\\nAssembler Code selbst zu\\nschreiben. So finden sie hier\\nein Tool um eigene Programme\\nfür diesen PC-SIM zu schreiben",
+      "Href": "",
+      "Font Family": "Arial",
+      "Font Size": 14,
+      "color": "#000000",
+      "Background": "#ffffff"
+    }
+  ],
+  "conAll": [
+    {
+      "s": "alu_x_a_out_1",
+      "e": "alu_add_in_B1"
+    },
+    {
+      "s": "alu_x_b_out_1",
+      "e": "alu_add_in_B2"
+    },
+    {
+      "s": "alu_x_a_out_1",
+      "e": "alu_sub_in_B1"
+    },
+    {
+      "s": "alu_x_b_out_1",
+      "e": "alu_sub_in_B2"
+    },
+    {
+      "s": "alu_x_a_out_1",
+      "e": "alu_and_in_A"
+    },
+    {
+      "s": "alu_x_b_out_1",
+      "e": "alu_and_in_B"
+    },
+    {
+      "s": "alu_x_a_out_1",
+      "e": "alu_or_in_A"
+    },
+    {
+      "s": "alu_x_b_out_1",
+      "e": "alu_or_in_B"
+    },
+    {
+      "s": "alu_x_a_out_1",
+      "e": "alu_xor_in_A"
+    },
+    {
+      "s": "alu_x_b_out_1",
+      "e": "alu_xor_in_B"
+    },
+    {
+      "s": "alu_x_a_out_1",
+      "e": "alu_not_in_A"
+    },
+    {
+      "s": "alu_x_op_out_1",
+      "e": "alu_dec_in_B"
+    },
+    {
+      "s": "alu_dec_out_B0",
+      "e": "alu_sel1_in_E1"
+    },
+    {
+      "s": "alu_dec_out_B1",
+      "e": "alu_sel1_in_E2"
+    },
+    {
+      "s": "alu_dec_out_B2",
+      "e": "alu_sel1_in_E3"
+    },
+    {
+      "s": "alu_dec_out_B3",
+      "e": "alu_sel1_in_E4"
+    },
+    {
+      "s": "alu_dec_out_B4",
+      "e": "alu_sel2_in_E1"
+    },
+    {
+      "s": "alu_dec_out_B5",
+      "e": "alu_sel2_in_E2"
+    },
+    {
+      "s": "alu_add_out_R",
+      "e": "alu_sel1_in_B1"
+    },
+    {
+      "s": "alu_sub_out_R",
+      "e": "alu_sel1_in_B2"
+    },
+    {
+      "s": "alu_and_out_O",
+      "e": "alu_sel1_in_B3"
+    },
+    {
+      "s": "alu_or_out_O",
+      "e": "alu_sel1_in_B4"
+    },
+    {
+      "s": "alu_xor_out_O",
+      "e": "alu_sel2_in_B1"
+    },
+    {
+      "s": "alu_not_out_!A",
+      "e": "alu_sel2_in_B2"
+    },
+    {
+      "s": "alu_sel1_out_B",
+      "e": "alu_p_r_in_I1"
+    },
+    {
+      "s": "alu_sel2_out_B",
+      "e": "alu_p_r_in_I1"
+    },
+    {
+      "s": "alu_sel1_out_B",
+      "e": "alu_eq_in_B1"
+    },
+    {
+      "s": "alu_sel2_out_B",
+      "e": "alu_eq_in_B1"
+    },
+    {
+      "s": "alu_v_zero_out_V",
+      "e": "alu_eq_in_B2"
+    },
+    {
+      "s": "alu_eq_out_O",
+      "e": "alu_p_z_in_I1"
+    },
+    {
+      "s": "alu_add_out_O",
+      "e": "alu_and_c_in_I1"
+    },
+    {
+      "s": "alu_dec_out_B0",
+      "e": "alu_and_c_in_I2"
+    },
+    {
+      "s": "alu_and_c_out_O",
+      "e": "alu_p_c_in_I1"
+    },
+    {
+      "s": "alu_sub_out_RN",
+      "e": "alu_and_n_in_I1"
+    },
+    {
+      "s": "alu_dec_out_B1",
+      "e": "alu_and_n_in_I2"
+    },
+    {
+      "s": "alu_and_n_out_O",
+      "e": "alu_p_n_in_I1"
+    },
+    {
+      "s": "pnl_run_out_O",
+      "e": "port_runsw_in_I1"
+    },
+    {
+      "s": "pnl_rst_out_O",
+      "e": "port_rstbtn_in_I1"
+    },
+    {
+      "s": "pnl_x_pc_out_1",
+      "e": "pnl_b_pc_in_B"
+    },
+    {
+      "s": "pnl_x_opc_out_1",
+      "e": "pnl_b_opc_in_B"
+    },
+    {
+      "s": "pnl_x_arg_out_1",
+      "e": "pnl_b_arg_in_B"
+    },
+    {
+      "s": "pnl_x_acc_out_1",
+      "e": "pnl_b_acc_in_B"
+    },
+    {
+      "s": "pnl_x_loading_out_1",
+      "e": "pnl_lamp_load_in_I"
+    },
+    {
+      "s": "pnl_x_halt_out_1",
+      "e": "pnl_lamp_halt_in_I"
+    },
+    {
+      "s": "ctl_x_rst_out_1",
+      "e": "ctl_ff_halt_in_R"
+    },
+    {
+      "s": "ctl_ff_halt_out_Q",
+      "e": "port_halt_in_I1"
+    },
+    {
+      "s": "ctl_x_loading_out_1",
+      "e": "ctl_not_loading_in_A"
+    },
+    {
+      "s": "ctl_x_runsw_out_1",
+      "e": "ctl_and_run1_in_I1"
+    },
+    {
+      "s": "ctl_ff_halt_out_!Q",
+      "e": "ctl_and_run1_in_I2"
+    },
+    {
+      "s": "ctl_and_run1_out_O",
+      "e": "ctl_and_run2_in_I1"
+    },
+    {
+      "s": "ctl_not_loading_out_!A",
+      "e": "ctl_and_run2_in_I2"
+    },
+    {
+      "s": "ctl_v_interval_out_V",
+      "e": "ctl_clk_in_B"
+    },
+    {
+      "s": "ctl_clk_out_C",
+      "e": "ctl_cnt_in_I"
+    },
+    {
+      "s": "ctl_cnt_out_B0",
+      "e": "ctl_phb_in_B0"
+    },
+    {
+      "s": "ctl_cnt_out_B1",
+      "e": "ctl_phb_in_B1"
+    },
+    {
+      "s": "ctl_cnt_out_B2",
+      "e": "ctl_phb_in_B2"
+    },
+    {
+      "s": "ctl_cnt_out_B3",
+      "e": "ctl_phb_in_B3"
+    },
+    {
+      "s": "ctl_phb_out_B",
+      "e": "ctl_eq1_in_B1"
+    },
+    {
+      "s": "ctl_phb_out_B",
+      "e": "ctl_eq3_in_B1"
+    },
+    {
+      "s": "ctl_phb_out_B",
+      "e": "ctl_eq5_in_B1"
+    },
+    {
+      "s": "ctl_phb_out_B",
+      "e": "ctl_eq6_in_B1"
+    },
+    {
+      "s": "ctl_v1_out_V",
+      "e": "ctl_eq1_in_B2"
+    },
+    {
+      "s": "ctl_v3_out_V",
+      "e": "ctl_eq3_in_B2"
+    },
+    {
+      "s": "ctl_v5_out_V",
+      "e": "ctl_eq5_in_B2"
+    },
+    {
+      "s": "ctl_v6_out_V",
+      "e": "ctl_eq6_in_B2"
+    },
+    {
+      "s": "ctl_eq1_out_O",
+      "e": "port_ph1_in_I1"
+    },
+    {
+      "s": "ctl_eq3_out_O",
+      "e": "port_ph3_in_I1"
+    },
+    {
+      "s": "ctl_eq5_out_O",
+      "e": "port_ph5_in_I1"
+    },
+    {
+      "s": "ctl_eq6_out_O",
+      "e": "ctl_cnt_in_R"
+    },
+    {
+      "s": "ctl_x_rst_out_1",
+      "e": "ctl_cnt_in_R"
+    },
+    {
+      "s": "ldr_fi_out_E",
+      "e": "ldr_not_e_in_A"
+    },
+    {
+      "s": "ldr_v30_out_V",
+      "e": "ldr_rpt_load_in_D"
+    },
+    {
+      "s": "ldr_not_e_out_!A",
+      "e": "ldr_rpt_load_in_S"
+    },
+    {
+      "s": "ldr_v8_out_V",
+      "e": "ldr_clk_in_B"
+    },
+    {
+      "s": "ldr_rpt_load_out_O",
+      "e": "ldr_clk_in_P"
+    },
+    {
+      "s": "ldr_clk_out_C",
+      "e": "ldr_fi_in_T"
+    },
+    {
+      "s": "ldr_fi_out_T",
+      "e": "ldr_ff_in_T"
+    },
+    {
+      "s": "ldr_ff_out_Q",
+      "e": "ldr_and_wo_in_I2"
+    },
+    {
+      "s": "ldr_ff_out_!Q",
+      "e": "ldr_and_wa_in_I2"
+    },
+    {
+      "s": "ldr_v4_out_V",
+      "e": "ldr_rpt_inc_in_D"
+    },
+    {
+      "s": "ldr_and_wa_out_O",
+      "e": "ldr_rpt_inc_in_S"
+    },
+    {
+      "s": "ldr_rpt_inc_out_O",
+      "e": "ldr_cnt_in_I"
+    },
+    {
+      "s": "ldr_fi_out_N",
+      "e": "ldr_cnt_in_R"
+    },
+    {
+      "s": "ldr_fi_out_N",
+      "e": "ldr_or_rst_in_I1"
+    },
+    {
+      "s": "ldr_x_rstbtn_out_1",
+      "e": "ldr_or_rst_in_I2"
+    },
+    {
+      "s": "ldr_cnt_out_B",
+      "e": "port_la_in_I1"
+    },
+    {
+      "s": "ldr_fi_out_B",
+      "e": "port_lb_in_I1"
+    },
+    {
+      "s": "ldr_and_wo_out_O",
+      "e": "port_lwo_in_I1"
+    },
+    {
+      "s": "ldr_and_wa_out_O",
+      "e": "port_lwa_in_I1"
+    },
+    {
+      "s": "ldr_rpt_load_out_O",
+      "e": "port_loading_in_I1"
+    },
+    {
+      "s": "ldr_or_rst_out_O",
+      "e": "port_rst_in_I1"
+    },
+    {
+      "s": "ldr_fi_out_N",
+      "e": "port_newf_in_I1"
+    },
+    {
+      "s": "prg_x_loading_out_1",
+      "e": "prg_not_loading_in_A"
+    },
+    {
+      "s": "prg_x_loading_out_1",
+      "e": "prg_sel_addr_in_E1"
+    },
+    {
+      "s": "prg_x_la_out_1",
+      "e": "prg_sel_addr_in_B1"
+    },
+    {
+      "s": "prg_not_loading_out_!A",
+      "e": "prg_sel_addr_in_E2"
+    },
+    {
+      "s": "prg_pc_out_B",
+      "e": "prg_sel_addr_in_B2"
+    },
+    {
+      "s": "prg_sel_addr_out_B",
+      "e": "prg_rom_op_in_A"
+    },
+    {
+      "s": "prg_sel_addr_out_B",
+      "e": "prg_rom_arg_in_A"
+    },
+    {
+      "s": "prg_x_lb_out_1",
+      "e": "prg_rom_op_in_B"
+    },
+    {
+      "s": "prg_x_lb_out_1",
+      "e": "prg_rom_arg_in_B"
+    },
+    {
+      "s": "prg_x_lwo_out_1",
+      "e": "prg_rom_op_in_W"
+    },
+    {
+      "s": "prg_x_lwa_out_1",
+      "e": "prg_rom_arg_in_W"
+    },
+    {
+      "s": "prg_x_newf_out_1",
+      "e": "prg_rom_op_in_C"
+    },
+    {
+      "s": "prg_x_newf_out_1",
+      "e": "prg_rom_arg_in_C"
+    },
+    {
+      "s": "prg_rom_op_out_B",
+      "e": "prg_ir_op_in_B"
+    },
+    {
+      "s": "prg_rom_arg_out_B",
+      "e": "prg_ir_arg_in_B"
+    },
+    {
+      "s": "prg_x_ph1_out_1",
+      "e": "prg_ir_op_in_T"
+    },
+    {
+      "s": "prg_x_ph1_out_1",
+      "e": "prg_ir_arg_in_T"
+    },
+    {
+      "s": "prg_x_pci_out_1",
+      "e": "prg_pc_in_I"
+    },
+    {
+      "s": "prg_x_pcl_out_1",
+      "e": "prg_pc_in_L"
+    },
+    {
+      "s": "prg_ir_arg_out_B",
+      "e": "prg_pc_in_B"
+    },
+    {
+      "s": "prg_x_rst_out_1",
+      "e": "prg_pc_in_R"
+    },
+    {
+      "s": "prg_pc_out_B",
+      "e": "port_pc_in_I1"
+    },
+    {
+      "s": "prg_ir_op_out_B",
+      "e": "port_opc_in_I1"
+    },
+    {
+      "s": "prg_ir_arg_out_B",
+      "e": "port_arg_in_I1"
+    },
+    {
+      "s": "ldr_v8_out_V",
+      "e": "ldr_rpt_wp_in_D"
+    },
+    {
+      "s": "ldr_fi_out_T",
+      "e": "ldr_rpt_wp_in_S"
+    },
+    {
+      "s": "ldr_rpt_wp_out_O",
+      "e": "ldr_and_wo_in_I1"
+    },
+    {
+      "s": "ldr_rpt_wp_out_O",
+      "e": "ldr_and_wa_in_I1"
+    },
+    {
+      "s": "mem_x_arg_out_1",
+      "e": "mem_ram_in_A"
+    },
+    {
+      "s": "mem_x_acc_out_1",
+      "e": "mem_ram_in_B"
+    },
+    {
+      "s": "mem_x_mw_out_1",
+      "e": "mem_ram_in_W"
+    },
+    {
+      "s": "mem_x_rst_out_1",
+      "e": "mem_ram_in_C"
+    },
+    {
+      "s": "mem_ram_out_B",
+      "e": "port_mem_in_I1"
+    },
+    {
+      "s": "term_x_acc_out_1",
+      "e": "term_term_in_B"
+    },
+    {
+      "s": "term_x_tw_out_1",
+      "e": "term_term_in_W"
+    },
+    {
+      "s": "term_x_rst_out_1",
+      "e": "term_term_in_C"
+    },
+    {
+      "s": "dec_x_opc_out_1",
+      "e": "dec_eq_ldi_in_B1"
+    },
+    {
+      "s": "dec_v_ldi_out_V",
+      "e": "dec_eq_ldi_in_B2"
+    },
+    {
+      "s": "dec_x_opc_out_1",
+      "e": "dec_eq_add_in_B1"
+    },
+    {
+      "s": "dec_v_add_out_V",
+      "e": "dec_eq_add_in_B2"
+    },
+    {
+      "s": "dec_x_opc_out_1",
+      "e": "dec_eq_sub_in_B1"
+    },
+    {
+      "s": "dec_v_sub_out_V",
+      "e": "dec_eq_sub_in_B2"
+    },
+    {
+      "s": "dec_x_opc_out_1",
+      "e": "dec_eq_lda_in_B1"
+    },
+    {
+      "s": "dec_v_lda_out_V",
+      "e": "dec_eq_lda_in_B2"
+    },
+    {
+      "s": "dec_x_opc_out_1",
+      "e": "dec_eq_sta_in_B1"
+    },
+    {
+      "s": "dec_v_sta_out_V",
+      "e": "dec_eq_sta_in_B2"
+    },
+    {
+      "s": "dec_x_opc_out_1",
+      "e": "dec_eq_jmp_in_B1"
+    },
+    {
+      "s": "dec_v_jmp_out_V",
+      "e": "dec_eq_jmp_in_B2"
+    },
+    {
+      "s": "dec_x_opc_out_1",
+      "e": "dec_eq_jz_in_B1"
+    },
+    {
+      "s": "dec_v_jz_out_V",
+      "e": "dec_eq_jz_in_B2"
+    },
+    {
+      "s": "dec_x_opc_out_1",
+      "e": "dec_eq_jnz_in_B1"
+    },
+    {
+      "s": "dec_v_jnz_out_V",
+      "e": "dec_eq_jnz_in_B2"
+    },
+    {
+      "s": "dec_x_opc_out_1",
+      "e": "dec_eq_out_in_B1"
+    },
+    {
+      "s": "dec_v_out_out_V",
+      "e": "dec_eq_out_in_B2"
+    },
+    {
+      "s": "dec_x_opc_out_1",
+      "e": "dec_eq_hlt_in_B1"
+    },
+    {
+      "s": "dec_v_hlt_out_V",
+      "e": "dec_eq_hlt_in_B2"
+    },
+    {
+      "s": "dec_eq_ldi_out_O",
+      "e": "dec_or_accload_in_I1"
+    },
+    {
+      "s": "dec_eq_add_out_O",
+      "e": "dec_or_accload_in_I2"
+    },
+    {
+      "s": "dec_eq_sub_out_O",
+      "e": "dec_or_accload_in_I3"
+    },
+    {
+      "s": "dec_eq_lda_out_O",
+      "e": "dec_or_accload_in_I4"
+    },
+    {
+      "s": "dec_or_accload_out_O",
+      "e": "dec_and_acct_in_I1"
+    },
+    {
+      "s": "dec_x_ph3_out_1",
+      "e": "dec_and_acct_in_I2"
+    },
+    {
+      "s": "dec_eq_add_out_O",
+      "e": "dec_or_addsub_in_I1"
+    },
+    {
+      "s": "dec_eq_sub_out_O",
+      "e": "dec_or_addsub_in_I2"
+    },
+    {
+      "s": "dec_eq_ldi_out_O",
+      "e": "dec_sel_accsrc_in_E1"
+    },
+    {
+      "s": "dec_x_arg_out_1",
+      "e": "dec_sel_accsrc_in_B1"
+    },
+    {
+      "s": "dec_or_addsub_out_O",
+      "e": "dec_sel_accsrc_in_E2"
+    },
+    {
+      "s": "dec_x_alur_out_1",
+      "e": "dec_sel_accsrc_in_B2"
+    },
+    {
+      "s": "dec_eq_lda_out_O",
+      "e": "dec_sel_accsrc_in_E3"
+    },
+    {
+      "s": "dec_x_mem_out_1",
+      "e": "dec_sel_accsrc_in_B3"
+    },
+    {
+      "s": "dec_sel_accsrc_out_B",
+      "e": "dec_acc_in_B"
+    },
+    {
+      "s": "dec_and_acct_out_O",
+      "e": "dec_acc_in_T"
+    },
+    {
+      "s": "dec_acc_out_B",
+      "e": "dec_eq_zero_in_B1"
+    },
+    {
+      "s": "dec_eq_add_out_O",
+      "e": "dec_sel_aluop_in_E1"
+    },
+    {
+      "s": "dec_v_alu_add_out_V",
+      "e": "dec_sel_aluop_in_B1"
+    },
+    {
+      "s": "dec_eq_sub_out_O",
+      "e": "dec_sel_aluop_in_E2"
+    },
+    {
+      "s": "dec_v_alu_sub_out_V",
+      "e": "dec_sel_aluop_in_B2"
+    },
+    {
+      "s": "dec_eq_jz_out_O",
+      "e": "dec_and_jz_in_I1"
+    },
+    {
+      "s": "dec_eq_zero_out_O",
+      "e": "dec_and_jz_in_I2"
+    },
+    {
+      "s": "dec_eq_jnz_out_O",
+      "e": "dec_and_jnz_in_I1"
+    },
+    {
+      "s": "dec_eq_zero_out_!O",
+      "e": "dec_and_jnz_in_I2"
+    },
+    {
+      "s": "dec_eq_jmp_out_O",
+      "e": "dec_or_jtk_in_I1"
+    },
+    {
+      "s": "dec_and_jz_out_O",
+      "e": "dec_or_jtk_in_I2"
+    },
+    {
+      "s": "dec_and_jnz_out_O",
+      "e": "dec_or_jtk_in_I3"
+    },
+    {
+      "s": "dec_x_ph5_out_1",
+      "e": "dec_and_pci_in_I1"
+    },
+    {
+      "s": "dec_or_jtk_out_!O",
+      "e": "dec_and_pci_in_I2"
+    },
+    {
+      "s": "dec_x_ph5_out_1",
+      "e": "dec_and_pcl_in_I1"
+    },
+    {
+      "s": "dec_or_jtk_out_O",
+      "e": "dec_and_pcl_in_I2"
+    },
+    {
+      "s": "dec_x_ph3_out_1",
+      "e": "dec_and_mw_in_I1"
+    },
+    {
+      "s": "dec_eq_sta_out_O",
+      "e": "dec_and_mw_in_I2"
+    },
+    {
+      "s": "dec_x_ph3_out_1",
+      "e": "dec_and_tw_in_I1"
+    },
+    {
+      "s": "dec_eq_out_out_O",
+      "e": "dec_and_tw_in_I2"
+    },
+    {
+      "s": "dec_x_ph3_out_1",
+      "e": "dec_and_hlts_in_I1"
+    },
+    {
+      "s": "dec_eq_hlt_out_O",
+      "e": "dec_and_hlts_in_I2"
+    },
+    {
+      "s": "dec_acc_out_B",
+      "e": "port_acc_in_I1"
+    },
+    {
+      "s": "dec_sel_aluop_out_B",
+      "e": "port_aluop_in_I1"
+    },
+    {
+      "s": "dec_and_pci_out_O",
+      "e": "port_pci_in_I1"
+    },
+    {
+      "s": "dec_and_pcl_out_O",
+      "e": "port_pcl_in_I1"
+    },
+    {
+      "s": "dec_and_mw_out_O",
+      "e": "port_mw_in_I1"
+    },
+    {
+      "s": "dec_and_tw_out_O",
+      "e": "port_tw_in_I1"
+    },
+    {
+      "s": "dec_and_hlts_out_O",
+      "e": "port_hlts_in_I1"
+    },
+    {
+      "s": "alu_x_acc_out_1",
+      "e": "alu_p_a_in_I1"
+    },
+    {
+      "s": "alu_x_arg_out_1",
+      "e": "alu_p_b_in_I1"
+    },
+    {
+      "s": "alu_x_op2_out_1",
+      "e": "alu_p_op_in_I1"
+    },
+    {
+      "s": "ctl_v15_out_V",
+      "e": "ctl_rpt_pwr_in_D"
+    },
+    {
+      "s": "ctl_and_run2_out_O",
+      "e": "ctl_rpt_pwr_in_S"
+    },
+    {
+      "s": "ctl_rpt_pwr_out_O",
+      "e": "ctl_clk_in_P"
+    },
+    {
+      "s": "ctl_x_loading_out_1",
+      "e": "ctl_cnt_in_R"
+    },
+    {
+      "s": "ctl_x_hlts_out_1",
+      "e": "ctl_pulse_hlts_in_I"
+    },
+    {
+      "s": "ctl_pulse_hlts_out_U",
+      "e": "ctl_ff_halt_in_S"
+    },
+    {
+      "s": "lib_tick_out_T",
+      "e": "lib_rom_hello_in_T"
+    },
+    {
+      "s": "lib_rom_hello_out_B",
+      "e": "lib_fo_hello_in_V"
+    },
+    {
+      "s": "lib_rom_hello_out_T",
+      "e": "lib_fo_hello_in_T"
+    },
+    {
+      "s": "lib_tick_out_T",
+      "e": "lib_rom_count_in_T"
+    },
+    {
+      "s": "lib_rom_count_out_B",
+      "e": "lib_fo_count_in_V"
+    },
+    {
+      "s": "lib_rom_count_out_T",
+      "e": "lib_fo_count_in_T"
+    },
+    {
+      "s": "lib_tick_out_T",
+      "e": "lib_rom_cowsay_in_T"
+    },
+    {
+      "s": "lib_rom_cowsay_out_B",
+      "e": "lib_fo_cowsay_in_V"
+    },
+    {
+      "s": "lib_rom_cowsay_out_T",
+      "e": "lib_fo_cowsay_in_T"
+    },
+    {
+      "s": "lib_tick_out_T",
+      "e": "lib_rom_calc_in_T"
+    },
+    {
+      "s": "lib_rom_calc_out_B",
+      "e": "lib_fo_calc_in_V"
+    },
+    {
+      "s": "lib_rom_calc_out_T",
+      "e": "lib_fo_calc_in_T"
+    },
+    {
+      "s": "inp_v_on_out_V",
+      "e": "inp_ti_in_P"
+    },
+    {
+      "s": "inp_x_int_out_1",
+      "e": "inp_ti_in_F"
+    },
+    {
+      "s": "inp_ti_out_E",
+      "e": "inp_and_ef_in_I2"
+    },
+    {
+      "s": "term_x_rst_out_1",
+      "e": "inp_ti_in_C"
+    },
+    {
+      "s": "inp_ti_out_B",
+      "e": "inp_latch_in_B"
+    },
+    {
+      "s": "inp_ti_out_T",
+      "e": "inp_latch_in_T"
+    },
+    {
+      "s": "inp_and_ef_out_O",
+      "e": "inp_latch_in_T"
+    },
+    {
+      "s": "inp_latch_out_B",
+      "e": "port_inb_in_I1"
+    },
+    {
+      "s": "dec_x_opc_out_1",
+      "e": "dec_eq_in_in_B1"
+    },
+    {
+      "s": "dec_v_in_out_V",
+      "e": "dec_eq_in_in_B2"
+    },
+    {
+      "s": "dec_x_ph3_out_1",
+      "e": "dec_and_inr_in_I1"
+    },
+    {
+      "s": "dec_eq_in_out_O",
+      "e": "dec_and_inr_in_I2"
+    },
+    {
+      "s": "dec_and_inr_out_O",
+      "e": "port_int_in_I1"
+    },
+    {
+      "s": "dec_x_ph5_out_1",
+      "e": "dec_and_int_in_I1"
+    },
+    {
+      "s": "dec_eq_in_out_O",
+      "e": "dec_and_int_in_I2"
+    },
+    {
+      "s": "dec_and_int_out_O",
+      "e": "dec_acc_in_T"
+    },
+    {
+      "s": "dec_eq_in_out_O",
+      "e": "dec_sel_accsrc_in_E4"
+    },
+    {
+      "s": "dec_x_inb_out_1",
+      "e": "dec_sel_accsrc_in_B4"
+    },
+    {
+      "s": "inp_x_int_out_1",
+      "e": "inp_pulse_in_I"
+    },
+    {
+      "s": "inp_pulse_out_U",
+      "e": "inp_and_ef_in_I1"
+    }
+  ]
+}
